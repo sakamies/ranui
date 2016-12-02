@@ -1,0 +1,68 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  line-height: inherit;
+  color: inherit;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: monospace;
+  font-family: "Courier";
+  font-family: "Menlo";
+  font-size: 15px;
+  line-height: 22px;
+  white-space: nowrap;
+  color: #f8f8f2;
+  background-color: #272822;
+  -webkit-text-size-adjust: 100%;
+}
+
+doc, el, txt {
+  display: block;
+}
+prop, val {
+  display: inline;
+}
+
+doc {
+  background-image: linear-gradient(to left, #34332a 1px, transparent 1px);
+  background-position: left top;
+  background-repeat: repeat-x;
+  background-size: 2ch 100%;
+}
+el, text {
+  background: linear-gradient(#272822 0%, #272822 100%), transparent;
+  background-origin: content-box, border-box;
+  background-clip: content-box, border-box;
+}
+
+[tabs] {padding-left: 22ch;}
+[tabs="0"] {padding-left: 0ch}
+[tabs="1"] {padding-left: 2ch}
+[tabs="2"] {padding-left: 4ch}
+[tabs="3"] {padding-left: 6ch}
+[tabs="4"] {padding-left: 8ch}
+[tabs="5"] {padding-left: 10ch}
+[tabs="6"] {padding-left: 12ch}
+[tabs="7"] {padding-left: 14ch}
+[tabs="8"] {padding-left: 16ch}
+[tabs="9"] {padding-left: 18ch}
+[tabs="10"] {padding-left: 20ch}
+/*Stupid, but works for now*/
+
+
+.selected {
+  background: -webkit-linear-gradient(#3e3d32 0%, #3e3d32 100%), rgba(62, 61, 50, 0.4);
+  background: linear-gradient(#3e3d32 0%, #3e3d32 100%), rgba(62, 61, 50, 0.4);
+  background-origin: content-box, border-box;
+  background-clip: content-box, border-box;
+}
+
+.editing {
+  color: #272822;
+  background-color: white;
+  box-shadow: 1px 0px 0px 0px white, -1px 0px 0px 0px white;
+}
