@@ -6,6 +6,7 @@
   line-height: inherit;
   color: inherit;
   -webkit-font-smoothing: antialiased;
+  -webkit-user-select: none;
 }
 
 body {
@@ -20,10 +21,10 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
-doc, el, txt {
+doc, row {
   display: block;
 }
-prop, val {
+tag, prop, val, txt {
   display: inline;
 }
 
@@ -33,10 +34,13 @@ doc {
   background-repeat: repeat-x;
   background-size: 2ch 100%;
 }
-el, text {
-  background: linear-gradient(#272822 0%, #272822 100%), transparent;
+row {
+/*   background: linear-gradient(#272822 0%, #272822 100%), transparent;
   background-origin: content-box, border-box;
-  background-clip: content-box, border-box;
+  background-clip: content-box, border-box; */
+}
+prop, val {
+  margin-left: 1ch;
 }
 
 [tabs] {padding-left: 22ch;}
@@ -54,11 +58,13 @@ el, text {
 /*Stupid, but works for now*/
 
 
-.selected {
-  background: -webkit-linear-gradient(#3e3d32 0%, #3e3d32 100%), rgba(62, 61, 50, 0.4);
+.sel {
+/*   background: -webkit-linear-gradient(#3e3d32 0%, #3e3d32 100%), rgba(62, 61, 50, 0.4);
   background: linear-gradient(#3e3d32 0%, #3e3d32 100%), rgba(62, 61, 50, 0.4);
   background-origin: content-box, border-box;
-  background-clip: content-box, border-box;
+  background-clip: content-box, border-box; */
+  color: white;
+  background: hsla(200, 100%, 40%, 1);
 }
 
 .editing {
