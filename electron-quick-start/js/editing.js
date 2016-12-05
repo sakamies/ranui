@@ -1,5 +1,4 @@
 function startEdit (event, opts) {
-  //Needs to support multiple cursors, so pressing enter edits the first selected item but all other selected elements are synced to that input
   let cursor = $('.cur').first()
   cursor.attr('contenteditable', 'true').focus()
   if (opts.includes(':selectEnd')) {cursor.selectEnd()}
@@ -37,7 +36,7 @@ function create (e) {
   let tag
   let txt
   if (e.code === 'Space') {txt = e.txt || ' '}
-  else {tag = e.key}
+  else if (modkeys(e, 'none')) {tag = e.key}
 
   if (txt || tag) {
     let cursors = $('.cur')
@@ -64,6 +63,8 @@ function create (e) {
 
 
 function tab (e) {
+  history.update() //update current history entry so selection state doesn't jump when undoing
+
   //Should tabbing happen only for tags?
   let amount = 1
   if (e.shiftKey) {amount = -1}
@@ -74,5 +75,13 @@ function tab (e) {
     row.attr('tabs', tabs)
   })
 
-  history.add()
+  history.add() //add action result to history
 }
+
+
+//Maybe do actions like this, so each action would conform to managing history automatically
+// function action(e, function) {
+//   history.update()
+//   function(e)
+//   history.add()
+// }

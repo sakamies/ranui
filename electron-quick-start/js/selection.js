@@ -8,8 +8,6 @@ function select(to, opts) {
   to.addClass('cur sel')
   $('.hilite').removeClass('hilite')
   $('.sel').parent().addClass('hilite')
-
-  history.update() //update latest history entry with new selection, so undo is nicer
 }
 
 

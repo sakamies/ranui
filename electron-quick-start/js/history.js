@@ -15,31 +15,39 @@ function History(initial) {
   }
 
   function add() {
-    push($('doc').clone())
+    //Holy crap this must be inefficient, being called twice for every edit, but works for now
+    //Should take in an action and its opposite action to save memory, but for now this just stores full copies of the document, crazy I know
+    let item = $('doc')[0].outerHTML
+    //Don't add to undo stack if document didn't change
+    if (item !== stack[stack.length - 1]) {
+      console.log('add')
+      push($('doc')[0].outerHTML)
+    }
   }
   function update() {
-    stack[index] = $('doc').clone()
+    stack[index] = $('doc')[0].outerHTML
+    console.log('update', index, stack.length, stack[index])
   }
-  //TODO: undo works like shit, find out what's wrong
-  function push(content) {
-    //Should take in an action and its opposite action to save memory, but for now this just stores full copies of the document, crazy I know
+  function push(item) {
     index = index + 1
     stack.splice(index)
-    stack.push(content)
-    console.log('history push', index, stack)
+    stack.push(item)
+    console.log('push to', index, stack.length, stack[index])
   }
 
   function undo () {
-    console.log('undo from', index, stack[index])
-    index = Math.max(index - 1, 0)
-    $('doc').replaceWith(stack[index])
-    console.log('undo to', index, stack[index])
+    if (index > 0) {
+      index = index - 1
+      $('doc').replaceWith(stack[index])
+      console.log('undo to', index, stack.length, stack[index])
+    }
   }
   function redo () {
-    console.log('redo')
-    let stackEnd = stack.length - 1
-    index = Math.min(index + 1, stackEnd)
-    $('doc').replaceWith(stack[index])
+    if (index < stack.length - 1) {
+      index = index + 1
+      $('doc').replaceWith(stack[index])
+      console.log('redo to', index, stack.length, stack[index])
+    }
   }
   return {keydown, add, update, push, undo, redo}
 }
