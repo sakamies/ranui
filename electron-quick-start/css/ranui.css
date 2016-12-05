@@ -5,7 +5,7 @@
   font: inherit;
   line-height: inherit;
   color: inherit;
-  -webkit-font-smoothing: antialiased;
+  //-webkit-font-smoothing: antialiased;
   -webkit-user-select: none;
 }
 
@@ -21,11 +21,22 @@ body {
   -webkit-text-size-adjust: 100%;
 }
 
+::selection {
+  color: white;
+  background: hsl(200, 100%, 50%);
+}
+:focus {
+  outline: none;
+}
+
 doc, row {
   display: block;
 }
 tag, prop, val, txt {
   display: inline;
+  line-height: 11px;
+  white-space: pre-wrap;
+  padding: 0 .5ch;
 }
 
 doc {
@@ -35,40 +46,57 @@ doc {
   background-size: 2ch 100%;
 }
 row {
-/*   background: linear-gradient(#272822 0%, #272822 100%), transparent;
-  background-origin: content-box, border-box;
-  background-clip: content-box, border-box; */
-}
-prop, val {
-  margin-left: 1ch;
+  background: #272822;
 }
 
-[tabs] {padding-left: 22ch;}
-[tabs="0"] {padding-left: 0ch}
-[tabs="1"] {padding-left: 2ch}
-[tabs="2"] {padding-left: 4ch}
-[tabs="3"] {padding-left: 6ch}
-[tabs="4"] {padding-left: 8ch}
-[tabs="5"] {padding-left: 10ch}
-[tabs="6"] {padding-left: 12ch}
-[tabs="7"] {padding-left: 14ch}
-[tabs="8"] {padding-left: 16ch}
-[tabs="9"] {padding-left: 18ch}
-[tabs="10"] {padding-left: 20ch}
-/*Stupid, but works for now*/
+tag {
+  color: #f92772;
+}
+prop {
+  color: #a6e22d;
+}
+val {
+  color: #e6db74;
+}
+
+[tabs] {margin-left: 22ch;}
+[tabs="0"] {margin-left: 0ch}
+[tabs="1"] {margin-left: 2ch}
+[tabs="2"] {margin-left: 4ch}
+[tabs="3"] {margin-left: 6ch}
+[tabs="4"] {margin-left: 8ch}
+[tabs="5"] {margin-left: 10ch}
+[tabs="6"] {margin-left: 12ch}
+[tabs="7"] {margin-left: 14ch}
+[tabs="8"] {margin-left: 16ch}
+[tabs="9"] {margin-left: 18ch}
+[tabs="10"] {margin-left: 20ch}
+/*Stupid tabbing styles, but works for now*/
 
 
 .sel {
-/*   background: -webkit-linear-gradient(#3e3d32 0%, #3e3d32 100%), rgba(62, 61, 50, 0.4);
-  background: linear-gradient(#3e3d32 0%, #3e3d32 100%), rgba(62, 61, 50, 0.4);
-  background-origin: content-box, border-box;
-  background-clip: content-box, border-box; */
-  color: white;
-  background: hsla(200, 100%, 40%, 1);
+  //outline: 1px solid #0af;
+  //background: #49483E;
+  //color: white;
+  //background: #0af;
+  background: hsla(200, 100%, 30%, 1);
+  background: #49483E;
+}
+.cur {
+  outline: 1px solid #828380; //#66d9ef; //#0af; //
+  outline-offset: 1px;
+}
+.hilite {
+  //background: hsla();
+  //background: #3e3d32;
+}
+.hilite + row::before {
+  //Show insertion point somehow? Or is it enough that users learn it as they create new elements
 }
 
-.editing {
+[contenteditable="true"] {
   color: #272822;
   background-color: white;
-  box-shadow: 1px 0px 0px 0px white, -1px 0px 0px 0px white;
+  box-shadow: 0px 0px 0px 1px white;
+  //border-radius: 3px;
 }
