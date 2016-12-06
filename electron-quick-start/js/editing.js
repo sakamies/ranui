@@ -1,15 +1,19 @@
 function startEdit (event, opts) {
+  history.update()
+  HI.pushScope('editing')
+
   let cursor = $('.cur').first()
   cursor.attr('contenteditable', 'true').focus()
   if (opts.includes(':selectEnd')) {cursor.selectEnd()}
   else {cursor.selectText()}
 
   if (event && event.preventDefault) {event.preventDefault()} //startEdit can be called from anywhere, can't rely on event but might get it
-  HI.pushScope('editing')
+
 }
 
 function commitEdit() {
   $('[contenteditable]').attr('contenteditable', 'false')
+  history.add()
   HI.popScope('editing')
 }
 
