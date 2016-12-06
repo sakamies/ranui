@@ -1,4 +1,5 @@
-function startEdit (event, opts) {
+function startEdit (e, opts) {
+  opts = opts || ''
   history.update()
   HI.pushScope('editing')
 
@@ -7,10 +8,9 @@ function startEdit (event, opts) {
   if (opts.includes(':selectEnd')) {cursor.selectEnd()}
   else {cursor.selectText()}
 
-  if (event && event.preventDefault) {event.preventDefault()} //startEdit can be called from anywhere, can't rely on event but might get it
+  if (e && e.preventDefault) {e.preventDefault()} //startEdit can be called from anywhere, can't rely on event but might get it
 
 }
-
 function commitEdit() {
   $('[contenteditable]').attr('contenteditable', 'false')
   history.add()
@@ -18,7 +18,7 @@ function commitEdit() {
 }
 
 
-function input (event) {
+function input (e) {
   //Simplefill here?
   let cursor = $('.cur').first()
   let sel = $('.sel')
@@ -35,7 +35,7 @@ function input (event) {
 }
 
 
-function create (e) {
+function newRow (e) {
   e.preventDefault()
   let tag
   let txt
@@ -53,8 +53,11 @@ function create (e) {
     let newRows = $('.new').removeClass('new')
     newRows.each(function(index, row) {
       let newRow = $(row)
-      newRow.attr('tabs', newRow.next().attr('tabs') || newRow.prev().attr('tabs'))
+      let nextTabs = newRow.next().attr('tabs') || 0
+      let prevTabs = newRow.prev().attr('tabs') || 0
+      newRow.attr('tabs', Math.max(nextTabs, prevTabs))
     })
+
     let newCurs = newRows.children()
     cursors.removeClass('cur')
     newCurs.addClass('cur')
@@ -63,6 +66,26 @@ function create (e) {
     if (tag) {startEdit(e, ':selectEnd')}
     if (txt) {startEdit(e)}
   }
+}
+
+
+function newProp(e, opts) {
+  e.preventDefault()
+  opts = opts || ''
+
+  let sel = $('.sel')
+  let cursors = $('.cur')
+  if (opts.includes(':val')) {sel.after(`<val class="new"></val>`)}
+  if (opts.includes(':prop')) {sel.after(`<prop class="new"></prop>`)}
+  //if (id) {sel.after('<prop text="id">id</prop><val class="new"></val>')}
+  //if (class) {sel.after('<prop text="class">class</prop><val class="new"></val>')}
+
+  let newCurs = $('.new').removeClass('new')
+  cursors.removeClass('cur')
+  newCurs.addClass('cur')
+  select(newCurs)
+
+  startEdit(e)
 }
 
 

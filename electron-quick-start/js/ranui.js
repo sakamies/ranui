@@ -27,40 +27,43 @@ HI.on('editing:escape', commitEdit)
 HI.on('editing:input', input)
 HI.on('editing:blur', commitEdit)
 
-HI.on('doubleclick', (event) => { HI.log.info('doubleclick doesnt work edit') })
-//HI.on('escape', (event) => { HI.log.info('esc?') })
-HI.on('backspace', (event) => { HI.log.info('delete sel and move sel backward') })
-HI.on('delete', (event) => { HI.log.info('delete sel and move sel forward') })
+HI.on('doubleclick', e=>{ HI.log.info('doubleclick doesnt work edit') })
+//HI.on('escape', e=>{ HI.log.info('esc?') })
+HI.on('backspace', e=>{ HI.log.info('delete sel and move sel backward') })
+HI.on('delete', e=>{ HI.log.info('delete sel and move sel forward') })
 
-HI.on('beforecut', (event) => { HI.log.info('cut') })
-HI.on('beforecopy', (event) => { HI.log.info('copy') })
-HI.on('beforepaste', (event) => { HI.log.info('paste') })
+HI.on('beforecut', e=>{ HI.log.info('cut') })
+HI.on('beforecopy', e=>{ HI.log.info('copy') })
+HI.on('beforepaste', e=>{ HI.log.info('paste') })
 
 HI.on('tab', tab)
 HI.on('shift->tab', tab)
 
 
 //Crazy editing
-HI.on('space', create)
-HI.on('abcdefghijklmnopqrstuvwxyz'.split(''), create)
+HI.on('space', newRow) //Next text row
+HI.on('abcdefghijklmnopqrstuvwxyz'.split(''), newRow) //New tag row
 
-HI.on(',', (event) => { HI.log.info('add property') })
-HI.on('alt->,', (event) => { HI.log.info('add value') })
-HI.on('#', (event) => { HI.log.info('add id prop and empty value, focus on value') })
-HI.on('.', (event) => { HI.log.info('add class prop and empty value, focus on value') })
-HI.on('+', (event) => { HI.log.info('unfold') })
-HI.on('-', (event) => { HI.log.info('fold') })
-HI.on('cmd->/', (event) => { HI.log.info('toggle comment') })
-//move up
-//move down
-//move left
-//move right
+HI.on(',', e=>newProp(e, ':prop'))
+HI.on(':', e=>newProp(e, ':val'))
+HI.on('#', e=>{ HI.log.info('add id prop and empty value, focus on value') })
+HI.on('.', e=>{ HI.log.info('add class prop and empty value, focus on value') })
+
+HI.on('+', e=>{ HI.log.info('unfold') })
+HI.on('-', e=>{ HI.log.info('fold') })
+HI.on('cmd->/', e=>{ HI.log.info('toggle comment') })
+
+HI.on('ctrl+up', e=>{HI.log.info('move up')})
+HI.on('ctrl+down', e=>{HI.log.info('move up')})
+HI.on('ctrl+left', e=>{HI.log.info('move left')})
+HI.on('ctrl+right', e=>{HI.log.info('move right')})
 
 
 //Undo Redo
 //Should be handled on the app level so menus and all would work
 let history = new History()
 HI.on('keydown', e=>history.keydown(e))
+//TODO: these events didn't work with HI, so history has it's own check for the keys
 //HI.on('cmd->z', e=>{history.undo();return false})
 //HI.on('cmd->shift->z', e=>history.redo())
 //HI.on('shift->cmd->z', e=>history.redo())
