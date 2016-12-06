@@ -40,6 +40,7 @@ tag, prop, val, txt {
 }
 
 doc {
+  padding: 0 2px;
   background-image: linear-gradient(to left, #34332a 1px, transparent 1px);
   background-position: left top;
   background-repeat: repeat-x;
