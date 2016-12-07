@@ -5,8 +5,8 @@ window.HI = new HumanInput(window, {
 
 //Selection
 //Selection should be row by row or by tree, maybe based on some setting?
-HI.on(['up', 'shift->up', 'cmd->up', 'cmd-shift->up'], e=>selRow(e, 'up'))
-HI.on(['down', 'shift->down', 'cmd->down', 'cmd-shift->down'], e=>selRow(e, 'down'))
+HI.on(['up', 'shift->up'], e=>selRow(e, 'up'))
+HI.on(['down', 'shift->down'], e=>selRow(e, 'down'))
 
 HI.on(['left', 'shift->left', 'cmd->left', 'cmd-shift->left'], e=>selCol(e, 'left'))
 HI.on(['right', 'shift->right', 'cmd->right', 'cmd-shift->right'], e=>selCol(e, 'right'))
@@ -27,10 +27,12 @@ HI.on('editing:escape', commitEdit)
 HI.on('editing:input', input)
 HI.on('editing:blur', commitEdit)
 
-HI.on('doubleclick', e=>{ HI.log.info('doubleclick doesnt work edit') })
-//HI.on('escape', e=>{ HI.log.info('esc?') })
-HI.on('backspace', e=>{ HI.log.info('delete sel and move sel backward') })
-HI.on('delete', e=>{ HI.log.info('delete sel and move sel forward') })
+HI.on('doubleclick', e=>{ HI.log.info('edit, doubleclick doesnt work?') })
+
+
+HI.on('backspace', e=>del(e, ':backward'))
+HI.on('delete', e=>del(e, ':forward'))
+//HI.on('cmd-shift-d', e=>duplicate(e))
 
 HI.on('beforecut', e=>{ HI.log.info('cut') })
 HI.on('beforecopy', e=>{ HI.log.info('copy') })
@@ -45,18 +47,21 @@ HI.on('space', newRow) //Next text row
 HI.on('abcdefghijklmnopqrstuvwxyz'.split(''), newRow) //New tag row
 
 HI.on(',', e=>newProp(e, ':prop'))
-HI.on(':', e=>newProp(e, ':val'))
-HI.on('#', e=>{ HI.log.info('add id prop and empty value, focus on value') })
+HI.on([':','='], e=>newProp(e, ':val'))
+HI.on('#', e=>newProp(e, ':id'))
 HI.on('.', e=>{ HI.log.info('add class prop and empty value, focus on value') })
 
 HI.on('+', e=>{ HI.log.info('unfold') })
 HI.on('-', e=>{ HI.log.info('fold') })
-HI.on('cmd->/', e=>{ HI.log.info('toggle comment') })
+HI.on('cmd-7', e=>comment(e))
 
 HI.on('ctrl+up', e=>{HI.log.info('move up')})
 HI.on('ctrl+down', e=>{HI.log.info('move up')})
 HI.on('ctrl+left', e=>{HI.log.info('move left')})
 HI.on('ctrl+right', e=>{HI.log.info('move right')})
+
+//Drag & drop
+
 
 
 //Undo Redo
@@ -64,9 +69,8 @@ HI.on('ctrl+right', e=>{HI.log.info('move right')})
 let history = new History()
 HI.on('keydown', e=>history.keydown(e))
 //TODO: these events didn't work with HI, so history has it's own check for the keys
-//HI.on('cmd->z', e=>{history.undo();return false})
-//HI.on('cmd->shift->z', e=>history.redo())
-//HI.on('shift->cmd->z', e=>history.redo())
+//HI.on('cmd->z', e=>history.undo())
+//HI.on(['cmd->shift->z','shift->cmd->z'], e=>history.redo())
 
 
 //Files

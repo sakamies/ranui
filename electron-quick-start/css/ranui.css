@@ -22,8 +22,8 @@ body {
 }
 
 ::selection {
-  color: white;
-  background: hsl(200, 100%, 50%);
+  //color: white;
+  //background: hsl(200, 100%, 50%);
 }
 :focus {
   outline: none;
@@ -36,13 +36,15 @@ tag, prop, val, txt {
   display: inline;
   line-height: 11px;
   white-space: pre-wrap;
-  padding: 0 .5ch;
+  padding: 0 calc(.5ch - 1px);
+  margin: 0 1px;
+  border-radius: 2px;
 }
 
 doc {
   padding: 0 2px;
   background-image: linear-gradient(to left, #34332a 1px, transparent 1px);
-  background-position: left top;
+  background-position: .8ch top;
   background-repeat: repeat-x;
   background-size: 2ch 100%;
 }
@@ -60,6 +62,8 @@ val {
   color: #e6db74;
 }
 
+
+/*TODO: Lol crazy indentation with css, need to make this with js or somehow smarter*/
 [tabs] {margin-left: 22ch;}
 [tabs="0"] {margin-left: 0ch}
 [tabs="1"] {margin-left: 2ch}
@@ -72,7 +76,30 @@ val {
 [tabs="8"] {margin-left: 16ch}
 [tabs="9"] {margin-left: 18ch}
 [tabs="10"] {margin-left: 20ch}
-/*Stupid tabbing styles, but works for now*/
+
+[tabs="0"] + :-webkit-any([tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[tabs="1"] + :-webkit-any([tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[tabs="2"] + :-webkit-any([tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[tabs="3"] + :-webkit-any([tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[tabs="4"] + :-webkit-any([tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[tabs="5"] + :-webkit-any([tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[tabs="6"] + :-webkit-any([tabs="8"],[tabs="9"],[tabs="10"]),
+[tabs="7"] + :-webkit-any([tabs="9"],[tabs="10"]),
+[tabs="8"] + :-webkit-any([tabs="10"]) {
+  outline: 1px dotted red;
+}
+[type="txt"][tabs="0"] + :-webkit-any([tabs="2"],[tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[type="txt"][tabs="1"] + :-webkit-any([tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[type="txt"][tabs="2"] + :-webkit-any([tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[type="txt"][tabs="3"] + :-webkit-any([tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[type="txt"][tabs="4"] + :-webkit-any([tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[type="txt"][tabs="5"] + :-webkit-any([tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[type="txt"][tabs="6"] + :-webkit-any([tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]),
+[type="txt"][tabs="7"] + :-webkit-any([tabs="8"],[tabs="9"],[tabs="10"]),
+[type="txt"][tabs="8"] + :-webkit-any([tabs="9"],[tabs="10"]) {
+  outline: 1px dotted red;
+}
+
 
 
 .sel {
@@ -84,8 +111,9 @@ val {
   background: #49483E;
 }
 .cur {
-  outline: 1px solid #828380; //#66d9ef; //#0af; //
-  outline-offset: 1px;
+  //outline: 1px solid #828380; //#66d9ef; //#0af;
+  //outline-offset: -1px;
+  box-shadow: inset 0px 0px 0px 1px #828380;
 }
 .hilite {
   //background: hsla();
@@ -93,6 +121,12 @@ val {
 }
 .hilite + row::before {
   //Show insertion point somehow? Or is it enough that users learn it as they create new elements
+}
+.com {
+  font-style: italic;
+}
+.com > * {
+  opacity: .66;
 }
 
 [contenteditable="true"] {

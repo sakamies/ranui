@@ -7,14 +7,15 @@
     <script>window.$ = window.jQuery = require('./js/jquery-3.1.1.min.js')</script>
     <script src="js/humaninput-1.1.13.min.js"></script>
   </head>
-  <body class="">
+  <body>
     <doc>
-      <row class="hilite" tabs="0"><tag text="div" class="cur sel">div</tag><prop text="class">class</prop><val text="something">something</val></row>
-      <row tabs="1"><tag text="div">div</tag><prop text="class">class</prop><val text="something">something</val></row>
-      <row tabs="2"><tag text="div">div</tag></row>
-      <row class="hilite" tabs="0"><tag text="div">div</tag><prop text="class" class="cur sel">class</prop><val text="something">something</val></row>
-      <row tabs="1"><txt text="plaintext">plaintext</txt></row>
-      <row class="hilite" tabs="1"><txt class="cur sel" text="plaintext">plaintext</txt></row>
+      <row class="hilite" tabs="0" type="tag"><tag text="div" class="cur sel">div</tag><prop text="class">class</prop><val text="something">something</val></row>
+      <row tabs="1" type="tag"><tag text="div">div</tag><prop text="class">class</prop><val text="something">something</val></row>
+      <row tabs="2" type="tag"><tag text="div">div</tag></row>
+      <row class="hilite" tabs="0" type="tag"><tag text="div">div</tag><prop text="class" class="cur sel">class</prop><val text="something">something</val></row>
+      <row tabs="1" type="tag" class="com"><tag text="div">div</tag><prop text="class">class</prop><val text="text">text</val></row>
+      <row class="hilite com" tabs="2" type="txt"><txt class="cur sel" text="plaintext">plaintext</txt></row>
+      <row tabs="1" type="txt"><txt text="plaintext">plaintext</txt></row>
     </doc>
 
     <script src="js/utils.js"></script>

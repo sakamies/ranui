@@ -46,6 +46,8 @@ function selRow (e, act) {
   //Track column based on the first cursor, because multiple cursors always collapse to the first cursor
   col = Math.max(col, cursor.parent().children().index(cursor))
 
+  let up = act.includes('up')
+  let down = act.includes('down')
   cursors.each(function(index, el) {
     let cursor = $(el)
     let row = cursor.parent()
@@ -53,10 +55,11 @@ function selRow (e, act) {
     let cursorCol = props.index(cursor)
     let newRow
     let newCur
-    if (act.includes('up')) {newRow = row.prev()}
-    if (act.includes('down')) {newRow = row.next()}
+    if (up) {newRow = row.prev()}
+    if (down) {newRow = row.next()}
     let newProps = props
     if (newRow.length) {newProps = newRow.children()}
+    //TODO: check if there's a next or prev row and don't make selection disappear if there isn't a row there
     if (newProps.length - 1 >= cursorCol) { //Because col is zero based, ugh
       newCur = newProps.eq(cursorCol)
       newCurs = newCurs.add(newCur)
@@ -83,14 +86,16 @@ function selCol (e, act) {
   //Track column based on the first cursor, because multiple cursors always collapse to the first cursor
   col = cursor.parent().children().index(cursor)
 
+  let left = act.includes('left')
+  let right = act.includes('right')
   cursors.each(function(index, el) {
     let cursor = $(el)
     let newCur
-    if (act.includes('left')) {newCur = cursor.prev()}
-    if (act.includes('right')) {newCur = cursor.next()}
+    if (left) {newCur = cursor.prev()}
+    if (right) {newCur = cursor.next()}
     // if (!newCur.length) {
-    //   if (act.includes('left')) {newCur = cursor.parent().prev().children().last()}
-    //   if (act.includes('right')) {newCur = cursor.parent().next().children().first()}
+    //   if (left) {newCur = cursor.parent().prev().children().last()}
+    //   if (right) {newCur = cursor.parent().next().children().first()}
     // } //Commented out because keeping sideways selection on the same row is simpler to understand and less finicky for the user
     if (!newCur.length) {
       newCur = cursor
