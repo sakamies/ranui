@@ -17,7 +17,7 @@ HI.on('osleft->d', selSimilar)
 
 
 //Basic Editing
-HI.on('enter', e=>startEdit(e))
+HI.on('enter', e=>{history.update();startEdit(e)})
 HI.on('editing:enter', e=>commitEdit(e))
 HI.on('editing:escape', e=>commitEdit(e))
 HI.on('editing:input', input)
@@ -56,7 +56,7 @@ HI.on('ctrl+right', e=>{HI.log.info('move right')})
 
 
 //Mouse
-window.addEventListener('dblclick', e=>startEdit(e))
+window.addEventListener('dblclick', e=>{history.update();startEdit(e)})
 window.addEventListener('mousedown', e=>mousedown(e))
 window.addEventListener('mousemove', throttle(mousemove, 16))
 window.addEventListener('mouseup', e=>mouseup(e))

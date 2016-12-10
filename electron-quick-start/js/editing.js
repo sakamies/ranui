@@ -1,11 +1,13 @@
+let editStartValue = ''
+
 function startEdit (e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
 
-  opts = opts || ''
-  history.update()
   HI.pushScope('editing')
 
+  opts = opts || ''
   let target = $('.cur').first()
+  editStartValue = target.text()
   let clones = $('.sel').not(target)
   target.attr('contenteditable', 'true').focus()
   clones.addClass('clone')
@@ -18,12 +20,15 @@ function startEdit (e, opts) {
 function commitEdit(e) {
   if (e && e.preventDefault) {e.preventDefault()}
 
+  let target = $('[contenteditable]')
   let clones = $('.clone')
   clones.removeClass('clone')
+  target.attr('contenteditable', 'false')
 
-  $('[contenteditable]').attr('contenteditable', 'false')
-  history.add()
   HI.popScope('editing')
+  if (editStartValue !== target.text()) {
+    history.add()
+  }
 }
 
 
@@ -56,6 +61,9 @@ function input (e) {
 
 function newRow (e) {
   if (e && e.preventDefault) {e.preventDefault()}
+
+  history.update()
+
   let tag
   let txt
   if (e.code === 'Space') {txt = e.txt || ' '}
@@ -99,6 +107,9 @@ function newRow (e) {
 
 function newProp(e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
+
+  history.update()
+
   opts = opts || ''
 
   let sel = $('.sel')
@@ -119,8 +130,10 @@ function newProp(e, opts) {
 
 function del (e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
-  opts = opts || ''
 
+  history.update()
+
+  opts = opts || ''
   let sel = $('.sel')
   let cursors = $('.cur')
 
@@ -150,6 +163,8 @@ function del (e, opts) {
   //no need to filter out selected items from newCurs because they too will have been deleted, so selection will automatically collapse to the previous available props from the deleted ones
   newCurs.addClass('cur')
   select(newCurs)
+
+  history.add()
 }
 
 
@@ -157,7 +172,7 @@ function del (e, opts) {
 function tab (e) {
   if (e && e.preventDefault) {e.preventDefault()}
 
-  history.update() //update current history entry so selection state doesn't jump when undoing
+  history.update()
 
   //Should tabbing happen only for tags?
   let amount = 1
@@ -171,14 +186,19 @@ function tab (e) {
     row.attr('tabs', tabs)
   })
 
-  history.add() //add action result to history
+  history.add()
 }
 
 
 function comment(e) {
   if (e && e.preventDefault) {e.preventDefault()}
+
+  history.update()
+
   let sel = $('.sel')
-  sel.parent().toggleClass('com');
+  sel.parent().toggleClass('com')
+
+  history.add()
 }
 
 

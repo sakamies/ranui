@@ -6,15 +6,17 @@ let dragGhosts = null
 let droppables = ['ROW','TAG','PROP','VAL','TXT']
 let dropTarget = null
 
+//TODO: add undo support here
+
 function mousedown(e) {
   //Allow mouse to function according to platform defaults when editing text, also this way there's no need to worry about editing mode for the rest of this function & other mouse events.
-  if (HI.scope === 'editing:' && e.target.contenteditable === true) {return}
+  if (e.target.contenteditable === true) {return}
+  else if (HI.scope ==='editing:') {commitEdit()}
 
   e.preventDefault()
   let target = $(e.target)
   mouseIsDown = true
   HI.pushScope('paintselection')
-  commitEdit()
 
   if (!target.hasClass('sel')) {
     selTarget(e)
@@ -82,7 +84,6 @@ function mouseup(e) {
   dragging = false
   HI.popScope('dragging')
   HI.popScope('paintselection')
-  console.log(HI.scope)
 }
 
 
