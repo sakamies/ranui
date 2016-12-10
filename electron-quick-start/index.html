@@ -2,6 +2,7 @@
 <html test="dingus">
   <head>
     <title>Ranui</title>
+    <meta charset="utf-8">
     <link rel="stylesheet" href="css/ranui.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>window.$ = window.jQuery = require('./js/jquery-3.1.1.min.js')</script>
@@ -12,7 +13,7 @@
       <row class="hilite" tabs="0" type="tag"><tag text="div" class="cur sel">div</tag><prop text="class">class</prop><val text="something">something</val></row>
       <row tabs="1" type="tag"><tag text="div">div</tag><prop text="class">class</prop><val text="something">something</val></row>
       <row tabs="2" type="tag"><tag text="div">div</tag></row>
-      <row class="hilite" tabs="0" type="tag"><tag text="div">div</tag><prop text="class" class="cur sel">class</prop><val text="something">something</val></row>
+      <row tabs="0" type="tag"><tag text="div">div</tag><prop text="class" class="cur sel">class</prop><val text="something">something</val></row>
       <row tabs="1" type="tag" class="com"><tag text="div">div</tag><prop text="class">class</prop><val text="text">text</val></row>
       <row class="hilite com" tabs="2" type="txt"><txt class="cur sel" text="plaintext">plaintext</txt></row>
       <row tabs="1" type="txt"><txt text="plaintext">plaintext</txt></row>
@@ -21,6 +22,7 @@
     <script src="js/utils.js"></script>
     <script src="js/history.js"></script>
     <script src="js/selection.js"></script>
+    <script src="js/mouse.js"></script>
     <script src="js/editing.js"></script>
     <script src="js/ranui.js"></script>
   </body>

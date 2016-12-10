@@ -7,16 +7,17 @@ function select(to, opts) {
   if (opts.includes(':add') === false) {$('.sel:not(.cur)').removeClass('sel')}
   to.addClass('cur sel')
   $('.hilite').removeClass('hilite')
-  $('.sel').parent().addClass('hilite')
+  $('tag.sel, txt.sel').parent().addClass('hilite')
 }
 
 
-function selTarget (e) {
-  e.preventDefault()
+function selTarget (e, opts) {
+  opts = opts || ''
+  if (e && e.preventDefault) {e.preventDefault()}
 
   let cursors = $('.cur')
   let target = $(e.target)
-  let newCur
+  let newCur = $()
 
   if (target.parent('row').length) {
     newCur = target
@@ -26,8 +27,7 @@ function selTarget (e) {
     newCur = $('doc').children().last().children().last()
   }
 
-  let opts
-  if (e.shiftKey) {opts = ':add'}
+  if (e.shiftKey) {opts += ':add'}
   if (!e.altKey) {cursors.removeClass('cur')} //You can drop multiple cursors by pressing alt
   newCur.addClass('cur')
   select(newCur, opts)
@@ -36,7 +36,7 @@ function selTarget (e) {
 
 //Select up/down, additive selects up/down by nearest col it finds
 function selRow (e, act) {
-  e.preventDefault()
+  if (e && e.preventDefault) {e.preventDefault()}
   if (e.shiftKey) {act += ':add'}
   if (e.metaKey) {act += ':end'}
   let cursors = $('.cur')
@@ -48,6 +48,9 @@ function selRow (e, act) {
 
   let up = act.includes('up')
   let down = act.includes('down')
+
+  //TODO: add simple cases for up & down if there's no selection
+
   cursors.each(function(index, el) {
     let cursor = $(el)
     let row = cursor.parent()
@@ -76,7 +79,7 @@ function selRow (e, act) {
 
 
 function selCol (e, act) {
-  e.preventDefault()
+  if (e && e.preventDefault) {e.preventDefault()}
   if (e.shiftKey) {act += ':add'}
   if (e.metaKey) {act += ':end'} //TODO: implement end, move cursor to end/start of row and select everything from old cursor to new cursor pos
   let cursors = $('.cur')
@@ -88,6 +91,9 @@ function selCol (e, act) {
 
   let left = act.includes('left')
   let right = act.includes('right')
+
+  //TODO: add simple cases for left & right if there's no selection
+
   cursors.each(function(index, el) {
     let cursor = $(el)
     let newCur
@@ -110,7 +116,7 @@ function selCol (e, act) {
 
 
 function selEscape (e) {
-  e.preventDefault()
+  if (e && e.preventDefault) {e.preventDefault()}
   let cursors = $('.cur')
   let cursor = cursors.first()
   let newCur
@@ -140,7 +146,7 @@ function selEscape (e) {
 
 
 function selSimilar(e) {
-  e.preventDefault()
+  if (e && e.preventDefault) {e.preventDefault()}
   let cursor = $('.cur').last()
   let text = cursor.attr('text')
   let similars = $(`[text="${text}"]`)

@@ -15,19 +15,13 @@ HI.on('escape', selEscape)
 
 HI.on('osleft->d', selSimilar)
 
-HI.on('click', selTarget)
-//HI.on('pointer:left:down->pointermove', (event) => { HI.log.info('select a range') })
-//HI.on('hold:500:pointer:left->pointermove', (event) => { HI.log.info('grab & move selected stuff') })
-
 
 //Basic Editing
-HI.on('enter', startEdit)
-HI.on('editing:enter', commitEdit)
-HI.on('editing:escape', commitEdit)
+HI.on('enter', e=>startEdit(e))
+HI.on('editing:enter', e=>commitEdit(e))
+HI.on('editing:escape', e=>commitEdit(e))
 HI.on('editing:input', input)
 HI.on('editing:blur', commitEdit)
-
-HI.on('doubleclick', e=>{ HI.log.info('edit, doubleclick doesnt work?') })
 
 
 HI.on('backspace', e=>del(e, ':backward'))
@@ -38,8 +32,8 @@ HI.on('beforecut', e=>{ HI.log.info('cut') })
 HI.on('beforecopy', e=>{ HI.log.info('copy') })
 HI.on('beforepaste', e=>{ HI.log.info('paste') })
 
-HI.on('tab', tab)
-HI.on('shift->tab', tab)
+HI.on('tab', e=>tab(e))
+HI.on('shift->tab', e=>tab(e))
 
 
 //Crazy editing
@@ -48,7 +42,7 @@ HI.on('abcdefghijklmnopqrstuvwxyz'.split(''), newRow) //New tag row
 
 HI.on(',', e=>newProp(e, ':prop'))
 HI.on([':','='], e=>newProp(e, ':val'))
-HI.on('#', e=>newProp(e, ':id'))
+HI.on('#', e=>HI.log.info('add ID')/*newProp(e, ':id')*/)
 HI.on('.', e=>{ HI.log.info('add class prop and empty value, focus on value') })
 
 HI.on('+', e=>{ HI.log.info('unfold') })
@@ -60,15 +54,19 @@ HI.on('ctrl+down', e=>{HI.log.info('move up')})
 HI.on('ctrl+left', e=>{HI.log.info('move left')})
 HI.on('ctrl+right', e=>{HI.log.info('move right')})
 
-//Drag & drop
 
+//Mouse
+window.addEventListener('dblclick', e=>startEdit(e))
+window.addEventListener('mousedown', e=>mousedown(e))
+window.addEventListener('mousemove', throttle(mousemove, 16))
+window.addEventListener('mouseup', e=>mouseup(e))
 
 
 //Undo Redo
 //Should be handled on the app level so menus and all would work
 let history = new History()
 HI.on('keydown', e=>history.keydown(e))
-//TODO: these events didn't work with HI, so history has it's own check for the keys
+//These events didn't work with HI, so history has it's own check for the keys
 //HI.on('cmd->z', e=>history.undo())
 //HI.on(['cmd->shift->z','shift->cmd->z'], e=>history.redo())
 

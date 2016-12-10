@@ -17,7 +17,7 @@ jQuery.fn.selectEnd = function(){
 }
 
 
-modkeys = function (e, key) {
+function modkeys (e, key) {
   let keys = {
     shift: e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey,
     alt: !e.shiftKey && e.altKey && !e.ctrlKey && !e.metaKey,
@@ -35,4 +35,34 @@ modkeys = function (e, key) {
 
   if (keys[key]) {return true}
   else {return false}
+}
+
+
+//create a throttled instance of a function
+//throttled = throttle(handleEvent)
+//use it
+//addEventListener(throttled) or e=>throttled(e, arg, arg, etc)
+function throttle (fn, time, scope) {
+  time = time || 250
+  var last
+  var deferTimer
+
+  //create a scope with throttle, then return the throttled function that has access to the throttle scope, so it can set last & timer vars
+  return function () {
+    let context = scope || this;
+
+    let now = +new Date
+    let args = arguments
+
+    if (last && now < last + time) {
+      clearTimeout(deferTimer);
+      deferTimer = setTimeout(function () {
+        last = now
+        fn.apply(context, args)
+      }, time)
+    } else {
+      last = now
+      fn.apply(context, args)
+    }
+  };
 }

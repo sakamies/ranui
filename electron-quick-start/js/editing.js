@@ -1,17 +1,26 @@
 function startEdit (e, opts) {
+  if (e && e.preventDefault) {e.preventDefault()}
+
   opts = opts || ''
   history.update()
   HI.pushScope('editing')
 
-  let cursor = $('.cur').first()
-  cursor.attr('contenteditable', 'true').focus()
-  if (opts.includes(':selectEnd')) {cursor.selectEnd()}
-  else {cursor.selectText()}
+  let target = $('.cur').first()
+  let clones = $('.sel').not(target)
+  target.attr('contenteditable', 'true').focus()
+  clones.addClass('clone')
 
-  if (e && e.preventDefault) {e.preventDefault()} //startEdit can be called from anywhere, can't rely on event but might get it
+  if (opts.includes(':selectEnd')) {target.selectEnd()}
+  else {target.selectText()}
+
 
 }
-function commitEdit() {
+function commitEdit(e) {
+  if (e && e.preventDefault) {e.preventDefault()}
+
+  let clones = $('.clone')
+  clones.removeClass('clone')
+
   $('[contenteditable]').attr('contenteditable', 'false')
   history.add()
   HI.popScope('editing')
@@ -19,23 +28,34 @@ function commitEdit() {
 
 
 function input (e) {
-  //Simplefill here?
-  let cursor = $('.cur').first()
   let sel = $('.sel')
+  let target = $(e.target)
+  let tagName = e.target.tagName
+  let text = target.text()
+  let lastChar = text.slice(-1)
+  let clones = $('.clone')
+
+  //TODO: Simplefill here?
+
+  //Check last character of input and make actions based on it. if : or = then add new val and if , then add new prop
+  //Must account for what the previous element is, this could have lots of smarts, but we'll go with something really simple for start
+  if (tagName === 'PROP' && lastChar === ':' || lastChar === '=') {
+    text = text.slice(0, -1)
+    target.text(text)
+    commitEdit()
+    newProp(e, ':val')
+    startEdit()
+  }
 
   //If multiple things are selected, match their text
-  sel.not(cursor).text(cursor.text())
-
+  clones.text(text)
   //Update text attributes to match text content for easier selection via dom queries
-  sel.each(function(index, el) {
-    let $el = $(el)
-    $el.attr('text', $el.text())
-  })
+  sel.attr('text', text)
 }
 
 
 function newRow (e) {
-  e.preventDefault()
+  if (e && e.preventDefault) {e.preventDefault()}
   let tag
   let txt
   if (e.code === 'Space') {txt = e.txt || ' '}
@@ -78,7 +98,7 @@ function newRow (e) {
 
 
 function newProp(e, opts) {
-  e.preventDefault()
+  if (e && e.preventDefault) {e.preventDefault()}
   opts = opts || ''
 
   let sel = $('.sel')
@@ -98,7 +118,7 @@ function newProp(e, opts) {
 
 
 function del (e, opts) {
-  e.preventDefault()
+  if (e && e.preventDefault) {e.preventDefault()}
   opts = opts || ''
 
   let sel = $('.sel')
@@ -135,6 +155,8 @@ function del (e, opts) {
 
 
 function tab (e) {
+  if (e && e.preventDefault) {e.preventDefault()}
+
   history.update() //update current history entry so selection state doesn't jump when undoing
 
   //Should tabbing happen only for tags?
@@ -154,12 +176,16 @@ function tab (e) {
 
 
 function comment(e) {
+  if (e && e.preventDefault) {e.preventDefault()}
   let sel = $('.sel')
   sel.parent().toggleClass('com');
 }
 
+
+
 //Maybe do actions like this, so each action would conform to managing history automatically, kinda like with selections and select() function
 // function action(e, function) {
+//   if (e && e.preventDefault) {e.preventDefault()}
 //   history.update()
 //   function(e)
 //   history.add()
