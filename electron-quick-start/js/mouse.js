@@ -5,6 +5,7 @@ let dragSources = null
 let dragGhost = null
 let droppables = ['ROW','TAG','PROP','VAL','TXT']
 let dropTarget = null
+let dragMode = ''
 
 //TODO: add undo support here
 
@@ -27,7 +28,7 @@ function mousedown(e) {
     HI.pushScope('dragging')
     dragging = true
 
-    //Format what's being dragged, so the drag ghost exactly reflects what will be dropped
+    //Format what's being dragged, so the drag ghost exactly reflects what will be dropped. Dragging gathers all selected items and puts them in flat rows.
     dragSources = $('.sel')
     dragGhost = $('<div class="dragghost">')
     let clones = dragSources.clone()
@@ -40,8 +41,15 @@ function mousedown(e) {
         row = $('<row class="hilite">')
       }
       row.append(clone)
-    });
+    })
+
     dragGhost.append(row)
+
+    //TODO: determine drop target based on what's being dragged. If only props & values, then drop inside rows, if there's a tag or a txt there, drop between rows. Only one row in ghost could be only props, check for first item of row if only one row. If not only props, then drop between rows.
+    dragMode = ':props'
+    // if (false) {dragMode = ':props'}
+    // else (false) {dragMode = ':rows'}
+
     $('doc').after(dragGhost)
 
     dragSources.addClass('dragsource')
@@ -49,29 +57,58 @@ function mousedown(e) {
 }
 
 function mousemove(e) {
-  //Efficiency galore yay, but I want to determine the drop point based on where the mouse is on a dropzone
-
   clearTimeout(dragTimer)
-  let target = $(e.target)
-  if (dropTarget) {dropTarget.removeClass('dropbefore dropafter')}
-  dropTarget = target
+  if (dragging) {
+    if (dropTarget) {dropTarget.removeClass('dropbefore dropafter')}
 
-  //paint a selection or drag, based on how long mouse was down before move
-  if (dragging && droppables.includes(dropTarget[0].tagName)) {
-    //TODO: determine drop target based on what's being dragged. If only props & values, then drop inside rows, if there's a tag or a txt there, drop between rows. Only one row in ghost could be only props, check for first item of row if only one row. If not only props, then drop between rows. Indentation handling?
-    let hitbox = e.target.getBoundingClientRect()
-    let centerX = hitbox.left + hitbox.width / 2
-    let centerY = hitbox.top + hitbox.height / 2
+    //What a crazy contraption, is there a simpler way to do this?
+    if (dragMode === ':props') {
+      if (['PROP','VAL'].includes(e.target.tagName)) {
+        dropTarget = $(e.target)
+        let hitbox = e.target.getBoundingClientRect()
+        let centerX = hitbox.left + hitbox.width / 2
+        let centerY = hitbox.top + hitbox.height / 2
+        if (e.clientX < centerX) {
+          dropTarget.addClass('dropbefore')
+        } else {
+          dropTarget.addClass('dropafter')
+        }
+      } else if (e.target.tagName === 'TAG') {
+        dropTarget = $(e.target)
+        dropTarget.addClass('dropafter')
+      } else if (e.target.tagName === 'ROW') {
+        //TODO: ignore text rows here
+        console.log('over row')
+        let target = $(e.target)
+        let children = target.children()
 
-    if (e.clientX < centerX) {
-      dropTarget.addClass('dropbefore')
-    } else {
-      dropTarget.addClass('dropafter')
+        let first = children.eq(0)
+        let hitFirst = first[0].getBoundingClientRect()
+        let hitLeft = hitFirst.left + hitFirst.width
+
+        let last = children.last()
+        let hitLast = last[0].getBoundingClientRect()
+        let hitRight = hitLast.left + hitLast.width
+        console.log(children, last)
+
+        if (e.clientX < hitLeft) {
+          dropTarget = first
+          dropTarget.addClass('dropafter')
+        } else if (e.clientX > hitRight) {
+          dropTarget = last
+          dropTarget.addClass('dropafter')
+        }
+      }
+    }
+    else if (dragMode === ':rows') {
+      if (e.target.tagName === 'ROW') {
+        //dingi
+      }
     }
   } else if (mouseIsDown && !dragging) {
+    //Paint selection if mouse was moved before drag was initiated
     selTarget(e, ':add')
   }
-
 }
 
 function mouseup(e) {
