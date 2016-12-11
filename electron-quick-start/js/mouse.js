@@ -30,28 +30,21 @@ function mousedown(e) {
     //Format what's being dragged, so the drag ghost exactly reflects what will be dropped
     dragSources = $('.sel')
     dragGhost = $('<div class="dragghost">')
-    let clones = dragSources.clone().toArray()
-    let rows = []
-    let row = []
-    for (var i = 0; i < clones.length; i++) {
+    let clones = dragSources.clone()
+    let row = $('<row class="hilite">')
+    clones.each(function(i, el) {
       let clone = clones[i]
       if (clone.tagName === 'TAG' || clone.tagName === 'TXT') {
         //Flus what's been gathered so far and start a new row
-        rows.push(row)
-        row = []
+        dragGhost.append(row)
+        row = $('<row class="hilite">')
       }
-      row.push(clone)
-    }
-    rows.push(row)
-    for (var i = 0; i < rows.length; i++) {
-      if (rows[i].length > 0) {
-        let ghostRow = $('<row class="hilite">').append(rows[i])
-        dragGhost.append(ghostRow)
-      }
-    }
+      row.append(clone)
+    });
+    dragGhost.append(row)
     $('doc').after(dragGhost)
-    dragSources.addClass('dragsource')
 
+    dragSources.addClass('dragsource')
   }, 220)
 }
 
@@ -65,7 +58,7 @@ function mousemove(e) {
 
   //paint a selection or drag, based on how long mouse was down before move
   if (dragging && droppables.includes(dropTarget[0].tagName)) {
-    //TODO: determine drop target based on what's being dragged. If only props & values, then drop inside rows, if there's a tag or a txt there, drop between rows
+    //TODO: determine drop target based on what's being dragged. If only props & values, then drop inside rows, if there's a tag or a txt there, drop between rows. Only one row in ghost could be only props, check for first item of row if only one row. If not only props, then drop between rows. Indentation handling?
     let hitbox = e.target.getBoundingClientRect()
     let centerX = hitbox.left + hitbox.width / 2
     let centerY = hitbox.top + hitbox.height / 2
