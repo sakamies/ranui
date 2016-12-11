@@ -157,12 +157,13 @@ prop + val::before {
 }
 
 .dragsource {
-  opacity: .1;
+  color: transparent;
 }
 .dragghost {
   display: inline-block;
-  transform: scale(1.1);
+  //transform: scale(1.1);
   opacity: .7;
+  pointer-events: none;
 }
 
 .dropbefore,

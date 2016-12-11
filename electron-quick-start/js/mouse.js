@@ -2,7 +2,7 @@ let dragTimer
 let mouseIsDown = false
 let dragging = false
 let dragSources = null
-let dragGhosts = null
+let dragGhost = null
 let droppables = ['ROW','TAG','PROP','VAL','TXT']
 let dropTarget = null
 
@@ -18,7 +18,7 @@ function mousedown(e) {
   mouseIsDown = true
   HI.pushScope('paintselection')
 
-  if (!target.hasClass('sel')) {
+  if (!target.hasClass('sel') && !target.hasClass('hilite')) {
     selTarget(e)
   }
 
@@ -26,10 +26,33 @@ function mousedown(e) {
     HI.popScope('paintselection')
     HI.pushScope('dragging')
     dragging = true
+
+    //Format what's being dragged, so the drag ghost exactly reflects what will be dropped
     dragSources = $('.sel')
-    dragGhosts = dragSources.clone()
+    dragGhost = $('<div class="dragghost">')
+    let clones = dragSources.clone().toArray()
+    let rows = []
+    let row = []
+    for (var i = 0; i < clones.length; i++) {
+      let clone = clones[i]
+      if (clone.tagName === 'TAG' || clone.tagName === 'TXT') {
+        //Flus what's been gathered so far and start a new row
+        rows.push(row)
+        row = []
+      }
+      row.push(clone)
+    }
+    rows.push(row)
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].length > 0) {
+        let ghostRow = $('<row class="hilite">').append(rows[i])
+        dragGhost.append(ghostRow)
+      }
+    }
+    $('doc').after(dragGhost)
     dragSources.addClass('dragsource')
-  }, 250)
+
+  }, 220)
 }
 
 function mousemove(e) {
@@ -37,11 +60,12 @@ function mousemove(e) {
 
   clearTimeout(dragTimer)
   let target = $(e.target)
-  //paint a selection or drag, based on how long mouse was down before move
-  if (dragging && droppables.includes(e.target.tagName)) {
-    if (dropTarget) {dropTarget.removeClass('dropbefore dropafter')}
-    dropTarget = target
+  if (dropTarget) {dropTarget.removeClass('dropbefore dropafter')}
+  dropTarget = target
 
+  //paint a selection or drag, based on how long mouse was down before move
+  if (dragging && droppables.includes(dropTarget[0].tagName)) {
+    //TODO: determine drop target based on what's being dragged. If only props & values, then drop inside rows, if there's a tag or a txt there, drop between rows
     let hitbox = e.target.getBoundingClientRect()
     let centerX = hitbox.left + hitbox.width / 2
     let centerY = hitbox.top + hitbox.height / 2
@@ -51,7 +75,7 @@ function mousemove(e) {
     } else {
       dropTarget.addClass('dropafter')
     }
-  } else if (mouseIsDown) {
+  } else if (mouseIsDown && !dragging) {
     selTarget(e, ':add')
   }
 
@@ -61,12 +85,11 @@ function mouseup(e) {
 
   //e.preventDefault()
   clearTimeout(dragTimer)
-  let target = $(e.target)
 
-  //if we got a click on an already selected element, should collapse selection to it, this might a be tricky one
+  //TODO: if we got a click on an already selected element, should collapse selection to it, this might a be tricky one
 
-  if (dropTarget && dragging && droppables.includes(e.target.tagName)) {
-    dragSources.removeClass('dragsource')
+  //TODO: check for shift/alt/ctrl/cmd, there should be a key that lets you clone elements
+  if (dropTarget && dragging && droppables.includes(dropTarget[0].tagName)) {
     if (dropTarget.hasClass('dropafter')) {
       dropTarget.after(dragSources)
     } else if (dropTarget.hasClass('dropbefore')) {
@@ -74,12 +97,13 @@ function mouseup(e) {
     }
   }
 
+  if (dragSources) {dragSources.removeClass('dragsource')}
   if (dropTarget) {dropTarget.removeClass('dropbefore dropafter')}
-  if (dragGhosts) {dragGhosts.remove()}
 
   dropTarget = null
   dragSources = null
-  dragGhosts = null
+  if (dragGhost) {dragGhost.remove()}
+  dragGhost = null
   mouseIsDown = false
   dragging = false
   HI.popScope('dragging')
