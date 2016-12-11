@@ -1,13 +1,12 @@
 let dragTimer
 let mouseIsDown = false
 let dragging = false
-let dragSources = null
-let dragGhost = null
-let droppables = ['ROW','TAG','PROP','VAL','TXT']
+let dragGhost = $('<div class="dragghost">')
 let dropTarget = null
 let dragMode = ''
 
 //TODO: add undo support here
+//TODO: esc should cancel the operation
 
 function mousedown(e) {
   //Allow mouse to function according to platform defaults when editing text, also this way there's no need to worry about editing mode for the rest of this function & other mouse events.
@@ -16,7 +15,7 @@ function mousedown(e) {
 
   e.preventDefault()
   let target = $(e.target)
-  mouseIsDown = true
+  mouseIsDown = e.target
   HI.pushScope('paintselection')
 
   if (!target.hasClass('sel') && !target.hasClass('hilite')) {
@@ -29,42 +28,53 @@ function mousedown(e) {
     dragging = true
 
     //Format what's being dragged, so the drag ghost exactly reflects what will be dropped. Dragging gathers all selected items and puts them in flat rows.
-    dragSources = $('.sel')
-    dragGhost = $('<div class="dragghost">')
-    let clones = dragSources.clone()
-    let row = $('<row class="hilite">')
-    clones.each(function(i, el) {
-      let clone = clones[i]
-      if (clone.tagName === 'TAG' || clone.tagName === 'TXT') {
-        //Flus what's been gathered so far and start a new row
-        dragGhost.append(row)
-        row = $('<row class="hilite">')
-      }
-      row.append(clone)
-    })
+    let dragSourceRows = $('.hilite')
+    let dragSourceProps = $('row:not(.hilite) .sel')
+    let dragPayloadRows = dragSourceRows.clone()
+    let dragPayloadProps = dragSourceProps.clone()
+    dragSourceRows.addClass('dragsource')
+    dragSourceProps.addClass('dragsource')
 
-    dragGhost.append(row)
+    if (dragPayloadRows.length) {
+      dragMode += ':rows'
+      //TODO: need to handle the situation when there's only props & txt row selected
+      dragPayloadRows.children().first().after(dragPayloadProps)
+      dragGhost.append(dragPayloadRows)
+    } else if (dragPayloadProps.length) {
+      dragMode += ':props'
+      dragGhost.append(dragPayloadProps)
+    }
 
-    //TODO: determine drop target based on what's being dragged. If only props & values, then drop inside rows, if there's a tag or a txt there, drop between rows. Only one row in ghost could be only props, check for first item of row if only one row. If not only props, then drop between rows.
-    dragMode = ':props'
-    // if (false) {dragMode = ':props'}
-    // else (false) {dragMode = ':rows'}
-
+    dragGhost.css({
+      'display': 'inline-block',
+      'left': e.pageX + 'px',
+      'top': e.pageY + 'px',
+    });
     $('doc').after(dragGhost)
 
-    dragSources.addClass('dragsource')
   }, 220)
 }
 
 function mousemove(e) {
   clearTimeout(dragTimer)
-  if (dragging) {
+  if (mouseIsDown && !dragging) {
+    //Paint selection if mouse was moved before drag was initiated
+    selTarget(e, ':add')
+  } else if (dragging) {
+    //Make dragGhost follow mouse
+    dragGhost.css({
+      'left': e.pageX + 'px',
+      'top': e.pageY + 'px',
+    });
+
+
     if (dropTarget) {dropTarget.removeClass('dropbefore dropafter')}
+    let target = $(e.target)
 
     //What a crazy contraption, is there a simpler way to do this?
-    if (dragMode === ':props') {
+    if (dragMode.includes(':props')) {
       if (['PROP','VAL'].includes(e.target.tagName)) {
-        dropTarget = $(e.target)
+        dropTarget = target
         let hitbox = e.target.getBoundingClientRect()
         let centerX = hitbox.left + hitbox.width / 2
         let centerY = hitbox.top + hitbox.height / 2
@@ -74,12 +84,9 @@ function mousemove(e) {
           dropTarget.addClass('dropafter')
         }
       } else if (e.target.tagName === 'TAG') {
-        dropTarget = $(e.target)
+        dropTarget = target
         dropTarget.addClass('dropafter')
-      } else if (e.target.tagName === 'ROW') {
-        //TODO: ignore text rows here
-        console.log('over row')
-        let target = $(e.target)
+      } else if (e.target.tagName === 'ROW' && target.attr('type') !== 'txt') {
         let children = target.children()
 
         let first = children.eq(0)
@@ -89,7 +96,6 @@ function mousemove(e) {
         let last = children.last()
         let hitLast = last[0].getBoundingClientRect()
         let hitRight = hitLast.left + hitLast.width
-        console.log(children, last)
 
         if (e.clientX < hitLeft) {
           dropTarget = first
@@ -100,40 +106,56 @@ function mousemove(e) {
         }
       }
     }
-    else if (dragMode === ':rows') {
-      if (e.target.tagName === 'ROW') {
-        //dingi
+    else if (dragMode.includes(':rows')) {
+      let hitbox = e.target.getBoundingClientRect()
+      let centerY = hitbox.top + hitbox.height / 2
+      let toTop = false
+      let toBottom = false
+
+      if (['TAG','PROP','VAL','TXT'].includes(e.target.tagName)) {
+        dropTarget = target.parent()
+      } else if (e.target.tagName === 'ROW') {
+        dropTarget = target
       }
+
+      if (e.clientY < centerY) {
+        dropTarget.addClass('dropbefore')
+      } else if (e.clientY > centerY) {
+        dropTarget.addClass('dropafter')
+      }
+
     }
-  } else if (mouseIsDown && !dragging) {
-    //Paint selection if mouse was moved before drag was initiated
-    selTarget(e, ':add')
   }
 }
 
 function mouseup(e) {
-
   //e.preventDefault()
   clearTimeout(dragTimer)
 
-  //TODO: if we got a click on an already selected element, should collapse selection to it, this might a be tricky one
-
   //TODO: check for shift/alt/ctrl/cmd, there should be a key that lets you clone elements
-  if (dropTarget && dragging && droppables.includes(dropTarget[0].tagName)) {
+  let dragSource = $('.dragsource')
+
+  if (dragging && dropTarget) {
+    let dragPayload = dragGhost.children()
+    //TODO: calculate tabs?
     if (dropTarget.hasClass('dropafter')) {
-      dropTarget.after(dragSources)
+      dropTarget.after(dragPayload)
     } else if (dropTarget.hasClass('dropbefore')) {
-      dropTarget.before(dragSources)
+      dropTarget.before(dragPayload)
     }
+    dragSource.remove()
+  } else if (!dragging && e.target === mouseIsDown) {
+    //TODO: this if should be based on mouse coordinates and not the target node, you could paint select your way through the document and end up in the same target node
+    //If you just click on an item and don't do a lasso selection or drag, then select the item
+    selTarget(e)
   }
 
-  if (dragSources) {dragSources.removeClass('dragsource')}
   if (dropTarget) {dropTarget.removeClass('dropbefore dropafter')}
-
   dropTarget = null
-  dragSources = null
-  if (dragGhost) {dragGhost.remove()}
-  dragGhost = null
+  if (dragSource) {dragSource.removeClass('dragsource')}
+  dragGhost.css('display', 'none').empty()
+
+  dragMode = ''
   mouseIsDown = false
   dragging = false
   HI.popScope('dragging')

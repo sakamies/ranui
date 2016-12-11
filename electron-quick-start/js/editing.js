@@ -181,7 +181,6 @@ function tab (e) {
   rows.each(function(index, row) {
     row = $(row)
     let prevTabs = parseInt(row.prev().attr('tabs'))
-    console.log(prevTabs)
     let tabs = Math.max(parseInt(row.attr('tabs')) + amount, 0) //So tabs don't go negative
     row.attr('tabs', tabs)
   })

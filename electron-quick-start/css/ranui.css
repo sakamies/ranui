@@ -49,7 +49,6 @@ body {
 
 doc, row {
   display: block;
-  border-radius: 3px;
 }
 tag, prop, val, txt {
   display: inline;
@@ -143,10 +142,10 @@ prop + val::before {
   //Show insertion point somehow? Or is it enough that users learn it as they create new elements
 }
 .com {
-  font-style: italic;
+  //font-style: italic;
 }
 .com > * {
-  opacity: .66;
+  opacity: .5;
 }
 
 [contenteditable="true"],
@@ -159,11 +158,20 @@ prop + val::before {
 .dragsource {
   color: transparent;
 }
+.dragsource > * {
+  color:  transparent;
+}
+
 .dragghost {
-  display: inline-block;
+  position: absolute;
+  display: none;
   //transform: scale(1.1);
   opacity: .7;
   pointer-events: none;
+  border-radius: 2px;
+  box-shadow:
+    0px 0px 0px 1px #828380,
+    0px 3px 8px 0px rgba(0,0,0,.5);
 }
 
 .dropbefore,
