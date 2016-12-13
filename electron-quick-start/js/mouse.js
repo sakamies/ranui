@@ -151,10 +151,11 @@ function mouseup(e) {
     } else if (dropTarget.hasClass('dropbefore')) {
       dropTarget.before(dragPayload)
     }
-    console.log('umm nope?')
     dragSource.remove()
+
+    //At this poin the operation happened, add entry to history. The rest of mouseup is just cleanup
+    history.add()
   } else if (!dragging && mouseIsDown === `${e.screenX},${e.screenY}`) {
-    console.log(mouseIsDown, `${e.screenX},${e.screenY}`)
     //If you just click on an item and don't do a lasso selection or drag, then select the item
     //Based on mouse coordinates alone, should be based on os level click detection if possible, but this is fine for now
     selTarget(e)
@@ -170,7 +171,6 @@ function mouseup(e) {
   dragging = false
   HI.popScope('dragging')
   HI.popScope('paintselection')
-  history.add()
 }
 
 
