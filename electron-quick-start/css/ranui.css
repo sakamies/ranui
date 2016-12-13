@@ -159,17 +159,18 @@ txt ~ * {
   box-shadow: inset 0px 0px 0px 1px white;
 }
 
-.dragsource {
+.dragsource,
+.dragsource::before {
   color: transparent;
 }
-.dragsource > * {
+.dragsource > *,
+.dragsource > *::before {
   color:  transparent;
 }
 
 .dragghost {
   position: absolute;
   display: none;
-  //transform: scale(1.1);
   opacity: .7;
   pointer-events: none;
   border-radius: 2px;
@@ -181,6 +182,7 @@ txt ~ * {
 .dropbefore,
 .dropafter {
   position: relative;
+  //background: hsla(200, 100%, 50%, .33);
 }
 .dropbefore::after,
 .dropafter::after {
@@ -194,6 +196,7 @@ txt ~ * {
   border-radius: 1ch;
   height: 10px;
   background: #66d9ef;
+  background: hsla(200, 100%, 50%, 1);
 }
 .dropafter::after {
   left: auto;

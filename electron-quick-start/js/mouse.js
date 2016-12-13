@@ -4,8 +4,8 @@ let dragging = false
 let dragGhost = $('<div class="dragghost">')
 let dropTarget = null
 let dragMode = ''
+let mouseStart = ''
 
-//TODO: add undo support here
 //TODO: esc should cancel the operation
 
 function mousedown(e) {
@@ -13,9 +13,9 @@ function mousedown(e) {
   if (e.target.contenteditable === true) {return}
   else if (HI.scope ==='editing:') {commitEdit()}
 
-  e.preventDefault()
+  //e.preventDefault()
   let target = $(e.target)
-  mouseIsDown = e.target
+  mouseIsDown = `${e.screenX},${e.screenY}`
   HI.pushScope('paintselection')
 
   if (!target.hasClass('sel') && !target.hasClass('hilite')) {
@@ -23,21 +23,23 @@ function mousedown(e) {
   }
 
   dragTimer = setTimeout(()=>{
+    history.update()
     HI.popScope('paintselection')
     HI.pushScope('dragging')
     dragging = true
 
     //Format what's being dragged, so the drag ghost exactly reflects what will be dropped. Dragging gathers all selected items and puts them in flat rows.
-    let dragSourceRows = $('.hilite')
+    let dragSourceRows = $('row.hilite')
     let dragSourceProps = $('row:not(.hilite) .sel')
     let dragPayloadRows = dragSourceRows.clone()
     let dragPayloadProps = dragSourceProps.clone()
-    dragSourceRows.addClass('dragsource')
+    dragSourceRows.addClass('dragsource');
     dragSourceProps.addClass('dragsource')
 
+    //This allows nonsensical prop/row combinations, combining props with a txt row, but css will mark it as an error and the user needs to correct it. Should make this foolproof somehow.
     if (dragPayloadRows.length) {
       dragMode += ':rows'
-      //TODO: need to handle the situation when there's only props & txt row selected
+      dragPayloadRows.attr('tabs', '0') //Flatten tabs for dragGhost & payload
       dragPayloadRows.children().first().after(dragPayloadProps)
       dragGhost.append(dragPayloadRows)
     } else if (dragPayloadProps.length) {
@@ -49,7 +51,7 @@ function mousedown(e) {
       'display': 'inline-block',
       'left': e.pageX + 'px',
       'top': e.pageY + 'px',
-    });
+    })
     $('doc').after(dragGhost)
 
   }, 220)
@@ -65,10 +67,13 @@ function mousemove(e) {
     dragGhost.css({
       'left': e.pageX + 'px',
       'top': e.pageY + 'px',
-    });
+    })
 
 
-    if (dropTarget) {dropTarget.removeClass('dropbefore dropafter')}
+    if (dropTarget) {
+      dropTarget.removeClass('dropbefore dropafter')
+      dropTarget = null
+    }
     let target = $(e.target)
 
     //What a crazy contraption, is there a simpler way to do this?
@@ -87,6 +92,7 @@ function mousemove(e) {
         dropTarget = target
         dropTarget.addClass('dropafter')
       } else if (e.target.tagName === 'ROW' && target.attr('type') !== 'txt') {
+        //This if case needs to be here in case the props are dragged more left or right than any props, so the dragmode is props mut cursor is on row
         let children = target.children()
 
         let first = children.eq(0)
@@ -104,6 +110,7 @@ function mousemove(e) {
           dropTarget = last
           dropTarget.addClass('dropafter')
         }
+      } else {
       }
     }
     else if (dragMode.includes(':rows')) {
@@ -118,9 +125,9 @@ function mousemove(e) {
         dropTarget = target
       }
 
-      if (e.clientY < centerY) {
+      if (dropTarget && e.clientY < centerY) {
         dropTarget.addClass('dropbefore')
-      } else if (e.clientY > centerY) {
+      } else if (dropTarget && e.clientY >= centerY) {
         dropTarget.addClass('dropafter')
       }
 
@@ -137,16 +144,19 @@ function mouseup(e) {
 
   if (dragging && dropTarget) {
     let dragPayload = dragGhost.children()
-    //TODO: calculate tabs?
+    //Set tabs according to droptarget tabs. This means that dragging does not preserve hierarchy in any way. It probably should preserve hierarchies where there's only an element and its children selected
+    dragPayload.attr('tabs', dropTarget.attr('tabs'));
     if (dropTarget.hasClass('dropafter')) {
       dropTarget.after(dragPayload)
     } else if (dropTarget.hasClass('dropbefore')) {
       dropTarget.before(dragPayload)
     }
+    console.log('umm nope?')
     dragSource.remove()
-  } else if (!dragging && e.target === mouseIsDown) {
-    //TODO: this if should be based on mouse coordinates and not the target node, you could paint select your way through the document and end up in the same target node
+  } else if (!dragging && mouseIsDown === `${e.screenX},${e.screenY}`) {
+    console.log(mouseIsDown, `${e.screenX},${e.screenY}`)
     //If you just click on an item and don't do a lasso selection or drag, then select the item
+    //Based on mouse coordinates alone, should be based on os level click detection if possible, but this is fine for now
     selTarget(e)
   }
 
@@ -160,6 +170,7 @@ function mouseup(e) {
   dragging = false
   HI.popScope('dragging')
   HI.popScope('paintselection')
+  history.add()
 }
 
 

@@ -27,6 +27,7 @@ function History(initial) {
     }
   }
 
+  //TODO: sometimes you can undo the document into oblivion, something's wrong
   function undo () {
     if (index > 0) {
       index = index - 1
