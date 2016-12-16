@@ -1,3 +1,6 @@
+const electron = require('electron')
+const {ipcRenderer} = electron;
+
 window.HI = new HumanInput(window, {
   //noKeyRepeat: false,
   //logLevel: 'DEBUG',
@@ -57,10 +60,10 @@ HI.on('ctrl+right', e=>{HI.log.info('move right')})
 
 //Mouse
 window.addEventListener('dblclick', e=>{history.update();startEdit(e)})
-window.addEventListener('mousedown', e=>mousedown(e))
-window.addEventListener('mousemove', throttle(mousemove, 16))
-window.addEventListener('mouseup', e=>mouseup(e))
-//TODO: HI.on('dragging:escape', e=>canceldrag(e))
+window.addEventListener('mousedown', e=>mouseDown(e))
+window.addEventListener('mousemove', throttle(mouseMove, 16)) //Only running mousemove at max 60fps
+window.addEventListener('mouseup', e=>mouseUp(e))
+HI.on('dragging:escape', e=>cancelDrag(e))
 
 
 //Undo Redo

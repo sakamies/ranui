@@ -8,7 +8,7 @@ let mouseStart = ''
 
 //TODO: esc should cancel the operation
 
-function mousedown(e) {
+function mouseDown(e) {
   //Allow mouse to function according to platform defaults when editing text, also this way there's no need to worry about editing mode for the rest of this function & other mouse events.
   if (e.target.contenteditable === true) {return}
   else if (HI.scope ==='editing:') {commitEdit()}
@@ -57,7 +57,7 @@ function mousedown(e) {
   }, 220)
 }
 
-function mousemove(e) {
+function mouseMove(e) {
   clearTimeout(dragTimer)
   if (mouseIsDown && !dragging) {
     //Paint selection if mouse was moved before drag was initiated
@@ -135,7 +135,7 @@ function mousemove(e) {
   }
 }
 
-function mouseup(e) {
+function mouseUp(e) {
   //e.preventDefault()
   clearTimeout(dragTimer)
 
@@ -174,3 +174,8 @@ function mouseup(e) {
 }
 
 
+function cancelDrag(e) {
+  e.preventDefault()
+  dragging = false
+  mouseUp(e)
+}
