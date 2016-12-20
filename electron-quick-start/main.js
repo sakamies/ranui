@@ -33,12 +33,34 @@ function newWindow () {
     protocol: 'file:',
     slashes: true
   }))
-  //TODO: win.setRepresentedFilename('/etc/passwd'); //this should happen on file open
-  //TODO: win.setDocumentEdited(true); this should happen on any edit command in the render process
+  //TODO: win.setRepresentedFilename('filename.html') //this should happen on file open
+  //TODO: win.setDocumentEdited(true) if not true, this should happen on any edit command in the render process
   win.webContents.openDevTools() //for debugging
 
   windows.push(win)
 }
+
+//TODO: put window management and file open/save stuff in its own module
+function openFile(paths) {
+  console.log(paths)
+  //TODO: open file? spawn new window, give that new window the path for opening or maybe text of the file, parse text inside the new window. Do it this way so any problem in parsing will only ever affect the one window.
+  //newWindow() needs to take path as a parameter?
+}
+function saveFile (filename) {
+  //TODO: get frontmost window, parse contents to html, show save dialog
+  //maybe take in filename as a parameter or something, need to handle saveAs, saveAll too
+  //maybe this should get the browserwindow as a parameter? so it would be easy to use this with saveAll
+  dialog.showSaveDialog()
+}
+function saveAs () {
+  // body...
+}
+function saveAll () {
+  //TODO: call saveFile for each browserwindow
+}
+
+
+
 
 //TODO: track frontmost window and send menu messages there?
 
@@ -93,31 +115,23 @@ function createMenu() {
           label: 'Open...',
           accelerator: 'Command+O',
           click: ()=> {
-            dialog.showOpenDialog({
-              properties: [
-                'openFile',
-                'openDirectory',
-                'multiSelections'
-              ]
-            });
-            //TODO: make parser module that can be used from main & window
-            //TODO: parse file and open a new window with parsed contents?
+            dialog.showOpenDialog({properties: ['openFile','multiSelections']}, openFile)
           }
         },
         {
           label: 'Save',
           accelerator: 'Command+S',
-          click: ()=>{}
+          click: saveFile
         },
         {
           label: 'Save As...',
           accelerator: 'Command+Shift+S',
-          click: ()=>{}
+          click: saveAs
         },
         {
           label: 'Save All',
           accelerator: 'Command+Option+S',
-          click: ()=>{}
+          click: saveAll
         },
         {
           type: 'separator'
@@ -237,8 +251,8 @@ function createDockMenu() {
       click: newWindow
     },
   ]
-  const menu = Menu.buildFromTemplate(menuTemplate);
-  app.dock.setMenu(menu);
+  const menu = Menu.buildFromTemplate(menuTemplate)
+  app.dock.setMenu(menu)
 }
 
 app.on('ready', ()=> {

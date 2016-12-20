@@ -60,6 +60,7 @@ function input (e) {
 
 
 function newRow (e) {
+  console.log('newRow')
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
@@ -68,6 +69,7 @@ function newRow (e) {
   let txt
   if (e.code === 'Space') {txt = e.txt || ' '}
   else if (modkeys(e, 'none')) {tag = e.key}
+  else {tag = 'div'}
 
   if (txt || tag) {
     let cursors = $('.cur')

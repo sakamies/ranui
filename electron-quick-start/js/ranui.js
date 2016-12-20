@@ -1,6 +1,7 @@
 const electron = require('electron')
 const {ipcRenderer} = electron;
 
+//TODO: don't really need humaninput I think, could replace all keyboard stuff with one keyboard catch event and check inputs myself
 window.HI = new HumanInput(window, {
   //noKeyRepeat: false,
   //logLevel: 'DEBUG',
@@ -43,11 +44,13 @@ HI.on('shift->tab', e=>tab(e))
 HI.on('space', newRow) //Next text row
 HI.on('abcdefghijklmnopqrstuvwxyz'.split(''), newRow) //New tag row
 
+HI.on('shift->enter', e=>newProp(e, ':prop:val'))
 HI.on(',', e=>newProp(e, ':prop'))
 HI.on([':','='], e=>newProp(e, ':val'))
 HI.on('#', e=>HI.log.info('add ID')/*newProp(e, ':id')*/)
 HI.on('.', e=>{ HI.log.info('add class prop and empty value, focus on value') })
 
+//TODO: moving the selection needs to skip folded stuff
 HI.on('+', e=>{ HI.log.info('unfold') })
 HI.on('-', e=>{ HI.log.info('fold') })
 HI.on('cmd-7', e=>comment(e))
