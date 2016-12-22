@@ -1,5 +1,9 @@
+//NOTE: ranui.js is in global scope, so anything required here will be available through all scripts. Yeah, should be encapsulated and all that.
+
 const electron = require('electron')
 const {ipcRenderer} = electron;
+const autofill = require.main.require('./js/autofill.js')
+const tags = require.main.require('./js/tags.js') //list of html tags
 
 //TODO: don't really need humaninput I think, could replace all keyboard stuff with one keyboard catch event and check inputs myself
 window.HI = new HumanInput(window, {
@@ -24,7 +28,9 @@ HI.on('osleft->d', selSimilar)
 HI.on('enter', e=>{history.update();startEdit(e)})
 HI.on('editing:enter', e=>commitEdit(e))
 HI.on('editing:escape', e=>commitEdit(e))
-HI.on('editing:input', input)
+HI.on('editing:input', e=>input(e.target))
+HI.on('editing:backspace', autofill.prevent)
+HI.on('editing:delete', autofill.prevent)
 HI.on('editing:blur', commitEdit)
 
 
@@ -38,17 +44,19 @@ HI.on('beforepaste', e=>{ HI.log.info('paste') })
 
 HI.on('tab', e=>tab(e))
 HI.on('shift->tab', e=>tab(e))
+HI.on('editing:tab', e=>{commitEdit();tab(e)})
+HI.on('editing:shift->tab', e=>{commitEdit();tab(e)})
 
 
 //Crazy editing
-HI.on('space', newRow) //Next text row
-HI.on('abcdefghijklmnopqrstuvwxyz'.split(''), newRow) //New tag row
+HI.on('space', createRow) //Next text row
+HI.on('abcdefghijklmnopqrstuvwxyz'.split(''), createRow) //New tag row
 
-HI.on('shift->enter', e=>newProp(e, ':prop:val'))
-HI.on(',', e=>newProp(e, ':prop'))
-HI.on([':','='], e=>newProp(e, ':val'))
-HI.on('#', e=>HI.log.info('add ID')/*newProp(e, ':id')*/)
-HI.on('.', e=>{ HI.log.info('add class prop and empty value, focus on value') })
+HI.on('shift->enter', e=>createProp(e, ':prop:val'))
+HI.on(',', e=>createProp(e, ':prop'))
+HI.on([':','='], e=>createProp(e, ':val'))
+HI.on('#', e=>createProp(e, ':id'))
+HI.on('.', e=>createProp(e, ':class'))
 
 //TODO: moving the selection needs to skip folded stuff
 HI.on('+', e=>{ HI.log.info('unfold') })
@@ -62,6 +70,7 @@ HI.on('ctrl+right', e=>{HI.log.info('move right')})
 
 
 //Mouse
+//TODO: these need to be cancelled if scope is 'editing'
 window.addEventListener('dblclick', e=>{history.update();startEdit(e)})
 window.addEventListener('mousedown', e=>mouseDown(e))
 window.addEventListener('mousemove', throttle(mouseMove, 16)) //Only running mousemove at max 60fps
@@ -70,12 +79,9 @@ HI.on('dragging:escape', e=>cancelDrag(e))
 
 
 //Undo Redo
-//Should be handled on the app level so menus and all would work
+//TODO: set history to work with ipc events from app menus instead of browserwindow keyboard events
 let history = new History()
 HI.on('keydown', e=>history.keydown(e))
-//These events didn't work with HI, so history has it's own check for the keys
-//HI.on('cmd->z', e=>history.undo())
-//HI.on(['cmd->shift->z','shift->cmd->z'], e=>history.redo())
 
 
 //Files

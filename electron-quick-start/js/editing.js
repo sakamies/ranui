@@ -1,4 +1,5 @@
-let editStartValue = ''
+let editStartValue = '' //The value of a tag/prop/val/txt needs to be shared so i can check if the value has changed between entering edit mode and committing the edit.
+
 
 function startEdit (e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
@@ -32,24 +33,29 @@ function commitEdit(e) {
 }
 
 
-function input (e) {
+function input (node) {
   let sel = $('.sel')
-  let target = $(e.target)
-  let tagName = e.target.tagName
-  let text = target.text()
+  let tagName = node.tagName
+  let text = node.innerText
   let lastChar = text.slice(-1)
   let clones = $('.clone')
 
-  //TODO: Simplefill here?
+  //Could use discard.js here too to just throw away any invalid characters for tags, props & vals
 
   //Check last character of input and make actions based on it. if : or = then add new val and if , then add new prop
   //Must account for what the previous element is, this could have lots of smarts, but we'll go with something really simple for start
+  //TODO: should also check if editing val and prop is class, then split to new value on space of .
   if (tagName === 'PROP' && lastChar === ':' || lastChar === '=') {
     text = text.slice(0, -1)
-    target.text(text)
+    node.innerText = text
     commitEdit()
-    newProp(e, ':val')
+    createProp(null, ':val')
     startEdit()
+  } else {
+    //If there's no action to be done, try autofill
+    console.log(node)
+    autofill.fill(node)
+    text = node.innerText
   }
 
   //If multiple things are selected, match their text
@@ -59,8 +65,7 @@ function input (e) {
 }
 
 
-function newRow (e) {
-  console.log('newRow')
+function createRow (e) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
@@ -103,11 +108,13 @@ function newRow (e) {
 
     if (tag) {startEdit(e, ':selectEnd')}
     if (txt) {startEdit(e)}
+
+    input(document.querySelector('[contenteditable="true"]'))
   }
 }
 
 
-function newProp(e, opts) {
+function createProp(e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
@@ -118,8 +125,9 @@ function newProp(e, opts) {
   let cursors = $('.cur')
   if (opts.includes(':val')) {sel.after(`<val class="new"></val>`)}
   if (opts.includes(':prop')) {sel.after(`<prop class="new"></prop>`)}
-  //if (id) {sel.after('<prop text="id">id</prop><val class="new"></val>')}
-  //if (class) {sel.after('<prop text="class">class</prop><val class="new"></val>')}
+  //TODO: id & class should check if the element already has a class and act according to that. If there's an id, just edit the id val, if there's a class, add a class after that
+  if (opts.includes(':id')) {sel.after('<prop text="id">id</prop><val class="new"></val>')}
+  if (opts.includes(':class')) {sel.after('<prop text="class">class</prop><val class="new"></val>')}
 
   let newCurs = $('.new').removeClass('new')
   cursors.removeClass('cur')
@@ -172,6 +180,7 @@ function del (e, opts) {
 
 
 function tab (e) {
+  console.log('tab')
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
