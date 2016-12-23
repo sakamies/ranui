@@ -15,9 +15,8 @@ function startEdit (e, opts) {
 
   if (opts.includes(':selectEnd')) {target.selectEnd()}
   else {target.selectText()}
-
-
 }
+
 function commitEdit(e) {
   if (e && e.preventDefault) {e.preventDefault()}
 
@@ -53,7 +52,6 @@ function input (node) {
     startEdit()
   } else {
     //If there's no action to be done, try autofill
-    console.log(node)
     autofill.fill(node)
     text = node.innerText
   }
@@ -180,7 +178,6 @@ function del (e, opts) {
 
 
 function tab (e) {
-  console.log('tab')
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
@@ -212,7 +209,16 @@ function comment(e) {
 }
 
 
+function fold (e, opts) {
+  let rows = $('.hilite')
+  let opts = opts || ''
 
+  if (opts.includes(':unfold')) {
+
+  } else if (opts.includes(':fold')) {
+
+  }
+}
 //Maybe do actions like this, so each action would conform to managing history automatically, kinda like with selections and select() function
 // function action(e, function) {
 //   if (e && e.preventDefault) {e.preventDefault()}

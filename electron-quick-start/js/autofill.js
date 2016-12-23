@@ -1,4 +1,4 @@
-//TODO: eventually this module should use a fuzzy search and show an autocomplete list. I could use the datalist element for this, chrome seemed to have support!
+//TODO: eventually this module should use a fuzzy search and show an autocomplete list.
 
 //Chrome has rudimentary datalist element support, but it sucks, so we need our own implementation
 

@@ -1,22 +1,22 @@
 let dragTimer
-let mouseIsDown = false
-let dragging = false
+let mouseDownEvent = null
 let dragGhost = $('<div class="dragghost">')
 let dropTarget = null
 let dragMode = ''
 let mouseStart = ''
 
-//TODO: esc should cancel the operation
-
 function mouseDown(e) {
   //Allow mouse to function according to platform defaults when editing text, also this way there's no need to worry about editing mode for the rest of this function & other mouse events.
-  if (e.target.contenteditable === true) {return}
-  else if (HI.scope ==='editing:') {commitEdit()}
+  if (e.target.isContentEditable === true) {
+    return true
+  } else if (HI.scope === 'editing:') {
+    commitEdit()
+  }
 
   //e.preventDefault()
   let target = $(e.target)
-  mouseIsDown = `${e.screenX},${e.screenY}`
-  HI.pushScope('paintselection')
+  mouseDownEvent = e
+  HI.scope = 'paintselection:'
 
   if (!target.hasClass('sel') && !target.hasClass('hilite')) {
     selTarget(e)
@@ -24,9 +24,7 @@ function mouseDown(e) {
 
   dragTimer = setTimeout(()=>{
     history.update()
-    HI.popScope('paintselection')
-    HI.pushScope('dragging')
-    dragging = true
+    HI.scope = 'dragging:'
 
     //Format what's being dragged, so the drag ghost exactly reflects what will be dropped. Dragging gathers all selected items and puts them in flat rows.
     let dragSourceRows = $('row.hilite')
@@ -59,10 +57,10 @@ function mouseDown(e) {
 
 function mouseMove(e) {
   clearTimeout(dragTimer)
-  if (mouseIsDown && !dragging) {
+  if (HI.scope == 'paintselection:') {
     //Paint selection if mouse was moved before drag was initiated
     selTarget(e, ':add')
-  } else if (dragging) {
+  } else if (HI.scope === 'dragging:') {
     //Make dragGhost follow mouse
     dragGhost.css({
       'left': e.pageX + 'px',
@@ -142,7 +140,7 @@ function mouseUp(e) {
   //TODO: check for shift/alt/ctrl/cmd, there should be a key that lets you clone elements
   let dragSource = $('.dragsource')
 
-  if (dragging && dropTarget) {
+  if (HI.scope === 'dragging:' && dropTarget) {
     let dragPayload = dragGhost.children()
     //Set tabs according to droptarget tabs. This means that dragging does not preserve hierarchy in any way. It probably should preserve hierarchies where there's only an element and its children selected
     dragPayload.attr('tabs', dropTarget.attr('tabs'));
@@ -155,7 +153,7 @@ function mouseUp(e) {
 
     //At this poin the operation happened, add entry to history. The rest of mouseup is just cleanup
     history.add()
-  } else if (!dragging && mouseIsDown === `${e.screenX},${e.screenY}`) {
+  } else if (HI.scope === 'paintselection:' && mouseDownEvent.screenX === e.screenX && mouseDownEvent.screenY === e.screenY) {
     //If you just click on an item and don't do a lasso selection or drag, then select the item
     //Based on mouse coordinates alone, should be based on os level click detection if possible, but this is fine for now
     selTarget(e)
@@ -167,15 +165,17 @@ function mouseUp(e) {
   dragGhost.css('display', 'none').empty()
 
   dragMode = ''
-  mouseIsDown = false
-  dragging = false
-  HI.popScope('dragging')
-  HI.popScope('paintselection')
+  mouseDownEvent = null
+  if (HI.scope === 'dragging:' || HI.scope === 'paintselection:') {
+    HI.scope = '' //only reset scopes we have set in mouse.js, leave any other scopes alone
+  }
 }
 
 
 function cancelDrag(e) {
   e.preventDefault()
-  dragging = false
+  if (HI.scope === 'dragging:' || HI.scope === 'paintselection:') {
+    HI.scope = '' //only reset scopes we have set in mouse.js, leave any other scopes alone
+  }
   mouseUp(e)
 }

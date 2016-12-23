@@ -5,7 +5,7 @@ const {ipcRenderer} = electron;
 const autofill = require.main.require('./js/autofill.js')
 const tags = require.main.require('./js/tags.js') //list of html tags
 
-//TODO: don't really need humaninput I think, could replace all keyboard stuff with one keyboard catch event and check inputs myself
+//TODO: Don't really need humaninput, I think, could replace all keyboard stuff with one keyboard catch event and check inputs myself. Humaninput implements keyboard combos wrong anyway. In cmd/alt/shift presses, it checks if a key has been pressed, not if it is down. So if you come into the app with the cmd key pressed down, it won't know it's down until you release it and press it down again. I think I did it pretty right in potato
 window.HI = new HumanInput(window, {
   //noKeyRepeat: false,
   //logLevel: 'DEBUG',
@@ -32,11 +32,12 @@ HI.on('editing:input', e=>input(e.target))
 HI.on('editing:backspace', autofill.prevent)
 HI.on('editing:delete', autofill.prevent)
 HI.on('editing:blur', commitEdit)
-
+HI.on('editing:tab', e=>{commitEdit();tab(e)})
+HI.on('editing:shift->tab', e=>{commitEdit();tab(e)})
 
 HI.on('backspace', e=>del(e, ':backward'))
 HI.on('delete', e=>del(e, ':forward'))
-//HI.on('cmd-shift-d', e=>duplicate(e))
+HI.on('cmd-d', e=>duplicate(e))
 
 HI.on('beforecut', e=>{ HI.log.info('cut') })
 HI.on('beforecopy', e=>{ HI.log.info('copy') })
@@ -44,8 +45,6 @@ HI.on('beforepaste', e=>{ HI.log.info('paste') })
 
 HI.on('tab', e=>tab(e))
 HI.on('shift->tab', e=>tab(e))
-HI.on('editing:tab', e=>{commitEdit();tab(e)})
-HI.on('editing:shift->tab', e=>{commitEdit();tab(e)})
 
 
 //Crazy editing
