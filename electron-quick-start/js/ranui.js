@@ -58,8 +58,8 @@ HI.on('#', e=>createProp(e, ':id'))
 HI.on('.', e=>createProp(e, ':class'))
 
 //TODO: moving the selection needs to skip folded stuff
-HI.on('+', e=>{ HI.log.info('unfold') })
-HI.on('-', e=>{ HI.log.info('fold') })
+HI.on('-', e=>fold(e, ':fold'))
+HI.on('+', e=>fold(e, ':unfold'))
 HI.on('cmd-7', e=>comment(e))
 
 HI.on('ctrl+up', e=>{HI.log.info('move up')})

@@ -128,7 +128,13 @@ txt ~ * {
   outline: 1px dotted red;
 }
 
-
+.com {
+  //font-style: italic;
+}
+.com > *,
+.com > *::before {
+  color: #75715e;
+}
 
 .sel {
   background: #49483E;
@@ -144,13 +150,14 @@ txt ~ * {
 .hilite + row::before {
   //Show insertion point somehow? Or is it enough that users learn it as they create new elements
 }
-.com {
-  //font-style: italic;
+.folded::after {
+  content: '…';
 }
-.com > *,
-.com > *::before {
-  color: #75715e;
+.hide {
+  display: none;
 }
+
+
 
 [contenteditable="true"],
 .clone {
@@ -179,6 +186,7 @@ txt ~ * {
     0px 3px 8px 0px rgba(0,0,0,.5);
 }
 
+/*TODO: drop point indicator should be a div that travels the page and gets rendered according to droptarget clientrect */
 .dropbefore,
 .dropafter {
   position: relative;

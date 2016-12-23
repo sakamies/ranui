@@ -209,16 +209,42 @@ function comment(e) {
 }
 
 
+
 function fold (e, opts) {
+  if (e && e.preventDefault) {e.preventDefault()}
+
+  opts = opts || ''
   let rows = $('.hilite')
-  let opts = opts || ''
+  let fold = opts.includes(':fold')
+  let unfold = opts.includes(':unfold')
 
-  if (opts.includes(':unfold')) {
+  rows.each(function(i, el) {
+    let row = $(el)
+    let tabs = parseInt(row.attr('tabs'))
+    let children = $()
 
-  } else if (opts.includes(':fold')) {
+    row.nextAll().each((i, el)=>{
+      let childTabs = parseInt($(el).attr('tabs'))
+      if (childTabs > tabs) {
+        children = children.add(el)
+      } else {
+        return false
+      }
+    })
 
-  }
+    if (fold) {
+      row.addClass('folded')
+      children.addClass('hide')
+    } else if (unfold && row.hasClass('folded')) {
+      row.removeClass('folded')
+      children.removeClass('hide')
+    }
+  })
+
 }
+
+
+
 //Maybe do actions like this, so each action would conform to managing history automatically, kinda like with selections and select() function
 // function action(e, function) {
 //   if (e && e.preventDefault) {e.preventDefault()}
