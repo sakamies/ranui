@@ -4,7 +4,7 @@ let editStartValue = '' //The value of a tag/prop/val/txt needs to be shared so 
 function startEdit (e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
 
-  HI.pushScope('editing')
+  HI.scope = 'editing:'
 
   opts = opts || ''
   let target = $('.cur').first()
@@ -14,11 +14,9 @@ function startEdit (e, opts) {
   clones.addClass('clone')
 
   if (opts.includes(':selectEnd')) {
-    console.log('selectEnd')
     target.selectEnd()
   }
   else {
-    console.log('select all')
     target.selectText()
   }
 }
@@ -27,12 +25,18 @@ function commitEdit(e) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   let target = $('[contenteditable]')
+  let text = target.text()
   let clones = $('.clone')
   clones.removeClass('clone')
   target.attr('contenteditable', 'false')
 
-  HI.popScope('editing')
-  if (editStartValue !== target.text()) {
+  HI.scope = ''
+
+  if (text === '') {
+    del(null, ':backward')
+  }
+
+  if (editStartValue !== text) {
     history.add()
   }
 }
@@ -128,22 +132,49 @@ function createRow (e, opts, str) {
 }
 
 
-function createProp(e, opts) {
+function createProp(e, opts, str) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
 
   opts = opts || ''
-
-  //TODO: when adding prop without opts, it should be smart and add a prop if current selection if tag or val, or add a val if current selection is prop
-
+  str = str || ''
   let sel = $('.sel')
   let cursors = $('.cur')
-  if (opts.includes(':val')) {sel.after(`<val class="new"></val>`)}
-  if (opts.includes(':prop')) {sel.after(`<prop class="new"></prop>`)}
-  //TODO: id & class should check if the element already has a class and act according to that. If there's an id, just edit the id val, if there's a class, add a class after that
-  if (opts.includes(':id')) {sel.after('<prop text="id">id</prop><val class="new"></val>')}
-  if (opts.includes(':class')) {sel.after('<prop text="class">class</prop><val class="new"></val>')}
+
+  //Treat each cursor individually
+  cursors.each((i, el)=>{
+    if (el.tagName === 'TXT') {return false} //Text rows can't have props
+
+    let cur = $(el)
+
+    //Without options, try to automatically add the right thing
+    if (opts === '' && el.tagName === 'PROP') {opts = ':val'}
+    else if (opts === '' && ['TAG','VAL'].includes(el.tagName)) {opts = ':prop'}
+
+    if (opts.includes(':val')) {cur.after(`<val class="new">${str}</val>`)}
+    if (opts.includes(':prop')) {cur.after(`<prop class="new"></prop>`)}
+
+    //id & class check if the element already has an id/class and act according to that. If there's an id, just edit the id val, if there's a class, add a class after that
+    if (opts.includes(':id')) {
+      let idProp = cur.parent().find('prop[text="id"] + val')
+      if (idProp.length) {
+        idProp.addClass('new')
+      } else {
+        cur.after(`<prop text="id">id</prop><val class="new">${str}</val>`)
+      }
+    }
+    if (opts.includes(':class')) {
+      let prop = `<prop text="class">class</prop>`
+      let val = `<val class="new">${str}</val>`
+      let classProp = cur.parent().find('prop[text="class"]')
+      if (classProp.length) {
+        classProp.nextUntil('prop').last().after(val)
+      } else {
+        cur.after(prop + val)
+      }
+    }
+  })
 
   let newCurs = $('.new').removeClass('new')
   cursors.removeClass('cur')
@@ -158,6 +189,8 @@ function del (e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
+
+  //TODO: add case for when last row of doc gets deleted, maybe add append a new div to the start of the document, select it and edit it so the user will need to give a tag
 
   opts = opts || ''
   let sel = $('.sel')

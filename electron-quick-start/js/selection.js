@@ -28,14 +28,14 @@ function selTarget (e, opts) {
   if (target.parent('row').length) {
     newCur = target
   } else if (e.target.tagName === 'ROW') {
-    //TODO: maybe select row and its children when clicking row?
+    //Select row and its children when clicking row. Not sure this is the right thing to do, but at least there's some way to select all children.
     opts += ':children'
     newCur = target.children().first()
   } else {
     newCur = $('doc').children().last().children().last()
   }
 
-  if (e.shiftKey) {opts += ':add'}
+  if (e.shiftKey) {opts += ':add'} //TODO: Shift should select a range, cmd should drop multiple cursors?
   if (!e.altKey) {cursors.removeClass('cur')} //You can drop multiple cursors by pressing alt
   newCur.addClass('cur')
   select(newCur, opts)
@@ -52,15 +52,14 @@ function selRow (e, act) {
   let newCurs = $()
 
   //Track column based on the first cursor, because multiple cursors always collapse to the first cursor
+  //TODO: if there's only one cursor, use col to track farthest right position like text editors do. I could do that for every cursor by making col into an array, but not sure that's the right thing to do.
   col = Math.max(col, cursor.parent().children().index(cursor))
 
   let up = act.includes('up')
   let down = act.includes('down')
 
-  //TODO: add simple cases for up & down if there's no selection
+  //TODO: add simple cases for up & down if there's no selection. The app should take care that there's always some element selected, but might be good to have just in case
 
-  //TODO: skip rows that have .hidden
-  //If a row has .hidden, find prevUntil('.folded') or nextUntil(':not(.hidden)') and get their next/prev as the node where the selection jumps to. If selecting tags and the selection is additive, add everything in between to the selection?
 
   cursors.each(function(index, el) {
     let cursor = $(el)
@@ -69,7 +68,7 @@ function selRow (e, act) {
     let cursorCol = props.index(cursor)
     let newRow
     let newCur
-    if (up) {newRow = row.prevAll(':not(.hidden)').first()}
+    if (up) {newRow = row.prevAll(':not(.hidden)').first()} //Skip children of folded rows
     if (down) {newRow = row.nextAll(':not(.hidden)').first()}
     let newProps = props
     if (newRow.length) {newProps = newRow.children()}
@@ -102,7 +101,7 @@ function selCol (e, act) {
   let left = act.includes('left')
   let right = act.includes('right')
 
-  //TODO: add simple cases for left & right if there's no selection
+  //TODO: add simple cases for left & right if there's no selection. The app actions should really always result in a selection, and the first tag should be selected on document open, but it might be good to have just in case
 
   cursors.each(function(index, el) {
     let cursor = $(el)
@@ -155,15 +154,24 @@ function selEscape (e) {
 }
 
 
-function selSimilar(e) {
+function selSimilar(e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
+
+  opts = opts || ''
   let cursor = $('.cur').last()
   let text = cursor.attr('text')
   let similars = $(`[text="${text}"]`)
-  let index = similars.index(cursor) + 1
-  let newCur = similars.eq(index)
-  if (!newCur.length) {
-    newCur = $(`[text="${text}"]:not(.cur)`).first()
+  let newCur
+  if (opts.includes(':all')) {
+    newCur = similars
+  } else {
+    //Find cursor among similars and get next
+    let index = similars.index(cursor) + 1
+    newCur = similars.eq(index)
+    if (!newCur.length) {
+      //If there's no next, start searching from the beginning of the document
+      newCur = $(`[text="${text}"]:not(.cur)`).first()
+    }
   }
   newCur.addClass('cur')
   select(newCur)

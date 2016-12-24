@@ -16,6 +16,8 @@ $linkBlue: hsl(198, 49%, 46%);
 $hiGreen: hsl(70, 100%, 50%);
 */
 
+/*TODO: these styles have been made with a non retina screen, check with retina too! */
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -105,6 +107,7 @@ txt ~ * {
 [tabs="9"] {padding-left: 18ch}
 [tabs="10"] {padding-left: 20ch}
 
+/* TODO: could use requestIdleCallback for checking and marking errors, kinda like os level spell check does */
 [tabs="0"] + :-webkit-any([tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [tabs="1"] + :-webkit-any([tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [tabs="2"] + :-webkit-any([tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
@@ -138,7 +141,8 @@ txt ~ * {
 
 .sel {
   background: #49483E;
-  box-shadow: inset 0px 0px 0px 1px #828380;
+  box-shadow:
+    inset 0px 0px 0px 1px #828380;
 }
 .cur {
   position: relative;
@@ -158,6 +162,8 @@ txt ~ * {
   height: 5px;
   border-radius: 1px;
   background: hsla(200, 100%, 50%, 1);
+  box-shadow:
+    -1px -1px 0px 0px hsl(55, 8%, 26%);
 }
 .hilite {
   background: #49483E;
@@ -180,6 +186,11 @@ txt ~ * {
   color: #272822;
   background-color: white;
   box-shadow: inset 0px 0px 0px 1px white;
+}
+[contenteditable="true"].cur::after,
+.clone.cur::after {
+  box-shadow:
+    -1px -1px 0px 0px white;
 }
 
 .dragsource,

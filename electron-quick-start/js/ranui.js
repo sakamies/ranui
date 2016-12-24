@@ -1,4 +1,4 @@
-//NOTE: ranui.js is in global scope, so anything required here will be available through all scripts. Yeah, should be encapsulated and all that.
+//ranui.js is in global scope, so anything required here will be available through all scripts. Yeah, should be encapsulated and all that.
 
 const electron = require('electron')
 const {ipcRenderer} = electron;
@@ -21,7 +21,9 @@ HI.on(['right', 'shift->right', 'cmd->right', 'cmd-shift->right'], e=>selCol(e, 
 
 HI.on('escape', selEscape)
 
-HI.on('osleft->d', selSimilar)
+//TODO: long press on selSimilar should select all similar, not just the next one
+HI.on('osleft->d', e=>selSimilar(e))
+HI.on('hold:300:osleft->d', e=>selSimilar(e,':all')) //TODO: hold here doesn't seem to work
 
 
 //Basic Editing
@@ -51,12 +53,11 @@ HI.on('shift->tab', e=>tab(e))
 let letterKeys = 'abcdefghijklmnopqrstuvwxyz'.split('')
 let capLetterKeys = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 HI.on(letterKeys, e=>createRow(e, ':tag')) //Letter makes a tag row
-HI.on(capLetterKeys, e=>createRow(e, ':txt')) //Shift+letter makes a text row
+HI.on(capLetterKeys, e=>createRow(e, ':txt')) //Capital letter makes a text row
 HI.on('shift-enter', e=>createRow(e, ':txt', ' '))
 HI.on('osleft-enter', e=>createRow(e, ':tag', 'div')) //Next tag row
 
-//TODO: adding a prop via space should be smart, not just prop-val pair
-HI.on('space', e=>createProp(e, ':prop:val')) //Next text row
+HI.on('space', e=>createProp(e))
 HI.on(',', e=>createProp(e, ':prop'))
 HI.on([':','='], e=>createProp(e, ':val'))
 HI.on('#', e=>createProp(e, ':id'))
@@ -64,7 +65,7 @@ HI.on('.', e=>createProp(e, ':class'))
 
 HI.on('-', e=>fold(e, ':fold'))
 HI.on('+', e=>fold(e, ':unfold'))
-//TODO: toggle comment should also affect children rows. Should be easy to do now that I have the getRowChildren function in selection.js
+//TODO: Should toggle comment should also affect children rows. Should be easy to do now that I have the getRowChildren function in selection.js
 HI.on('cmd-7', e=>comment(e))
 
 HI.on('ctrl+up', e=>{HI.log.info('move up')})
@@ -89,6 +90,7 @@ HI.on('keydown', e=>history.keydown(e))
 
 
 //Files
+//TODO: implement new/open/save etc. on the app level
 HI.on('cmd->n', (event) => { HI.log.info('new') })
 HI.on('cmd->o', (event) => { HI.log.info('open') })
 HI.on('cmd->s', (event) => { HI.log.info('save') })
