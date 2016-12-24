@@ -26,18 +26,21 @@ function mouseDown(e) {
     history.update()
     HI.scope = 'dragging:'
 
-    //Format what's being dragged, so the drag ghost exactly reflects what will be dropped. Dragging gathers all selected items and puts them in flat rows.
-    let dragSourceRows = $('row.hilite')
+    //Format what's being dragged, so the drag ghost exactly reflects what will be dropped.
+    //Dragging gathers all selected items and puts them in flat rows.
+    let dragSourceRows = $('.hilite')
+    //TODO: this could be made more efficient, seems wasteful
+    dragSourceRows = dragSourceRows.add($('.hilite.folded').nextUntil('row:not(.hidden)')) //If you fold a row and drag it, its children will come with the drag
     let dragSourceProps = $('row:not(.hilite) .sel')
     let dragPayloadRows = dragSourceRows.clone()
     let dragPayloadProps = dragSourceProps.clone()
-    dragSourceRows.addClass('dragsource');
+    dragSourceRows.addClass('dragsource')
     dragSourceProps.addClass('dragsource')
 
     //This allows nonsensical prop/row combinations, combining props with a txt row, but css will mark it as an error and the user needs to correct it. Should make this foolproof somehow.
     if (dragPayloadRows.length) {
       dragMode += ':rows'
-      dragPayloadRows.attr('tabs', '0') //Flatten tabs for dragGhost & payload
+      //TODO: this should not flatten tabs, needs some sort of smart autoindentation behaviour. This flattening would also mess up folded rows.
       dragPayloadRows.children().first().after(dragPayloadProps)
       dragGhost.append(dragPayloadRows)
     } else if (dragPayloadProps.length) {
@@ -143,7 +146,7 @@ function mouseUp(e) {
   if (HI.scope === 'dragging:' && dropTarget) {
     let dragPayload = dragGhost.children()
     //Set tabs according to droptarget tabs. This means that dragging does not preserve hierarchy in any way. It probably should preserve hierarchies where there's only an element and its children selected
-    dragPayload.attr('tabs', dropTarget.attr('tabs'));
+    //dragPayload.attr('tabs', dropTarget.attr('tabs'))
     if (dropTarget.hasClass('dropafter')) {
       dropTarget.after(dragPayload)
     } else if (dropTarget.hasClass('dropbefore')) {
@@ -155,7 +158,6 @@ function mouseUp(e) {
     history.add()
   } else if (HI.scope === 'paintselection:' && mouseDownEvent.screenX === e.screenX && mouseDownEvent.screenY === e.screenY) {
     //If you just click on an item and don't do a lasso selection or drag, then select the item
-    //Based on mouse coordinates alone, should be based on os level click detection if possible, but this is fine for now
     selTarget(e)
   }
 

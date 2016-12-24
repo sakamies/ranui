@@ -43,7 +43,6 @@ function processNode (node) {
       node.innerText = autoFilledText
       const range = document.createRange();
       range.setStart(textNode, selStart);
-      console.log(textNode)
       range.setEnd(textNode, selEnd);
       const sel = window.getSelection();
       sel.removeAllRanges();

@@ -1,3 +1,5 @@
+//Misc utility stuff that's not directly related to editing.
+
 jQuery.fn.selectText = function(){
   const element = this[0]
   const selection = window.getSelection()

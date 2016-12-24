@@ -13,8 +13,14 @@ function startEdit (e, opts) {
   target.attr('contenteditable', 'true').focus()
   clones.addClass('clone')
 
-  if (opts.includes(':selectEnd')) {target.selectEnd()}
-  else {target.selectText()}
+  if (opts.includes(':selectEnd')) {
+    console.log('selectEnd')
+    target.selectEnd()
+  }
+  else {
+    console.log('select all')
+    target.selectText()
+  }
 }
 
 function commitEdit(e) {
@@ -43,7 +49,7 @@ function input (node) {
 
   //Check last character of input and make actions based on it. if : or = then add new val and if , then add new prop
   //Must account for what the previous element is, this could have lots of smarts, but we'll go with something really simple for start
-  //TODO: should also check if editing val and prop is class, then split to new value on space of .
+  //TODO: should also check if editing val and prop is class, then split to new value on space or .
   if (tagName === 'PROP' && lastChar === ':' || lastChar === '=') {
     text = text.slice(0, -1)
     node.innerText = text
@@ -63,21 +69,24 @@ function input (node) {
 }
 
 
-function createRow (e) {
+function createRow (e, opts, str) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
 
-  let tag
-  let txt
-  if (e.code === 'Space') {txt = e.txt || ' '}
-  else if (modkeys(e, 'none')) {tag = e.key}
+  let tag = ''
+  let txt = ''
+  opts = opts || ''
+  str = str || ''
+
+  if (opts.includes(':txt')) {txt = str || (e && e.key) || ' '}
+  else if (opts.includes(':tag')) {tag = str || (e && e.key)}
   else {tag = 'div'}
 
   if (txt || tag) {
     let cursors = $('.cur')
     let sel = $('.sel')
-    let selrows = sel.parent()
+    let selrows = cursors.parent()
 
     if (txt) {selrows.after($(`<row class="new" type="txt"><txt>${txt}</txt></row>`))}
     else if (tag) {selrows.after($(`<row class="new" type="tag"><tag text="${tag}">${tag}</tag></row>`))}
@@ -104,8 +113,15 @@ function createRow (e) {
     newCurs.addClass('cur')
     select(newCurs)
 
-    if (tag) {startEdit(e, ':selectEnd')}
-    if (txt) {startEdit(e)}
+    //If the user starts creatig a tag or a text with a letter, then don't select the whole thing so the user can just continue typing
+    if ((tag && tag.length === 1) || (txt && txt !== ' ')) {
+      startEdit(e, ':selectEnd')
+    } else {
+      //Else select the whole thing, so the user can start typing and replace whatever intial vaue we guessed into the created item
+      //If the tag value was prefilled to be something, don't autofill right away,  because it messes up the selection
+      startEdit(e)
+      autofill.prevent()
+    }
 
     input(document.querySelector('[contenteditable="true"]'))
   }
@@ -118,6 +134,8 @@ function createProp(e, opts) {
   history.update()
 
   opts = opts || ''
+
+  //TODO: when adding prop without opts, it should be smart and add a prop if current selection if tag or val, or add a val if current selection is prop
 
   let sel = $('.sel')
   let cursors = $('.cur')
@@ -214,32 +232,26 @@ function fold (e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   opts = opts || ''
-  let rows = $('.hilite')
+  let sel = $('.sel')
+  let rows = sel.parent()
   let fold = opts.includes(':fold')
   let unfold = opts.includes(':unfold')
 
   rows.each(function(i, el) {
     let row = $(el)
-    let tabs = parseInt(row.attr('tabs'))
-    let children = $()
+    let children = getRowChildren(row)
 
-    row.nextAll().each((i, el)=>{
-      let childTabs = parseInt($(el).attr('tabs'))
-      if (childTabs > tabs) {
-        children = children.add(el)
-      } else {
-        return false
-      }
-    })
-
-    if (fold) {
+    if (fold && children.length) {
       row.addClass('folded')
-      children.addClass('hide')
+      children.addClass('hidden').removeClass('folded')
     } else if (unfold && row.hasClass('folded')) {
       row.removeClass('folded')
-      children.removeClass('hide')
+      children.removeClass('hidden')
     }
   })
+
+  //Reset hidden rows state to normal
+  $('.hidden').removeClass('hilite folded').children().removeClass('cur sel')
 
 }
 

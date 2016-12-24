@@ -141,7 +141,23 @@ txt ~ * {
   box-shadow: inset 0px 0px 0px 1px #828380;
 }
 .cur {
+  position: relative;
   box-shadow: inset 0px 0px 0px 1px #828380;
+  box-shadow: inset 0px 0px 0px 1px hsla(200, 100%, 50%, 1);
+}
+.cur::after {
+  content: '';
+  position: absolute;
+  display: block;
+  z-index: 100;
+  top: auto;
+  bottom: -1px;
+  left: auto;
+  right: -1px;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background: hsla(200, 100%, 50%, 1);
 }
 .hilite {
   background: #49483E;
@@ -153,7 +169,7 @@ txt ~ * {
 .folded::after {
   content: '…';
 }
-.hide {
+.hidden {
   display: none;
 }
 
@@ -201,8 +217,8 @@ txt ~ * {
   top: 5px;
   left: -.5ch;
   width: 1ch;
-  border-radius: 1ch;
   height: 10px;
+  border-radius: 1ch;
   background: #66d9ef;
   background: hsla(200, 100%, 50%, 1);
 }

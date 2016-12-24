@@ -4,8 +4,14 @@ col = 0
 function select(to, opts) {
   opts = opts || ''
   //If not additive, remove sel class from everything that not cursor
-  if (opts.includes(':add') === false) {$('.sel:not(.cur)').removeClass('sel')}
-  to.addClass('cur sel')
+  if (opts.includes(':add')) {
+  } else {
+    $('.sel:not(.cur)').removeClass('sel')
+  }
+  if (opts.includes(':children')) {
+    to = to.add(getRowChildren(to.parent('row')).children(':first-child'))
+  }
+  to.addClass('sel')
   $('.hilite').removeClass('hilite')
   $('tag.sel, txt.sel').parent().addClass('hilite')
 }
@@ -21,7 +27,9 @@ function selTarget (e, opts) {
 
   if (target.parent('row').length) {
     newCur = target
-  } else if (target.parent('doc').length) {
+  } else if (e.target.tagName === 'ROW') {
+    //TODO: maybe select row and its children when clicking row?
+    opts += ':children'
     newCur = target.children().first()
   } else {
     newCur = $('doc').children().last().children().last()
@@ -51,6 +59,9 @@ function selRow (e, act) {
 
   //TODO: add simple cases for up & down if there's no selection
 
+  //TODO: skip rows that have .hidden
+  //If a row has .hidden, find prevUntil('.folded') or nextUntil(':not(.hidden)') and get their next/prev as the node where the selection jumps to. If selecting tags and the selection is additive, add everything in between to the selection?
+
   cursors.each(function(index, el) {
     let cursor = $(el)
     let row = cursor.parent()
@@ -58,11 +69,10 @@ function selRow (e, act) {
     let cursorCol = props.index(cursor)
     let newRow
     let newCur
-    if (up) {newRow = row.prev()}
-    if (down) {newRow = row.next()}
+    if (up) {newRow = row.prevAll(':not(.hidden)').first()}
+    if (down) {newRow = row.nextAll(':not(.hidden)').first()}
     let newProps = props
     if (newRow.length) {newProps = newRow.children()}
-    //TODO: check if there's a next or prev row and don't make selection disappear if there isn't a row there
     if (newProps.length - 1 >= cursorCol) { //Because col is zero based, ugh
       newCur = newProps.eq(cursorCol)
       newCurs = newCurs.add(newCur)
@@ -155,8 +165,25 @@ function selSimilar(e) {
   if (!newCur.length) {
     newCur = $(`[text="${text}"]:not(.cur)`).first()
   }
+  newCur.addClass('cur')
   select(newCur)
 }
 
 
+function getRowChildren(node) {
+  //Finds rows that are more indented than the given row, until encounters a row with the same indentation or less. Does not select anything by itself, more of a utility function.
+  let row = $(node)
+  let tabs = parseInt(row.attr('tabs'))
+  let children = $()
+  row.nextAll().each((i, el)=>{
+    let childTabs = parseInt($(el).attr('tabs'))
+    if (childTabs > tabs) {
+      //TODO: drag-drop flattens tabs. so after a drag operation, this will no longer find .hidden elements that are after a .folded element. Need to do some sort of smart tab handling there
+      children = children.add(el)
+    } else {
+      return false
+    }
+  })
+  return children
+}
 
