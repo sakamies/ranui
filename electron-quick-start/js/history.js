@@ -1,21 +1,18 @@
+'use strict'
+
 function History(initial) {
   let index = 0
   let stack = [initial]
+  let isModified = false
 
-  function keydown (e) {
-    if (modkeys(e, 'cmd') && e.key === 'z') {
-      e.preventDefault()
-      undo()
-    }
-    if (modkeys(e, 'cmd-shift') && e.key === 'Z') {
-      e.preventDefault()
-      redo()
-    }
+  function modified() {
+    return isModified
   }
 
   function update() {
     let item = $('doc')[0].outerHTML
     stack[index] = item
+    isModified = true
   }
 
   function add() {
@@ -24,24 +21,29 @@ function History(initial) {
       index = index + 1
       stack.splice(index)
       stack.push(item)
+      isModified = true
     }
   }
 
   //TODO: sometimes you can undo the document into oblivion, something's wrong
   function undo () {
-    if (index > 0) {
+    if (HI.scope === 'editing:') {
+      document.execCommand('undo', '', null)
+    } else if (index > 0) {
       index = index - 1
       $('doc').replaceWith(stack[index])
     }
   }
 
   function redo () {
-    if (index < stack.length - 1) {
+    if (HI.scope === 'editing:') {
+      document.execCommand('redo', '', null)
+    } else if (index < stack.length - 1) {
       index = index + 1
       $('doc').replaceWith(stack[index])
     }
   }
 
-  return {keydown, add, update, undo, redo}
+  return {add, update, undo, redo, length}
 }
 

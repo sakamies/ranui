@@ -1,3 +1,5 @@
+'use strict'
+
 let editStartValue = '' //The value of a tag/prop/val/txt needs to be shared so i can check if the value has changed between entering edit mode and committing the edit.
 
 

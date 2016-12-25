@@ -1,3 +1,5 @@
+'use strict'
+
 //Misc utility stuff that's not directly related to editing.
 
 jQuery.fn.selectText = function(){

@@ -1,3 +1,5 @@
+'use strict'
+
 //TODO: eventually this module should use a fuzzy search and show an autocomplete list.
 
 //Chrome has rudimentary datalist element support, but it sucks, so we need our own implementation

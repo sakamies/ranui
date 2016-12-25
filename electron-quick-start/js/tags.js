@@ -1,3 +1,5 @@
+'use strict'
+
 //TODO: order these so that similar tags are ordered by how common they are, so it's mostly alphabetical, but you'll get what you want when you type just a few letters
 
 

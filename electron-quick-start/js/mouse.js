@@ -1,3 +1,5 @@
+'use strict'
+
 let dragTimer
 let mouseDownEvent = null
 let dragGhost = $('<div class="dragghost">')

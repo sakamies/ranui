@@ -1,13 +1,14 @@
 {
-  "name"    : "ranui",
+  "name": "ranui",
   "productName": "Ranui",
   "author": "Ville Vanninen",
-  "version" : "0.0.0",
-  "main"    : "main.js",
+  "version": "0.0.0",
+  "main": "main.js",
   "scripts": {
     "start": "electron ."
   },
   "devDependencies": {
+    "devtron": "^1.4.0",
     "electron": "^1.4.1",
     "humaninput": "^1.1.12",
     "jquery": "^3.1.1"

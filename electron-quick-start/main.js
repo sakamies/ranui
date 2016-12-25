@@ -1,64 +1,15 @@
+'use strict'
+
 const {
   app,
   shell,
-  BrowserWindow,
-  dialog,
   Menu,
+  BrowserWindow,
   MenuItem,
   ipcMain,
 } = require('electron')
-const path = require('path')
-const url = require('url')
 
-
-
-let windows = []
-function newWindow () {
-  let win = new BrowserWindow({
-    width: 1000,
-    height: 700,
-    title: 'Untitled',
-    //titleBarStyle: 'hidden',
-    webPreferences: {
-      scrollBounce: true
-    },
-    backgroundColor: '#272822' //Bg color of doc, so even if loading takes a while, the window won't flash white
-  })
-  win.on('closed', ()=> {
-    windows.splice(windows.indexOf(win), 1)
-  })
-
-  win.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
-    protocol: 'file:',
-    slashes: true
-  }))
-  //TODO: win.setRepresentedFilename('filename.html') //this should happen on file open
-  //TODO: win.setDocumentEdited(true) if not true, this should happen on any edit command in the render process
-  win.webContents.openDevTools() //for debugging
-
-  windows.push(win)
-}
-
-//TODO: put window management and file open/save stuff in its own module
-function openFile(paths) {
-  console.log(paths)
-  //TODO: open file? spawn new window, give that new window the path for opening or maybe text of the file, parse text inside the new window. Do it this way so any problem in parsing will only ever affect the one window.
-  //newWindow() needs to take path as a parameter?
-}
-function saveFile (filename) {
-  //TODO: get frontmost window, parse contents to html, show save dialog
-  //maybe take in filename as a parameter or something, need to handle saveAs, saveAll too
-  //maybe this should get the browserwindow as a parameter? so it would be easy to use this with saveAll
-  dialog.showSaveDialog()
-}
-function saveAs () {
-  // body...
-}
-function saveAll () {
-  //TODO: call saveFile for each browserwindow
-}
-
+const fileManager = require('./filemanager.js')
 
 
 
@@ -70,7 +21,7 @@ function createMenu() {
       label: app.name,
       submenu: [
       {
-        role: 'about'
+        role: 'about',
       },
       {
         type: 'separator'
@@ -90,7 +41,6 @@ function createMenu() {
         role: 'hideothers'
       },
       {
-        label: 'Show All',
         role: 'unhide'
       },
       {
@@ -109,29 +59,27 @@ function createMenu() {
         {
           label: 'New',
           accelerator: 'Command+N',
-          click: newWindow
+          click: fileManager.newFile
         },
         {
-          label: 'Open...',
+          label: 'Open…',
           accelerator: 'Command+O',
-          click: ()=> {
-            dialog.showOpenDialog({properties: ['openFile','multiSelections']}, openFile)
-          }
+          click: fileManager.open
         },
         {
           label: 'Save',
           accelerator: 'Command+S',
-          click: saveFile
+          click: fileManager.save //TODO: fix saveAs etc.
         },
         {
-          label: 'Save As...',
+          label: 'Save As…',
           accelerator: 'Command+Shift+S',
-          click: saveAs
+          click: fileManager.saveAs
         },
         {
           label: 'Save All',
           accelerator: 'Command+Option+S',
-          click: saveAll
+          click: fileManager.saveAll
         },
         {
           type: 'separator'
@@ -139,7 +87,7 @@ function createMenu() {
         {
           label: 'Close File',
           accelerator: 'Command+W',
-          click: ()=>{}
+          click: fileManager.close
         },
       ]
     },
@@ -147,10 +95,20 @@ function createMenu() {
       label: 'Edit',
       submenu: [
         {
-          role: 'undo'
+          label: 'Undo',
+          accelerator: 'CmdOrCtrl+Z',
+          //role: 'undo',
+          click: (menuItem, browserWindow, event)=>{
+            browserWindow.webContents.send('undo')
+          }
         },
         {
-          role: 'redo'
+          label: 'Redo',
+          accelerator: 'CmdOrCtrl+Shift+Z',
+          //role: 'redo',
+          click: (menuItem, browserWindow, event)=>{
+            browserWindow.webContents.send('redo')
+          }
         },
         {
           type: 'separator'
@@ -163,6 +121,9 @@ function createMenu() {
         },
         {
           role: 'paste'
+        },
+        {
+          role: 'delete'
         },
         {
           role: 'selectall'
@@ -233,7 +194,7 @@ function createMenu() {
       submenu: [
         {
           label: 'As @sakamies on Twitter',
-          click: function() {
+          click: ()=>{
             shell.openExternal('https://twitter.com/sakamies')
           }
         },
@@ -247,22 +208,25 @@ function createMenu() {
 function createDockMenu() {
   const menuTemplate = [
     {
-      label: 'New Window',
-      click: newWindow
+      label: 'New File',
+      click: fileManager.newFile
     },
   ]
   const menu = Menu.buildFromTemplate(menuTemplate)
   app.dock.setMenu(menu)
 }
 
-app.on('ready', ()=> {
+app.on('ready', ()=>{
   createMenu()
   createDockMenu()
-  newWindow()
+  fileManager.newFile()
 })
-
+app.on('window-all-closed', ()=>{
+  if (process.platform !== 'darwin')
+    app.quit()
+});
 app.on('activate', ()=> {
-  if (windows.length === 0) {
-    newWindow()
+  if (BrowserWindow.getAllWindows().length === 0) {
+    fileManager.newFile()
   }
 })

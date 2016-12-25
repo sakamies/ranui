@@ -1,4 +1,6 @@
-col = 0
+'use strict'
+
+let col = 0
 
 
 function select(to, opts) {
