@@ -301,6 +301,9 @@ function fold (e, opts) {
 
 
 function cut (e) {
+
+  //TODO: cur needs to copy plain text in editing mode, no frigging rich text
+
   if (HI.scope !== 'editing:') {
     if (e && e.preventDefault) {e.preventDefault()}
 
@@ -308,6 +311,9 @@ function cut (e) {
 }
 
 function copy (e) {
+
+  //TODO: copy needs to copy plain text in editing mode, no frigging rich text
+
   if (HI.scope !== 'editing:') {
     if (e && e.preventDefault) {e.preventDefault()}
 
@@ -315,6 +321,9 @@ function copy (e) {
 }
 
 function paste (e) {
+
+  //TODO: regular paste needs to prevent contenteditable from pasting styles, or clean up html after paste
+
   if (HI.scope !== 'editing:') {
     history.update()
 
