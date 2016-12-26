@@ -6,6 +6,9 @@ devtron.install()
 
 const autofill = require.main.require('./js/autofill.js')
 const tags = require.main.require('./js/tags.js') //list of html tags
+const importHTML = require.main.require('./js/import.js')
+const render = require.main.require('./js/render.js')
+const exportHTML = require.main.require('./js/export.js')
 const history = new History()
 
 //ranui.js is in global scope, so anything required here will be available through all main scripts. Yeah, should be encapsulated and all that.
@@ -64,7 +67,7 @@ window.addEventListener('beforecut', ()=>console.log('beforecut'))
 window.addEventListener('beforecopy', ()=>console.log('beforecopy'))
 window.addEventListener('cut', ()=>console.log('cut'))
 window.addEventListener('copy', ()=>console.log('copy'))
-window.addEventListener('paste', ()=>console.log('paste'))
+window.addEventListener('paste', paste)
 
 //Crazy editing
 const letterKeys = 'abcdefghijklmnopqrstuvwxyz'.split('')

@@ -44,6 +44,6 @@ function History(initial) {
     }
   }
 
-  return {add, update, undo, redo, length}
+  return {add, update, undo, redo, modified}
 }
 

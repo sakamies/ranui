@@ -160,6 +160,9 @@ function createProp(e, opts, str) {
     //id & class check if the element already has an id/class and act according to that. If there's an id, just edit the id val, if there's a class, add a class after that
     if (opts.includes(':id')) {
       let idProp = cur.parent().find('prop[text="id"] + val')
+      //TODO: first check if there's an id+val combo and add new to val if there is
+      //then check if there's a lone id prop without val, if there is, add a new val for id
+      //else add new id+val combo after tag
       if (idProp.length) {
         idProp.addClass('new')
       } else {
@@ -167,6 +170,9 @@ function createProp(e, opts, str) {
       }
     }
     if (opts.includes(':class')) {
+      //TODO: first check if there's a class + val combo
+      //then check if there's a lone class
+      //else add class after tag or id+val
       let prop = `<prop text="class">class</prop>`
       let val = `<val class="new">${str}</val>`
       let classProp = cur.parent().find('prop[text="class"]')
@@ -255,6 +261,8 @@ function comment(e) {
 
   history.update()
 
+  //TODO: this should toggle comments on children of the row too
+
   let sel = $('.sel')
   sel.parent().toggleClass('com')
 
@@ -290,6 +298,53 @@ function fold (e, opts) {
 
 }
 
+
+
+function cut (e) {
+  if (HI.scope !== 'editing:') {
+    if (e && e.preventDefault) {e.preventDefault()}
+
+  }
+}
+
+function copy (e) {
+  if (HI.scope !== 'editing:') {
+    if (e && e.preventDefault) {e.preventDefault()}
+
+  }
+}
+
+function paste (e) {
+  if (HI.scope !== 'editing:') {
+    history.update()
+
+    if (e && e.preventDefault) {e.preventDefault()}
+
+    //TODO: this needs the exact same smarts for tab handling as drag & drop
+
+    const cur = $('.cur')
+    //TODO: check for text/html data, if there's none, go for text/plain
+    const clip = event.clipboardData.getData('text/plain')
+    const data = importHTML(clip)
+
+    if (data.type === 'props') {
+      //Paste in like <attr1="jotai" attr2="dingus">
+      let dom = render.props(data.props)
+      cur.after(dom)
+    } else if (data.type === 'rows') {
+      //Paste in like <div class="dsa">dsa</div>
+      let dom = render.rows(data.rows)
+      cur.parent().after(dom)
+    }
+
+    cur.removeClass('cur')
+    let newSel = $('.new').removeClass('new')
+    newSel.last().addClass('cur')
+    select(newSel)
+
+    history.add()
+  }
+}
 
 
 //Maybe do actions like this, so each action would conform to managing history automatically, kinda like with selections and select() function
