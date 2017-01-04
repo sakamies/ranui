@@ -65,7 +65,7 @@ window.HI = new HumanInput(window, {
 //   $('#demo3').prop('disabled', true)
 //   $('#demo4').prop('disabled', true)
 //   $('#demo5').prop('disabled', false)
-})
+//})
 //END DEMO
 
 
