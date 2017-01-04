@@ -22,6 +22,54 @@ window.HI = new HumanInput(window, {
   //logLevel: 'DEBUG',
 })
 
+
+
+//DEMO KEY BINDINGS
+// HI.on('osleft->1', e=>{
+//   console.log('demo1')
+//   $('#demo1').prop('disabled', false)
+//   $('#demo2').prop('disabled', true)
+//   $('#demo3').prop('disabled', true)
+//   $('#demo4').prop('disabled', true)
+//   $('#demo5').prop('disabled', true)
+// })
+// HI.on('osleft->2', e=>{
+//   console.log('demo2')
+//   $('[type="end-tag"]').remove('')
+//   $('#demo1').prop('disabled', true)
+//   $('#demo2').prop('disabled', false)
+//   $('#demo3').prop('disabled', true)
+//   $('#demo4').prop('disabled', true)
+//   $('#demo5').prop('disabled', true)
+// })
+// HI.on('osleft->3', e=>{
+//   console.log('demo3')
+//   $('#demo1').prop('disabled', true)
+//   $('#demo2').prop('disabled', true)
+//   $('#demo3').prop('disabled', false)
+//   $('#demo4').prop('disabled', true)
+//   $('#demo5').prop('disabled', true)
+// })
+// HI.on('osleft->4', e=>{
+//   console.log('demo4')
+//   $('#demo1').prop('disabled', true)
+//   $('#demo2').prop('disabled', true)
+//   $('#demo3').prop('disabled', true)
+//   $('#demo4').prop('disabled', false)
+//   $('#demo5').prop('disabled', true)
+// })
+// HI.on('osleft->5', e=>{
+//   console.log('demo4')
+//   $('#demo1').prop('disabled', true)
+//   $('#demo2').prop('disabled', true)
+//   $('#demo3').prop('disabled', true)
+//   $('#demo4').prop('disabled', true)
+//   $('#demo5').prop('disabled', false)
+})
+//END DEMO
+
+
+
 //Selection
 //Selection should be row by row or by tree, maybe based on some setting?
 HI.on(['up', 'shift->up'], e=>selRow(e, 'up'))

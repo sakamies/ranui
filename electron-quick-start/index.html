@@ -4,12 +4,34 @@
     <title>Ranui</title>
     <meta charset="utf-8">
     <link rel="stylesheet" href="css/ranui.css">
+<!--     <link rel="stylesheet" id="demo1" href="css/demo-1.css">
+    <link rel="stylesheet" id="demo2" href="css/demo-2.css" disabled>
+    <link rel="stylesheet" id="demo3" href="css/demo-3.css" disabled>
+    <link rel="stylesheet" id="demo4" href="css/demo-4.css" disabled>
+    <link rel="stylesheet" id="demo5" href="css/demo-5.css" disabled> -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script>window.$ = window.jQuery = require('./js/jquery-3.1.1.min.js')</script>
     <script src="js/humaninput-1.1.13.min.js"></script>
   </head>
   <body>
+    <!-- DEMO DOC -->
     <doc>
+      <row tabs="0" type="tag"><tag text="html">html</tag></row>
+      <row tabs="1" type="tag"><tag text="head">head</tag></row>
+      <row tabs="2" type="tag"><tag text="title">title</tag></row>
+      <row tabs="3" type="txt"><txt text="Untitled">Untitled</tag></row>
+      <row tabs="2" type="end-tag"><tag text="title">title</tag></row>
+      <row tabs="1" type="end-tag"><tag text="head">head</tag></row>
+      <row tabs="1" type="tag" class="hilite"><tag text="body" class="sel cur">body</tag><prop text="id" class="">class</prop><val text="something" class="">something</val></row>
+      <row tabs="2" type="tag"><tag text="h1">h1</tag><prop text="id" class="">id</prop><val text="untitled-document" class="">untitled-document</val></row>
+      <row tabs="3" type="txt"><txt text="Untitled">Untitled document</tag></row>
+      <row tabs="2" type="end-tag"><tag text="head">head</tag></row>
+      <row tabs="1" type="end-tag"><tag text="body">body</tag></row>
+      <row tabs="0" type="end-tag"><tag text="html">html</tag></row>
+    </doc>
+
+    <!-- DEV DOC -->
+<!--     <doc>
       <row tabs="0" type="tag"><tag text="div">div</tag><prop text="id" class="cur sel">id</prop><val text="rules" class="cur sel">rules</val></row>
       <row tabs="1" type="tag"><tag text="div">div</tag><prop text="class">class</prop><val text="something">something</val></row>
       <row tabs="2" type="tag"><tag text="div">div</tag></row>
@@ -17,7 +39,7 @@
       <row tabs="1" type="tag" class="com"><tag text="div">div</tag><prop text="class">class</prop><val text="text">text</val></row>
       <row class="hilite com" tabs="2" type="txt"><txt class="cur sel" text="plaintext">plaintext</txt></row>
       <row tabs="1" type="txt"><txt text="plaintext">plaintext</txt></row>
-    </doc>
+    </doc> -->
 
     <script src="js/utils.js"></script>
     <script src="js/history.js"></script>

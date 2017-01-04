@@ -1,0 +1,29 @@
+/*Same as demo 2, but js removes end tags*/
+
+row[type*="tag"]::before {
+  content: '<';
+  margin-right: -.4ch;
+}
+row[type*="tag"]::after {
+  content: '>';
+  margin-left: -.4ch;
+}
+row[type*="end-tag"]::before {
+  content: '</';
+  margin-right: -.4ch;
+}
+
+prop::after {
+  content: '=';
+}
+val {
+  margin-left: calc(-1px - .4ch);
+}
+prop + val::before {
+  position: static;
+  margin: 0;
+  content: '"' !important;
+}
+val::after {
+  content: '"';
+}

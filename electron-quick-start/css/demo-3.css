@@ -1,0 +1,14 @@
+prop::after {
+  content: '=';
+}
+val {
+  margin-left: calc(-1px - .4ch);
+}
+prop + val::before {
+  position: static;
+  margin: 0;
+  content: '"' !important;
+}
+val::after {
+  content: '"';
+}

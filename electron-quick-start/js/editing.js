@@ -200,6 +200,8 @@ function del (e, opts) {
 
   //TODO: add case for when last row of doc gets deleted, maybe add append a new div to the start of the document, select it and edit it so the user will need to give a tag
 
+  //TODO: if you delete an attribute name, it should delete related values too
+
   opts = opts || ''
   let sel = $('.sel')
   let cursors = $('.cur')
@@ -222,8 +224,9 @@ function del (e, opts) {
     }
   })
 
-  //Delete whole row if tag or txt is to be deleted. Tag is a proxy for the whole row and txt can't include more than the text itself
+  //Find tags & txt in selection and delete their parents. Those are proxies for the whole row, so rows should get deleted with them.
   sel.filter('tag, txt').parent().remove()
+
   sel.remove()
 
   //no need to remove cur class from anything since cursors will have been removed from dom
