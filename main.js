@@ -11,7 +11,7 @@ const {
 
 const fileManager = require('./filemanager.js')
 
-
+const os = require("os")
 
 //TODO: track frontmost window and send menu messages there?
 
@@ -218,7 +218,10 @@ function createDockMenu() {
 
 app.on('ready', ()=>{
   createMenu()
-  createDockMenu()
+  //Crashes on windows 
+  if(os.platform() == "darwin"){
+    createDockMenu()
+  }
   fileManager.newFile()
 })
 app.on('window-all-closed', ()=>{

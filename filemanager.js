@@ -8,7 +8,9 @@ const {
 
 const path = require('path')
 const url = require('url')
-
+const fs = require("fs")
+const exportHTML =require("./js/export.js")
+const importHTML =require("./js/import.js")
 
 //TODO: use macOS native tabs for documents, don't implement any custom tabs. Not enabled in Electron yet, but here's the issue: https://github.com/electron/electron/issues/6124 Tabs have been intentionally disabled, so it shouldn't be hard to add back tab support.
 
@@ -19,25 +21,22 @@ function newFile (menuItem, browserWindow, event) {
   let newWin = new BrowserWindow({
     width: 1000,
     height: 700,
-    title: 'Untitled',
+    title: 'Ranui - untitled.html',
     //titleBarStyle: 'hidden',
     webPreferences: {
       scrollBounce: true
     },
     backgroundColor: '#272822' //Bg color of doc, so even if loading takes a while, the window won't flash white
   })
+  newWin.file = ("untitled.html")
+  newWin.untitled =true;
   newWin.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),
     protocol: 'file:',
     slashes: true
   }))
-  //TODO: win.setRepresentedFilename('filename.html') //this should happen on file open
-  //TODO: win.setDocumentEdited(true) if not true, this should happen on any edit command in the render process
-  newWin.webContents.openDevTools() //for debugging
 
   windowList.push(newWin)
-
-
   newWin.on('closed', ()=> {
     windowList.splice(windowList.indexOf(newWin), 1)
     newWin = null
@@ -47,28 +46,46 @@ function newFile (menuItem, browserWindow, event) {
 //TODO: put window management and file open/save stuff in its own module
 function open (menuItem, browserWindow, event) {
   dialog.showOpenDialog({properties: ['openFile','multiSelections']}, paths=>{
-    console.log(paths)
+    for(var path in paths){
+      fs.readFile(paths[path], 'utf-8', function (err, data) {
+        console.log(data)//TODO actually import stuff 
+      }) 
+    }
   })
-  //TODO: open file? spawn new window, give that new window the path for opening or maybe text of the file, parse text inside the new window. Do it this way so any problem in parsing will only ever affect the one window.
-  //newWindow() needs to take path as a parameter?
 }
 function close (menuItem, browserWindow, event) {
-  browserWindow.close()
-  //TODO: call saveFile for each browserwindow
+    browserWindow.close()
 }
 
 function save (menuItem, browserWindow, event) {
-  //TODO: get frontmost window, parse contents to html, show save dialog
-  //maybe take in filename as a parameter or something, need to handle saveAs, saveAll too
-  //maybe this should get the browserwindow as a parameter? so it would be easy to use this with saveAll
-
+    if(!browserWindow.untitled){
+     var ws = fs.createWriteStream(browserWindow.file,{defaultEncoding:"utf-8"});
+    exportHTML.requestExport(browserWindow,function(str) {
+      ws.write(str);
+      ws.close()
+    })
+    }else{
+      saveAs(undefined,browserWindow,undefined)
+    }
 }
 function saveAs (menuItem, browserWindow, event) {
-  dialog.showSaveDialog()
-  //etc...
+  dialog.showSaveDialog(browserWindow,{title:"Save as..."},function(fname){
+    if(fname != undefined){
+      var ws = fs.createWriteStream(fname,{defaultEncoding:"utf-8"});
+      exportHTML.requestExport(browserWindow,function(str) {
+        ws.write(str);
+        ws.close()
+      })
+      browserWindow.untitled = false
+      browserWindow.file = (fname)
+      browserWindow.setTitle( "Ranui - " + browserWindow.file)
+    }
+  })
 }
 function saveAll (menuItem, browserWindow, event) {
-  //TODO: call saveFile for each browserwindow
+  for(var win in windowList){
+    save(undefined,windowList[win],undefined)
+  }
 }
 
 
