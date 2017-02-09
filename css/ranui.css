@@ -29,12 +29,17 @@ $hiGreen: hsl(70, 100%, 50%);
   -webkit-user-select: none;
 }
 
+:root {
+  font-size: 62.5%;
+  font-size: 10px;
+}
+
 body {
   font-family: monospace;
   font-family: "Courier";
   font-family: "Menlo";
-  font-size: 15px;
-  line-height: 20px;
+  font-size: 1.5rem;
+  line-height: 2.0rem;
   white-space: nowrap;
   color: #f8f8f2;
   background-color: #272822;
@@ -54,16 +59,16 @@ doc, row {
 }
 tag, prop, val, txt {
   display: inline;
-  line-height: 20px;
+  line-height: 2.0rem;
   white-space: pre-wrap;
-  padding: 1px calc(.5ch - 1px);
-  margin: 0 1px;
-  border-radius: 2px;
+  padding: .1rem calc(.5ch - .1rem);
+  margin: 0 .1rem;
+  border-radius: .2rem;
 }
 
 doc {
   padding: 0 0;
-  background-image: linear-gradient(to left, #34332a 1px, transparent 1px);
+  background-image: linear-gradient(to left, #34332a .1rem, transparent .1rem);
   background-position: .8ch top;
   background-repeat: repeat-x;
   background-size: 2ch 100%;
@@ -85,11 +90,11 @@ prop + val::before {
   content: ':';
   font: inherit;
   position: absolute;
-  margin-left: calc(-1ch + 1px);
+  margin-left: calc(-1ch + .1rem);
   color: #a6e22d;
 }
 txt ~ * {
-  outline: 1px dotted red;
+  outline: .1rem dotted red;
 }
 
 
@@ -117,7 +122,7 @@ txt ~ * {
 [tabs="6"] + :-webkit-any([tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [tabs="7"] + :-webkit-any([tabs="9"],[tabs="10"]) > :first-child,
 [tabs="8"] + :-webkit-any([tabs="10"]) > :first-child {
-  outline: 1px dotted red;
+  outline: .1rem dotted red;
 }
 [type="txt"][tabs="0"] + :-webkit-any([tabs="2"],[tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [type="txt"][tabs="1"] + :-webkit-any([tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
@@ -128,7 +133,7 @@ txt ~ * {
 [type="txt"][tabs="6"] + :-webkit-any([tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [type="txt"][tabs="7"] + :-webkit-any([tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [type="txt"][tabs="8"] + :-webkit-any([tabs="9"],[tabs="10"]) > :first-child {
-  outline: 1px dotted red;
+  outline: .1rem dotted red;
 }
 
 .com {
@@ -142,12 +147,12 @@ txt ~ * {
 .sel {
   background: #49483E;
   box-shadow:
-    inset 0px 0px 0px 1px #828380;
+    inset .0rem .0rem .0rem .1rem #828380;
 }
 .cur {
   position: relative;
-  box-shadow: inset 0px 0px 0px 1px #828380;
-  box-shadow: inset 0px 0px 0px 1px hsla(200, 100%, 50%, 1);
+  box-shadow: inset .0rem .0rem .0rem .1rem #828380;
+  box-shadow: inset .0rem .0rem .0rem .1rem hsla(200, 100%, 50%, 1);
 }
 .cur::after {
   content: '';
@@ -155,19 +160,19 @@ txt ~ * {
   display: block;
   z-index: 100;
   top: auto;
-  bottom: -1px;
+  bottom: -.1rem;
   left: auto;
-  right: -1px;
-  width: 5px;
-  height: 5px;
-  border-radius: 1px;
+  right: -.1rem;
+  width: .5rem;
+  height: .5rem;
+  border-radius: .1rem;
   background: hsla(200, 100%, 50%, 1);
   box-shadow:
-    -1px -1px 0px 0px hsl(55, 8%, 26%);
+    -.1rem -.1rem .0rem .0rem hsl(55, 8%, 26%);
 }
 .hilite {
   background: #49483E;
-  //box-shadow: inset 0px 0px 0px 1px #828380;
+  //box-shadow: inset .0rem .0rem .0rem .1rem #828380;
 }
 .hilite + row::before {
   //Show insertion point somehow? Or is it enough that users learn it as they create new elements
@@ -185,12 +190,12 @@ txt ~ * {
 .clone {
   color: #272822;
   background-color: white;
-  box-shadow: inset 0px 0px 0px 1px white;
+  box-shadow: inset .0rem .0rem .0rem .1rem white;
 }
 [contenteditable="true"].cur::after,
 .clone.cur::after {
   box-shadow:
-    -1px -1px 0px 0px white;
+    -.1rem -.1rem .0rem .0rem white;
 }
 
 .dragsource,
@@ -207,10 +212,10 @@ txt ~ * {
   display: none;
   opacity: .7;
   pointer-events: none;
-  border-radius: 2px;
+  border-radius: .2rem;
   box-shadow:
-    0px 0px 0px 1px #828380,
-    0px 3px 8px 0px rgba(0,0,0,.5);
+    .0rem .0rem .0rem .1rem #828380,
+    .0rem .3rem .8rem .0rem rgba(0,0,0,.5);
 }
 
 /*TODO: drop point indicator should be a div that travels the page and gets rendered according to droptarget clientrect */
@@ -225,10 +230,10 @@ txt ~ * {
   position: absolute;
   display: block;
   z-index: 100;
-  top: 5px;
+  top: .5rem;
   left: -.5ch;
   width: 1ch;
-  height: 10px;
+  height: 1.0rem;
   border-radius: 1ch;
   background: #66d9ef;
   background: hsla(200, 100%, 50%, 1);
@@ -239,13 +244,13 @@ txt ~ * {
 }
 row.dropbefore::after,
 row.dropafter::after {
-  top: -2px;
+  top: -.2rem;
   left: auto;
   right: auto;
   width: 100%;
-  height: 4px;
+  height: .4rem;
 }
 row.dropafter::after {
   top: auto;
-  bottom: -2px;
+  bottom: -.2rem;
 }
