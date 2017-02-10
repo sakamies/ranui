@@ -59,6 +59,7 @@ function selRow (e, act) {
 
   let up = act.includes('up')
   let down = act.includes('down')
+  let end = act.includes('end') //TODO: implement end
 
   //TODO: add simple cases for up & down if there's no selection. The app should take care that there's always some element selected, but might be good to have just in case
 

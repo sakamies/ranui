@@ -21,6 +21,8 @@ jQuery.fn.selectEnd = function(){
 }
 
 
+
+//mod returns modifier keys in exclusive form, so you don't need to do e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey, just check if only shiftKey is pressed
 function modkeys (e, key) {
   let keys = {
     shift: e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey,
@@ -43,10 +45,11 @@ function modkeys (e, key) {
 }
 
 
+
 //create a throttled instance of a function
-//throttled = throttle(handleEvent)
+//throttledFunction = throttle(someFunctionHere)
 //use it
-//addEventListener(throttled) or e=>throttled(e, arg, arg, etc)
+//addEventListener(throttledFunction) or e=>throttled(e, arg, arg, etc)
 function throttle (fn, time, scope) {
   time = time || 250
   var last

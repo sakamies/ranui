@@ -1,6 +1,6 @@
 'use strict'
 
-let editStartValue = '' //The value of a tag/prop/val/txt needs to be shared so i can check if the value has changed between entering edit mode and committing the edit.
+let editStartValue = null //The value of a tag/prop/val/txt needs to be shared so i can check if the value has changed between entering edit mode and committing the edit.
 
 
 function startEdit (e, opts) {
@@ -40,6 +40,7 @@ function commitEdit(e) {
 
   if (editStartValue !== text) {
     history.add()
+    editStartValue = null;
   }
 }
 
@@ -239,14 +240,13 @@ function del (e, opts) {
 
 
 
-function tab (e) {
+function tab (e, amount) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
 
   //Should tabbing happen only for tags?
-  let amount = 1
-  if (e.shiftKey) {amount = -1}
+  amount = amount || 1
   let rows = $('.sel').parent()
   rows.each(function(index, row) {
     row = $(row)
