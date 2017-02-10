@@ -1,0 +1,3 @@
+- The visualised syntax could inform keyboard shortcuts
+  - So if the visuals showed `<div attr="value">` then you'd create new element by typing `<` and after writing the tag name `div` you'd make an attribut by pressing space. If you were writing an attribute name, you'd press `=` to add a value.
+  - Same for just `div attr:value` you'd add a div by typing lowercase, add and attr with space and add a value to attr with `:`
