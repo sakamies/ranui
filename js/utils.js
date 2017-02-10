@@ -28,17 +28,18 @@ function modkeys (e, key) {
     ctrl: !e.shiftKey && !e.altKey && e.ctrlKey && !e.metaKey,
     cmd: !e.shiftKey && !e.altKey && !e.ctrlKey && e.metaKey,
     any: e.shiftKey || e.altKey || e.ctrlKey || e.metaKey,
-    'cmd-shift': e.metaKey && e.shiftKey && !e.altKey && !e.ctrlKey,
-    'ctrl-shift': e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey,
-    'ctrl-cmd': e.metaKey && e.ctrlKey && !e.altKey && !e.shiftKey,
+    'cmdShift': e.metaKey && e.shiftKey && !e.altKey && !e.ctrlKey,
+    'ctrlShift': e.ctrlKey && e.shiftKey && !e.altKey && !e.metaKey,
+    'ctrlCmd': e.metaKey && e.ctrlKey && !e.altKey && !e.shiftKey,
   }
   keys.none = !keys.any
-  keys['shift-cmd'] = keys['cmd-shift']
-  keys['shift-ctrl'] = keys['ctrl-shift']
-  keys['ctrl-cmd'] = keys['cmd-ctrl']
+  keys['shiftCmd'] = keys['cmdShift']
+  keys['shiftCtrl'] = keys['ctrlShift']
+  keys['ctrlCmd'] = keys['cmdCtrl']
 
-  if (keys[key]) {return true}
-  else {return false}
+  return keys;
+  //if (keys[key]) {return true}
+  //else {return false}
 }
 
 
