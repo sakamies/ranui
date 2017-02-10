@@ -18,7 +18,7 @@ function mouseDown(e) {
   //e.preventDefault()
   let target = $(e.target)
   mouseDownEvent = e
-  scope = 'paintselection:'
+  scope = 'paintselection'
 
   if (!target.hasClass('sel') && !target.hasClass('hilite')) {
     selTarget(e)
@@ -26,7 +26,7 @@ function mouseDown(e) {
 
   dragTimer = setTimeout(()=>{
     history.update()
-    scope = 'dragging:'
+    scope = 'dragging'
 
     //Format what's being dragged, so the drag ghost exactly reflects what will be dropped.
     //Dragging gathers all selected items and puts them in flat rows.
@@ -62,10 +62,10 @@ function mouseDown(e) {
 
 function mouseMove(e) {
   clearTimeout(dragTimer)
-  if (scope == 'paintselection:') {
+  if (scope == 'paintselection') {
     //Paint selection if mouse was moved before drag was initiated
     selTarget(e, ':add')
-  } else if (scope === 'dragging:') {
+  } else if (scope === 'dragging') {
     //Make dragGhost follow mouse
     dragGhost.css({
       'left': e.pageX + 'px',
@@ -145,7 +145,7 @@ function mouseUp(e) {
   //TODO: check for shift/alt/ctrl/cmd, there should be a key that lets you clone elements
   let dragSource = $('.dragsource')
 
-  if (scope === 'dragging:' && dropTarget) {
+  if (scope === 'dragging' && dropTarget) {
     let dragPayload = dragGhost.children()
     //Set tabs according to droptarget tabs. This means that dragging does not preserve hierarchy in any way. It probably should preserve hierarchies where there's only an element and its children selected
     //dragPayload.attr('tabs', dropTarget.attr('tabs'))
@@ -158,7 +158,7 @@ function mouseUp(e) {
 
     //At this poin the operation happened, add entry to history. The rest of mouseup is just cleanup
     history.add()
-  } else if (scope === 'paintselection:' && mouseDownEvent.screenX === e.screenX && mouseDownEvent.screenY === e.screenY) {
+  } else if (scope === 'paintselection' && mouseDownEvent.screenX === e.screenX && mouseDownEvent.screenY === e.screenY) {
     //If you just click on an item and don't do a lasso selection or drag, then select the item
     selTarget(e)
   }
@@ -170,7 +170,7 @@ function mouseUp(e) {
 
   dragMode = ''
   mouseDownEvent = null
-  if (scope === 'dragging:' || scope === 'paintselection:') {
+  if (scope === 'dragging' || scope === 'paintselection') {
     scope = '' //only reset scopes we have set in mouse.js, leave any other scopes alone
   }
 }
@@ -178,7 +178,7 @@ function mouseUp(e) {
 
 function cancelDrag(e) {
   e.preventDefault()
-  if (scope === 'dragging:' || scope === 'paintselection:') {
+  if (scope === 'dragging' || scope === 'paintselection') {
     scope = '' //only reset scopes we have set in mouse.js, leave any other scopes alone
   }
   mouseUp(e)
