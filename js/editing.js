@@ -1,22 +1,20 @@
 'use strict'
 
-let editStartValue = null //The value of a tag/prop/val/txt needs to be shared so i can check if the value has changed between entering edit mode and committing the edit.
+let editmodeStartValue = null //The value of a tag/prop/val/txt needs to be shared so i can check if the value has changed between entering edit mode and committing the edit.
 
 
 function startEdit (e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   scope = 'editing'
-
-  //TODO: collapse selection to cursors
-
   opts = opts || ''
+
   $('.sel:not(.cur)').removeClass('sel')
   let target = $('.cur').first()
-  editStartValue = target.text()
+  editmodeStartValue = target.text()
   let clones = $('.cur').not(target)
-  target.attr('contenteditable', 'true').focus()
   clones.addClass('clone')
+  target.attr('contenteditable', 'true').focus()
 
   if (opts.includes(':selectEnd')) {
     target.selectEnd()
@@ -41,9 +39,9 @@ function commitEdit(e) {
     del(null, ':backward')
   }
 
-  if (editStartValue !== text) {
+  if (editmodeStartValue !== text) {
     history.add()
-    editStartValue = null;
+    editmodeStartValue = null;
   }
 }
 
