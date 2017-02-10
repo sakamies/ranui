@@ -337,7 +337,7 @@ function paste (e) {
     const cur = $('.cur')
     //TODO: check for text/html data, if there's none, go for text/plain
     const clip = event.clipboardData.getData('text/plain')
-    const data = importHTML(clip)
+    const data = parseHTML(clip)
 
     if (data.type === 'props') {
       //Paste in like <attr1="jotai" attr2="dingus">

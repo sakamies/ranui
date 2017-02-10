@@ -1,7 +1,7 @@
-module.exports = importHTML
+module.exports = parseHTML
 
 
-function importHTML (htmlString) {
+function parseHTML (htmlString) {
 
   //Check if string is like <attr="something" attr2="something"> and if it is, treat is as a bunch of attributes, although browsers would create an element or something crazy.
   if (htmlString.match(/^<\w*=".*">$/)) {
