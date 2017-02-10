@@ -33,7 +33,7 @@ function newFile (menuItem, browserWindow, event) {
   }))
   //TODO: win.setRepresentedFilename('filename.html') //this should happen on file open
   //TODO: win.setDocumentEdited(true) if not true, this should happen on any edit command in the render process
-  //newWin.webContents.openDevTools() //for debugging
+  newWin.webContents.openDevTools() //for debugging
 
   windowList.push(newWin)
 
