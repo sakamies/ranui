@@ -10,4 +10,4 @@ Good enough for demos, but not really usable yet. Mac only for now, mainly becau
 2. Run `npm install`
 3. Run `npm start`
 
-Built with on [Electron](http://electron.atom.io).
+Built with [Electron](http://electron.atom.io).
