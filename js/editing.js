@@ -8,10 +8,13 @@ function startEdit (e, opts) {
 
   scope = 'editing'
 
+  //TODO: collapse selection to cursors
+
   opts = opts || ''
+  $('.sel:not(.cur)').removeClass('sel')
   let target = $('.cur').first()
   editStartValue = target.text()
-  let clones = $('.sel').not(target)
+  let clones = $('.cur').not(target)
   target.attr('contenteditable', 'true').focus()
   clones.addClass('clone')
 

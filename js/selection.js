@@ -3,9 +3,11 @@
 let col = 0
 
 
+//TODO: alt should globally be an "add cursor" modifier and shift should be "add to selection" modifier, do this at selection functions instead of in key handling so it'll apply to mouse & keyboard
+
 function select(to, opts) {
   opts = opts || ''
-  //If not additive, remove sel class from everything that not cursor
+  //If not additive, remove sel class from everything that's not cursor
   if (opts.includes(':add')) {
   } else {
     $('.sel:not(.cur)').removeClass('sel')
