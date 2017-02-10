@@ -6,7 +6,7 @@ let editStartValue = '' //The value of a tag/prop/val/txt needs to be shared so 
 function startEdit (e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
 
-  HI.scope = 'editing:'
+  scope = 'editing'
 
   opts = opts || ''
   let target = $('.cur').first()
@@ -32,7 +32,7 @@ function commitEdit(e) {
   clones.removeClass('clone')
   target.attr('contenteditable', 'false')
 
-  HI.scope = ''
+  scope = ''
 
   if (text === '') {
     del(null, ':backward')
@@ -307,7 +307,7 @@ function cut (e) {
 
   //TODO: cur needs to copy plain text in editing mode, no frigging rich text
 
-  if (HI.scope !== 'editing:') {
+  if (scope !== 'editing') {
     if (e && e.preventDefault) {e.preventDefault()}
 
   }
@@ -317,7 +317,7 @@ function copy (e) {
 
   //TODO: copy needs to copy plain text in editing mode, no frigging rich text
 
-  if (HI.scope !== 'editing:') {
+  if (scope !== 'editing') {
     if (e && e.preventDefault) {e.preventDefault()}
 
   }
@@ -327,7 +327,7 @@ function paste (e) {
 
   //TODO: regular paste needs to prevent contenteditable from pasting styles, or clean up html after paste
 
-  if (HI.scope !== 'editing:') {
+  if (scope !== 'editing') {
     history.update()
 
     if (e && e.preventDefault) {e.preventDefault()}

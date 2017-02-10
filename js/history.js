@@ -27,7 +27,7 @@ function History(initial) {
 
   //TODO: sometimes you can undo the document into oblivion, something's wrong
   function undo () {
-    if (HI.scope === 'editing:') {
+    if (scope === 'editing') {
       document.execCommand('undo', '', null)
     } else if (index > 0) {
       index = index - 1
@@ -36,7 +36,7 @@ function History(initial) {
   }
 
   function redo () {
-    if (HI.scope === 'editing:') {
+    if (scope === 'editing') {
       document.execCommand('redo', '', null)
     } else if (index < stack.length - 1) {
       index = index + 1
