@@ -95,9 +95,16 @@ function createRow (e, opts, str) {
     let cursors = $('.cur')
     let sel = $('.sel')
     let selrows = cursors.parent()
+    let template
 
-    if (txt) {selrows.after($(`<row class="new" type="txt"><txt>${txt}</txt></row>`))}
-    else if (tag) {selrows.after($(`<row class="new" type="tag"><tag text="${tag}">${tag}</tag></row>`))}
+    if (txt) {template = $(`<row class="new" type="txt"><txt>${txt}</txt></row>`)}
+    else if (tag) {template = $(`<row class="new" type="tag"><tag text="${tag}">${tag}</tag></row>`)}
+
+    if (selrows.length) {
+      selrows.after(template)
+    } else { //If there's no selection, add stuff at the end of doc
+      $('doc').append(template)
+    }
 
     let newRows = $('.new').removeClass('new')
     newRows.each(function(index, row) {
@@ -106,10 +113,13 @@ function createRow (e, opts, str) {
       let nextTabs = parseInt(newRow.next().attr('tabs')) || 0
       let prevTabs = parseInt(prevRow.attr('tabs')) || 0
       if (txt) {
-        if (prevRow.attr('type') === 'txt') {
+        if (prevRow.attr('type') === 'tag') {
+          newRow.attr('tabs', prevTabs + 1)
+        } else if (prevRow.attr('type') === 'txt') { //Text can't be a child of text.
+        //TODO: There should be a generic cleanup & check function instead of doing all these inline
           newRow.attr('tabs', prevTabs)
         } else {
-          newRow.attr('tabs', prevTabs + 1)
+          newRow.attr('tabs', 0)
         }
       } else if (tag) {
         newRow.attr('tabs', Math.max(nextTabs, prevTabs))
@@ -145,6 +155,8 @@ function createProp(e, opts, str) {
   str = str || ''
   let sel = $('.sel')
   let cursors = $('.cur')
+
+  if (cursors.length === 0) {return} //Can't add props to nonexistent selections
 
   //Treat each cursor individually
   cursors.each((i, el)=>{
