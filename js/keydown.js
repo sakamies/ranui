@@ -139,12 +139,12 @@ function keydown(e) {
     }
     else if (mod.none && e.key === 'Tab') {
       commitEdit()
-      tab(e, 1)
+      //tab(e, 1)
       return
     }
     else if (mod.shift && e.key === 'Tab') {
       commitEdit()
-      tab(e, -1)
+      //tab(e, -1)
       return
     }
   }
