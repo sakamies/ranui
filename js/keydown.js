@@ -21,8 +21,7 @@ function keydown(e) {
       return
     }
     else if (e.key === 'ArrowRight') {
-      selCol
-      (e,'right')
+      selCol(e,'right')
       return
     }
     else if (mod.cmd && e.key === 'd') {
