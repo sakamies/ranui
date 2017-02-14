@@ -52,7 +52,7 @@ function keydown(e) {
       createRow(e, ':tag')
       return
     }
-    else if (mod.none && e.key.match(/^[A-Z]$/)) {
+    else if ((mod.none || mod.shift) && e.key.match(/^[A-Z]$/)) {
       createRow(e, ':txt')
       return
     }
