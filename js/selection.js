@@ -183,6 +183,14 @@ function selSimilar(e, opts) {
 }
 
 
+function selAll(e) {
+  //Should this select the whole row first and only after that the whole doc?
+  $('.cur').removeClass('cur')
+  $('doc row:last :last-child').addClass('cur')
+  select($('tag, prop, val, txt'))
+}
+
+
 function getRowChildren(node) {
   //Finds rows that are more indented than the given row, until encounters a row with the same indentation or less. Does not select anything by itself, more of a utility function.
   let row = $(node)

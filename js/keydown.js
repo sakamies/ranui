@@ -24,8 +24,8 @@ function keydown(e) {
       selCol(e,'right')
       return
     }
-    else if (mod.cmd && e.key === 'd') {
-      selSimilar(e)
+    else if (mod.cmd && e.key === 'a') {
+      selAll(e)
       return
     }
     else if (mod.cmd && e.key === 'd') {
@@ -127,7 +127,6 @@ function keydown(e) {
 
   //Edit actions while editing an item
   if (scope === 'editing') {
-    console.log('editing scope')
     if (mod.none && e.key === 'Enter' || e.key === 'Escape') {
       console.log('commit edit')
       commitEdit(e)
