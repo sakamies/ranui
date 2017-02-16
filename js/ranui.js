@@ -10,7 +10,7 @@ const parseHTML = require.main.require('./js/parseHTML.js')
 const render = require.main.require('./js/render.js')
 const exportHTML = require.main.require('./js/export.js')
 const history = new History()
-var scope = '';
+var scope = ''
 
 //ranui.js is in global scope, so anything required here will be available through all main scripts. Yeah, should be encapsulated and all that.
 

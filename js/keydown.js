@@ -90,7 +90,7 @@ function keydown(e) {
   if (scope === '') {
     if (mod.none && e.key === 'Enter') {
       console.log('Enter: start edit')
-      history.update();
+      history.update()
       startEdit(e)
       return
     }

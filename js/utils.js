@@ -39,7 +39,7 @@ function modkeys (e, key) {
   keys['shiftCtrl'] = keys['ctrlShift']
   keys['ctrlCmd'] = keys['cmdCtrl']
 
-  return keys;
+  return keys
   //if (keys[key]) {return true}
   //else {return false}
 }
@@ -57,13 +57,13 @@ function throttle (fn, time, scope) {
 
   //create a scope with throttle, then return the throttled function that has access to the throttle scope, so it can set last & timer vars
   return function () {
-    let context = scope || this;
+    let context = scope || this
 
     let now = +new Date
     let args = arguments
 
     if (last && now < last + time) {
-      clearTimeout(deferTimer);
+      clearTimeout(deferTimer)
       deferTimer = setTimeout(function () {
         last = now
         fn.apply(context, args)
@@ -72,5 +72,5 @@ function throttle (fn, time, scope) {
       last = now
       fn.apply(context, args)
     }
-  };
+  }
 }

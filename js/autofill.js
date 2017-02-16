@@ -43,12 +43,12 @@ function processNode (node) {
       const selStart = text.length
       const selEnd = autoFilledText.length
       node.innerText = autoFilledText
-      const range = document.createRange();
-      range.setStart(textNode, selStart);
-      range.setEnd(textNode, selEnd);
-      const sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(range);
+      const range = document.createRange()
+      range.setStart(textNode, selStart)
+      range.setEnd(textNode, selEnd)
+      const sel = window.getSelection()
+      sel.removeAllRanges()
+      sel.addRange(range)
     }
   }
 }

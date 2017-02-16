@@ -41,7 +41,7 @@ function commitEdit(e) {
 
   if (editmodeStartValue !== text) {
     history.add()
-    editmodeStartValue = null;
+    editmodeStartValue = null
   }
 }
 
@@ -264,7 +264,9 @@ function tab (e, amount) {
   rows.each(function(index, row) {
     row = $(row)
     let prevTabs = parseInt(row.prev().attr('tabs'))
-    let tabs = Math.max(parseInt(row.attr('tabs')) + amount, 0) //So tabs don't go negative
+    let rowTabs = parseInt(row.attr('tabs'))
+    let newTabs = rowTabs + amount
+    let tabs = Math.max(newTabs, 0) //So tabs don't go negative
     row.attr('tabs', tabs)
   })
 
