@@ -3,6 +3,7 @@
 //TODO: some of these probably belong in app menus and need to be listened to by ipcRenderer.on('whatever', e=>{})
 
 function keydown(e) {
+  console.log(e.key, e.code)
   //mod returns modifier keys in exclusive form, so you don't need to do e.shiftKey && !e.altKey && !e.ctrlKey && !e.metaKey, just check if only shiftKey is pressed
   let mod = modkeys(e)
 
@@ -86,10 +87,9 @@ function keydown(e) {
     }
   }
 
-  //Editing while in root scope
+  //Edit actions while in root scope
   if (scope === '') {
     if (mod.none && e.key === 'Enter') {
-      console.log('Enter: start edit')
       history.update()
       startEdit(e)
       return
@@ -127,6 +127,8 @@ function keydown(e) {
 
   //Edit actions while editing an item
   if (scope === 'editing') {
+    let target = $('[contenteditable="true"]')
+
     if (mod.none && e.key === 'Enter' || e.key === 'Escape') {
       console.log('commit edit')
       commitEdit(e)
@@ -138,6 +140,7 @@ function keydown(e) {
     }
     else if (mod.none && e.key === 'Tab') {
       commitEdit()
+      //Pressing tab to indent while editing felt way too fiddly, fought with muscle memory, so pressing tab is like autocompletion in the terminal or text editor, it just accepts whatever's in the input box.
       //tab(e, 1)
       return
     }
@@ -145,6 +148,14 @@ function keydown(e) {
       commitEdit()
       //tab(e, -1)
       return
+    }
+    //Make new props when pressing keys that make sense. Like, you'd expect that if you type `div `, that stuff after that would be an attribute name, so that's what happens. This becomes troublesome when the visualised syntax clashes with html validity. HTML allows : * and stuff in attribute names. Pressing : inside an attribute name must allow you to keep typing, because svg is a common case where you use some namespacing.
+    else if (target[0].tagName === 'TAG' && e.code === 'Space') {
+      commitEdit()
+      createProp(e, ':prop')
+    } else if (target[0].tagName === 'PROP' && e.code === 'Space') {
+      commitEdit()
+      createProp(e, ':val')
     }
   }
 

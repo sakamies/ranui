@@ -8,7 +8,7 @@ const autofill = require.main.require('./js/autofill.js')
 const tags = require.main.require('./js/tags.js') //list of html tags
 const parseHTML = require.main.require('./js/parseHTML.js')
 const render = require.main.require('./js/render.js')
-const exportHTML = require.main.require('./js/export.js')
+const exportHTML = require.main.require('./js/exportHTML.js')
 const history = new History()
 var scope = ''
 

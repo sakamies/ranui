@@ -6,6 +6,8 @@ let editmodeStartValue = null //The value of a tag/prop/val/txt needs to be shar
 function startEdit (e, opts) {
   if (e && e.preventDefault) {e.preventDefault()}
 
+  //startEdit could be called from many contexts, so it doen't itself have history.update, history.update needs to be called before invoking startEdit if needed
+
   scope = 'editing'
   opts = opts || ''
 
@@ -47,6 +49,11 @@ function commitEdit(e) {
 
 
 function input (node) {
+  //input() takes in a node instead of event is that it can be called from anywhere, not just from input event. So you can trigger autofill programmatically when creating tags, props & vals.
+
+  //TODO: maybe there shouldn't be input string parsing but this should be in keybindings in editing scope
+  //TODO: if this is used at all, it needs to be aware of multiple cursors, now it's not
+
   let sel = $('.sel')
   let tagName = node.tagName
   let text = node.innerText
@@ -55,20 +62,9 @@ function input (node) {
 
   //Could use discard.js here too to just throw away any invalid characters for tags, props & vals
 
-  //Check last character of input and make actions based on it. if : or = then add new val and if , then add new prop
-  //Must account for what the previous element is, this could have lots of smarts, but we'll go with something really simple for start
-  //TODO: should also check if editing val and prop is class, then split to new value on space or .
-  if (tagName === 'PROP' && lastChar === ':' || lastChar === '=') {
-    text = text.slice(0, -1)
-    node.innerText = text
-    commitEdit()
-    createProp(null, ':val')
-    startEdit()
-  } else {
-    //If there's no action to be done, try autofill
-    autofill.fill(node)
-    text = node.innerText
-  }
+  //Try autofill
+  autofill.fill(node)
+  text = node.innerText
 
   //If multiple things are selected, match their text
   clones.text(text)
@@ -146,12 +142,12 @@ function createRow (e, opts, str) {
 }
 
 
-function createProp(e, opts, str) {
+function createProp(e, type, str) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
 
-  opts = opts || ''
+  type = type || ''
   str = str || ''
   let sel = $('.sel')
   let cursors = $('.cur')
@@ -165,14 +161,15 @@ function createProp(e, opts, str) {
     let cur = $(el)
 
     //Without options, try to automatically add the right thing
-    if (opts === '' && el.tagName === 'PROP') {opts = ':val'}
-    else if (opts === '' && ['TAG','VAL'].includes(el.tagName)) {opts = ':prop'}
+    if (type === '' && el.tagName === 'PROP') {type = ':val'}
+    else if (type === '' && ['TAG','VAL'].includes(el.tagName)) {type = ':prop'}
 
-    if (opts.includes(':val')) {cur.after(`<val class="new">${str}</val>`)}
-    if (opts.includes(':prop')) {cur.after(`<prop class="new"></prop>`)}
+    if (type.includes(':val')) {cur.after(`<val class="new">${str}</val>`)}
+    if (type.includes(':prop')) {cur.after(`<prop class="new"></prop>`)}
 
     //id & class check if the element already has an id/class and act according to that. If there's an id, just edit the id val, if there's a class, add a class after that
-    if (opts.includes(':id')) {
+    //TODO: add id & add class should act on hilited rows, not cursors, so you never get a double class added to a row if there's two or more cursors on a row
+    if (type.includes(':id')) {
       let idProp = cur.parent().find('prop[text="id"] + val')
       //TODO: first check if there's an id+val combo and add new to val if there is
       //then check if there's a lone id prop without val, if there is, add a new val for id
@@ -183,7 +180,7 @@ function createProp(e, opts, str) {
         cur.after(`<prop text="id">id</prop><val class="new">${str}</val>`)
       }
     }
-    if (opts.includes(':class')) {
+    if (type.includes(':class')) {
       //TODO: first check if there's a class + val combo
       //then check if there's a lone class
       //else add class after tag or id+val
@@ -212,9 +209,7 @@ function del (e, opts) {
 
   history.update()
 
-  //TODO: add case for when last row of doc gets deleted, maybe add append a new div to the start of the document, select it and edit it so the user will need to give a tag
-
-  //TODO: if you delete an attribute name, it should delete related values too
+  //TODO: if you delete an attribute name, it should (maybe?) delete related values too
 
   opts = opts || ''
   let sel = $('.sel')

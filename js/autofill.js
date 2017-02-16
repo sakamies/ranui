@@ -26,6 +26,8 @@ function processNode (node) {
   let autoFillValues = []
   let autoFilledText
 
+  //Different behaviour for different types of cases
+  //autofill could be super smart based on context, like only adding li's inside ul & ol elements, but too aggressive smarts get irritating really quickly, so not doing it for now.
   if (node.tagName === 'TAG') {
     autoFillValues = tags
   } else {

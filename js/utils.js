@@ -1,6 +1,28 @@
 'use strict'
 
-//Misc utility stuff that's not directly related to editing.
+//Ranui utils
+function getRowChildren(node) {
+  //Finds rows that are more indented than the given row, until encounters a row with the same indentation or less. Does not select anything by itself, more of a utility function.
+  let row = $(node)
+  let tabs = parseInt(row.attr('tabs'))
+  let children = $()
+  row.nextAll().each((i, el)=>{
+    let childTabs = parseInt($(el).attr('tabs'))
+    if (childTabs > tabs) {
+      //TODO: drag-drop flattens tabs. so after a drag operation, this will no longer find .hidden elements that are after a .folded element. Need to do some sort of smart tab handling there
+      children = children.add(el)
+    } else {
+      return false
+    }
+  })
+  return children
+}
+
+
+
+
+
+//Misc js utility stuff that's not directly related to editing.
 
 jQuery.fn.selectText = function(){
   const element = this[0]

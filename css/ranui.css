@@ -188,6 +188,7 @@ txt ~ * {
 
 [contenteditable="true"],
 .clone {
+  /*TODO Editable styling needs work, you need to be able to see what type of prop you're editing, can't be just plain black on white. But still needs to be obvious that now you're editing text. Editing cursor appearance would be ace, but sometimes chrome just doesn't even render the cursor in styled contenteditables. */
   color: #272822;
   background-color: white;
   box-shadow: inset .0rem .0rem .0rem .1rem white;

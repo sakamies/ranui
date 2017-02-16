@@ -2,7 +2,6 @@
 
 let col = 0
 
-
 //TODO: alt should globally be an "add cursor" modifier and shift should be "add to selection" modifier, do this at selection functions instead of in key handling so it'll apply to mouse & keyboard
 
 function select(to, opts) {
@@ -188,23 +187,5 @@ function selAll(e) {
   $('.cur').removeClass('cur')
   $('doc row:last :last-child').addClass('cur')
   select($('tag, prop, val, txt'))
-}
-
-
-function getRowChildren(node) {
-  //Finds rows that are more indented than the given row, until encounters a row with the same indentation or less. Does not select anything by itself, more of a utility function.
-  let row = $(node)
-  let tabs = parseInt(row.attr('tabs'))
-  let children = $()
-  row.nextAll().each((i, el)=>{
-    let childTabs = parseInt($(el).attr('tabs'))
-    if (childTabs > tabs) {
-      //TODO: drag-drop flattens tabs. so after a drag operation, this will no longer find .hidden elements that are after a .folded element. Need to do some sort of smart tab handling there
-      children = children.add(el)
-    } else {
-      return false
-    }
-  })
-  return children
 }
 
