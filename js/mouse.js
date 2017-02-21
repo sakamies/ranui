@@ -24,40 +24,49 @@ function mouseDown(e) {
     selTarget(e)
   }
 
-  dragTimer = setTimeout(()=>{
-    history.update()
-    scope = 'dragging'
+  dragTimer = setTimeout(_=>dragStart(e), 220)
+}
 
-    //Format what's being dragged, so the drag ghost exactly reflects what will be dropped.
-    //Dragging gathers all selected items and puts them in flat rows.
-    let dragSourceRows = $('.hilite')
-    //TODO: this could be made more efficient, seems wasteful
-    dragSourceRows = dragSourceRows.add($('.hilite.folded').nextUntil('row:not(.hidden)')) //If you fold a row and drag it, its children will come with the drag
-    let dragSourceProps = $('row:not(.hilite) .sel')
-    let dragPayloadRows = dragSourceRows.clone()
-    let dragPayloadProps = dragSourceProps.clone()
-    dragSourceRows.addClass('dragsource')
-    dragSourceProps.addClass('dragsource')
+function dragStart(e) {
+  history.update()
+  scope = 'dragging'
 
-    //This allows nonsensical prop/row combinations, combining props with a txt row, but css will mark it as an error and the user needs to correct it. Should make this foolproof somehow.
-    if (dragPayloadRows.length) {
-      dragMode += ':rows'
-      //TODO: this should not flatten tabs, needs some sort of smart autoindentation behaviour. This flattening would also mess up folded rows.
-      dragPayloadRows.children().first().after(dragPayloadProps)
-      dragGhost.append(dragPayloadRows)
-    } else if (dragPayloadProps.length) {
-      dragMode += ':props'
-      dragGhost.append(dragPayloadProps)
-    }
+  //Format what's being dragged, so the drag ghost exactly reflects what will be dropped.
+  //Dragging gathers all selected items and puts them in flat rows.
+  let dragSourceRows = $('.hilite')
+  //TODO: this could be made more efficient, seems wasteful
+  dragSourceRows = dragSourceRows.add($('.hilite.folded').nextUntil('row:not(.hidden)')) //If you fold a row and drag it, its children will come with the drag
+  let dragSourceProps = $('row:not(.hilite) .sel')
+  let dragPayloadRows = dragSourceRows.clone()
+  let dragPayloadProps = dragSourceProps.clone()
+  dragSourceRows.addClass('dragsource')
+  dragSourceProps.addClass('dragsource')
 
-    dragGhost.css({
-      'display': 'inline-block',
-      'left': e.pageX + 'px',
-      'top': e.pageY + 'px',
-    })
-    $('doc').after(dragGhost)
+  //This allows nonsensical prop/row combinations, combining props with a txt row, but css will mark it as an error and the user needs to correct it. Should make this foolproof somehow.
+  if (dragPayloadRows.length) {
+    dragMode += ':rows'
 
-  }, 220)
+    /*TODO:
+      1. Split continuous ranges of selected rows to groups.
+      2. Go through each group
+        1. Get the children of the topmost row, split to a group
+        2. If there's rows left, repeat 1.
+      3. Unindent each group enough so that the upmost row is at tab 0
+    */
+
+    dragPayloadRows.children().first().after(dragPayloadProps)
+    dragGhost.append(dragPayloadRows)
+  } else if (dragPayloadProps.length) {
+    dragMode += ':props'
+    dragGhost.append(dragPayloadProps)
+  }
+
+  dragGhost.css({
+    'display': 'inline-block',
+    'left': e.pageX + 'px',
+    'top': e.pageY + 'px',
+  })
+  $('doc').after(dragGhost)
 }
 
 function mouseMove(e) {
