@@ -47,8 +47,8 @@ body {
 }
 
 ::selection {
-  //color: white;
-  //background: hsl(200, 100%, 50%);
+  color: white;
+  background: hsl(200, 100%, 50%);
 }
 :focus {
   outline: none;
@@ -60,10 +60,10 @@ doc, row {
 tag, prop, val, txt {
   display: inline;
   line-height: 2.0rem;
+  height: 2.0rem;
   white-space: pre-wrap;
-  padding: .1rem calc(.5ch - .1rem);
-  margin: 0 .1rem;
-  border-radius: .2rem;
+  padding: .1rem .5ch;
+  //border-radius: .2rem;
 }
 
 doc {
@@ -137,45 +137,23 @@ txt ~ * {
 }
 
 .com {
-  //font-style: italic;
+  font-style: italic;
 }
 .com > *,
 .com > *::before {
+  /*TODO: comments could mix the original color of the tag with this gray 50/50, this needs sass, so set it up*/
   color: #75715e;
 }
 
 .sel {
   background: #49483E;
-  box-shadow:
-    inset .0rem .0rem .0rem .1rem #828380;
 }
 .cur {
   position: relative;
-  box-shadow: inset .0rem .0rem .0rem .1rem #828380;
-  box-shadow: inset .0rem .0rem .0rem .1rem hsla(200, 100%, 50%, 1);
-}
-.cur::after {
-  content: '';
-  position: absolute;
-  display: block;
-  z-index: 100;
-  top: auto;
-  bottom: -.1rem;
-  left: auto;
-  right: -.1rem;
-  width: .5rem;
-  height: .5rem;
-  border-radius: .1rem;
-  background: hsla(200, 100%, 50%, 1);
-  box-shadow:
-    -.1rem -.1rem .0rem .0rem hsl(55, 8%, 26%);
+  box-shadow: inset 0 -.2rem 0 0 hsla(200, 100%, 50%, 1);
 }
 .hilite {
   background: #49483E;
-  //box-shadow: inset .0rem .0rem .0rem .1rem #828380;
-}
-.hilite + row::before {
-  //Show insertion point somehow? Or is it enough that users learn it as they create new elements
 }
 .folded::after {
   content: '…';
@@ -189,14 +167,10 @@ txt ~ * {
 [contenteditable="true"],
 .clone {
   /*TODO Editable styling needs work, you need to be able to see what type of prop you're editing, can't be just plain black on white. But still needs to be obvious that now you're editing text. Editing cursor appearance would be ace, but sometimes chrome just doesn't even render the cursor in styled contenteditables. */
-  color: #272822;
-  background-color: white;
-  box-shadow: inset .0rem .0rem .0rem .1rem white;
-}
-[contenteditable="true"].cur::after,
-.clone.cur::after {
-  box-shadow:
-    -.1rem -.1rem .0rem .0rem white;
+  //color: #272822;
+  //background-color: white;
+  //box-shadow: inset .0rem .0rem .0rem .1rem white;
+  box-shadow: inset 0 0 0 2px hsla(200, 100%, 50%, 1);
 }
 
 .dragsource,
