@@ -50,26 +50,24 @@ function commitEdit(e) {
 
 function input (node) {
   //input() takes in a node instead of event is that it can be called from anywhere, not just from input event. So you can trigger autofill programmatically when creating tags, props & vals.
+  //This function could parse input and create stuff based on that, but that logic is probably better to put in the paste handler and keyboard shortcuts.
 
-  //TODO: maybe there shouldn't be input string parsing but this should be in keybindings in editing scope
-  //TODO: if this is used at all, it needs to be aware of multiple cursors, now it's not
+  //Could use discard.js here to throw away any invalid characters for tags, props & vals as the user is typing them, so you could never add anything illegal in the tag. Cleanup could also happen on commitEdit?
 
-  let sel = $('.sel')
+  let cur = $('.cur')
+  let clones = $('.clone')
   let tagName = node.tagName
   let text = node.innerText
   let lastChar = text.slice(-1)
-  let clones = $('.clone')
-
-  //Could use discard.js here too to just throw away any invalid characters for tags, props & vals
 
   //Try autofill
   autofill.fill(node)
-  text = node.innerText
 
-  //If multiple things are selected, match their text
+  //If multiple items are being edited, match their text
+  text = node.innerText
   clones.text(text)
   //Update text attributes to match text content for easier selection via dom queries
-  sel.attr('text', text)
+  cur.attr('text', text)
 }
 
 
@@ -111,8 +109,7 @@ function createRow (e, opts, str) {
       if (txt) {
         if (prevRow.attr('type') === 'tag') {
           newRow.attr('tabs', prevTabs + 1)
-        } else if (prevRow.attr('type') === 'txt') { //Text can't be a child of text.
-        //TODO: There should be a generic cleanup & check function instead of doing all these inline
+        } else if (prevRow.attr('type') === 'txt') { //Text can't be a child of text so make a new textrow a sibling of previous textrow
           newRow.attr('tabs', prevTabs)
         } else {
           newRow.attr('tabs', 0)
@@ -274,7 +271,7 @@ function comment(e) {
 
   history.update()
 
-  //TODO: this should toggle comments on children of the row too
+  //TODO: this should toggle comments on children of the row too, maybe?
 
   let sel = $('.sel')
   sel.parent().toggleClass('com')
@@ -315,7 +312,7 @@ function fold (e, opts) {
 
 function cut (e) {
 
-  //TODO: cur needs to copy plain text in editing mode, no frigging rich text
+  //TODO: cut needs to copy plain text in editing mode, no frigging rich text
 
   if (scope !== 'editing') {
     if (e && e.preventDefault) {e.preventDefault()}
@@ -345,7 +342,7 @@ function paste (e) {
     //TODO: this needs the exact same smarts for tab handling as drag & drop
 
     const cur = $('.cur')
-    //TODO: check for text/html data, if there's none, go for text/plain
+    //TODO: check for text/html data, if there's none, get text/plain and parse that as html
     const clip = event.clipboardData.getData('text/plain')
     const data = parseHTML(clip)
 
@@ -366,6 +363,94 @@ function paste (e) {
 
     history.add()
   }
+}
+
+
+
+function moveUp (e) {
+
+  if (e && e.preventDefault) {e.preventDefault()}
+
+  history.update()
+
+  /*TODO
+    - if the selection model would be like in potato, then moveup & moveleft and selections would be unambiguous, now it's a bit hazy what should happen if you have a mixes selection of tags & props as to what should happen. I'll do this as a generic function now
+
+    - first: move props that are not in a hilited row, should be simple enough
+    - then move rows, based on any tags that are selected
+      - for each selection, check if prevRow is selected
+      - ops = [] // array of move operations
+      - if prevRow is not selected
+        - save reference to row
+        - get reference to nextUntil not selected
+        -  ops[i] = {row, dropAfterRow}
+      - iterate through ops and do dropAfterRow.after(row)
+  */
+
+  console.log('move props up')
+  let props = $('.sel')
+  props.filter(function(i, el) {
+    let prop = $(el)
+    if (prop.parent().hasClass('hilite')) {
+      //Filter out props that have their row selected, because they will be moved row by row
+      return false
+    }
+  })
+  //TODO: find reference to where each prop should be moved to
+  //Commit move operations
+
+
+  console.log('move rows up')
+  //This move logic is almost the same between moveUp/moveDown/moveLeft/moveRight, maybe it should be abstracted out?
+  let rows = $('row.hilite')
+  let ops = [] // array of move operations
+  rows.each(function(i, el) {
+    let selrow = $(el)
+    let source = selrow.prev()
+    if (source.hasClass('hilite') === false) {
+      let target = source.nextUntil(':not(.hilite)').first()
+      console.log('source',source[0],'target',target[0])
+      ops.push({source, target})
+    }
+    for (let op of ops) {
+      op.target.after(source)
+      //TODO: this needs automatic smarts, the same as in drag & drop & cut & paste
+    }
+  })
+
+  history.add()
+}
+
+function moveDown (e) {
+
+  if (e && e.preventDefault) {e.preventDefault()}
+
+  history.update()
+
+  let rows = $('row.hilite')
+  let ops = [] // array of move operations
+  rows.each(function(i, el) {
+    let selrow = $(el)
+    let source = selrow.next()
+    if (source.hasClass('hilite') === false) {
+      let target = source.prevUntil(':not(.hilite)').last()
+      console.log('source',source[0],'target',target[0])
+      ops.push({source, target})
+    }
+    for (let op of ops) {
+      op.target.before(source)
+    }
+  })
+
+  history.add()
+}
+
+function moveLeft (e) {
+  // body...
+}
+
+function moveRight (e) {
+  // body...
 }
 
 

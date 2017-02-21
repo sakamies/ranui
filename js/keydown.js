@@ -9,19 +9,19 @@ function keydown(e) {
 
   //Selection
   if (scope === '') {
-    if (e.key === 'ArrowUp') {
+    if (mod.none && e.key === 'ArrowUp') {
       selRow(e, 'up')
       return
     }
-    else if (e.key === 'ArrowDown') {
+    else if (mod.none && e.key === 'ArrowDown') {
       selRow(e, 'down')
       return
     }
-    else if (e.key === 'ArrowLeft') {
+    else if (mod.none && e.key === 'ArrowLeft') {
       selCol(e, 'left')
       return
     }
-    else if (e.key === 'ArrowRight') {
+    else if (mod.none && e.key === 'ArrowRight') {
       selCol(e,'right')
       return
     }
@@ -116,6 +116,22 @@ function keydown(e) {
     }
     else if (e.metaKey && e.key === '/') { //Check for emetakey instead of mod function because / could come through modifiers on some key layouts, like Scandinavian ones for example.
       comment(e)
+      return
+    }
+    else if (mod.ctrl && e.key === 'ArrowUp') {
+      moveUp(e)
+      return
+    }
+    else if (mod.ctrl && e.key === 'ArrowDown') {
+      moveDown(e)
+      return
+    }
+    else if (mod.ctrl && e.key === 'ArrowLeft') {
+      moveLeft(e)
+      return
+    }
+    else if (mod.ctrl && e.key === 'ArrowRight') {
+      moveRight(e)
       return
     }
     //TODO: move stuff around via keyboard
