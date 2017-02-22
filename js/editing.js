@@ -145,7 +145,6 @@ function createProp(e, type, str) {
   history.update()
 
   type = type || ''
-  str = str || ''
   let sel = $('.sel')
   let cursors = $('.cur')
 
@@ -158,11 +157,17 @@ function createProp(e, type, str) {
     let cur = $(el)
 
     //Without options, try to automatically add the right thing
-    if (type === '' && el.tagName === 'PROP') {type = ':val'}
-    else if (type === '' && ['TAG','VAL'].includes(el.tagName)) {type = ':prop'}
+    if (type === '' && el.tagName === 'PROP') {
+      type = ':val'
+      str = str || 'value'
+    } else if (type === '' && ['TAG','VAL'].includes(el.tagName)) {
+      type = ':prop'
+      str = str || 'attr'
+    }
+    str = str || ''
 
     if (type.includes(':val')) {cur.after(`<val class="new">${str}</val>`)}
-    if (type.includes(':prop')) {cur.after(`<prop class="new"></prop>`)}
+    if (type.includes(':prop')) {cur.after(`<prop class="new">${str}</prop>`)}
 
     //id & class check if the element already has an id/class and act according to that. If there's an id, just edit the id val, if there's a class, add a class after that
     //TODO: add id & add class should act on hilited rows, not cursors, so you never get a double class added to a row if there's two or more cursors on a row
