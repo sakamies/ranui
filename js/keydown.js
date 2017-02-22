@@ -168,10 +168,10 @@ function keydown(e) {
     //Make new props when pressing keys that make sense. Like, you'd expect that if you type `div `, that stuff after that would be an attribute name, so that's what happens. This becomes troublesome when the visualised syntax clashes with html validity. HTML allows : * and stuff in attribute names. Pressing : inside an attribute name must allow you to keep typing, because svg is a common case where you use some namespacing.
     else if (target[0].tagName === 'TAG' && e.code === 'Space') {
       commitEdit()
-      createProp(e, ':prop')
+      createProp(e)
     } else if (target[0].tagName === 'PROP' && e.code === 'Space') {
       commitEdit()
-      createProp(e, ':val')
+      createProp(e)
     }
   }
 
