@@ -29,7 +29,7 @@ function startEdit (e, opts) {
 function commitEdit(e) {
   if (e && e.preventDefault) {e.preventDefault()}
 
-  let target = $('[contenteditable]')
+  let target = $('[contenteditable="true"]')
   let text = target.text()
   let clones = $('.clone')
   clones.removeClass('clone')
