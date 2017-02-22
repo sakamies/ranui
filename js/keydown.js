@@ -25,6 +25,25 @@ function keydown(e) {
       selCol(e,'right')
       return
     }
+    /*TODO: additive selection via shift+arrow keys
+      - shift+up/down should select just rows, props don't line up, so selecting up/down as props only wouldn't make much sense
+    */
+    // else if (mod.shift && e.key === 'ArrowUp') {
+    //   selRow(e, 'up')
+    //   return
+    // }
+    // else if (mod.shift && e.key === 'ArrowDown') {
+    //   selRow(e, 'down')
+    //   return
+    // }
+    // else if (mod.shift && e.key === 'ArrowLeft') {
+    //   selCol(e, 'left')
+    //   return
+    // }
+    // else if (mod.shift && e.key === 'ArrowRight') {
+    //   selCol(e,'right')
+    //   return
+    // }
     else if (mod.cmd && e.key === 'a') {
       selAll(e)
       return
