@@ -59,6 +59,6 @@ ipcRenderer.on('save', e=>{})
 ipcRenderer.on('saveAs', e=>{})
 window.addEventListener('beforeunload', e=>{
   if (history.modified()) {
-    confirm('Save changes?') //TODO: show proper [don't save / cancel / save] dialog
+    //confirm('Save changes?') //TODO: show proper [don't save / cancel / save] dialog
   }
 })

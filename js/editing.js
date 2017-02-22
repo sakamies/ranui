@@ -378,38 +378,25 @@ function moveUp (e) {
 
   history.update()
 
-  /*TODO
-    - if the selection model would be like in potato, then moveup & moveleft and selections would be unambiguous, now it's a bit hazy what should happen if you have a mixes selection of tags & props as to what should happen. I'll do this as a generic function now
-
-    - first: move props that are not in a hilited row, should be simple enough
-    - then move rows, based on any tags that are selected
-      - for each selection, check if prevRow is selected
-      - ops = [] // array of move operations
-      - if prevRow is not selected
-        - save reference to row
-        - get reference to nextUntil not selected
-        -  ops[i] = {row, dropAfterRow}
-      - iterate through ops and do dropAfterRow.after(row)
-  */
-
-  console.log('move props up')
-  let props = $('.sel')
-  props.filter(function(i, el) {
+  let sel = $('.sel')
+  sel.each(function(i, el) {
     let prop = $(el)
-    if (prop.parent().hasClass('hilite')) {
-      //Filter out props that have their row selected, because they will be moved row by row
-      return false
+    let row = prop.parent('row')
+    let target = row.prevUntil('[type="tag"]')
+    if (target.length) {
+      target = target.last().prev()
+    } else {
+      target = row.prev('[type="tag"]')
+    }
+    if (target.length && row.hasClass('hilite') === false) {
+      target.append(prop)
     }
   })
-  //TODO: find reference to where each prop should be moved to
-  //Commit move operations
 
-
-  console.log('move rows up')
   //This move logic is almost the same between moveUp/moveDown/moveLeft/moveRight, maybe it should be abstracted out?
-  let rows = $('row.hilite')
+  let selrows = $('row.hilite')
   let ops = [] // array of move operations
-  rows.each(function(i, el) {
+  selrows.each(function(i, el) {
     let selrow = $(el)
     let source = selrow.prev()
     if (source.hasClass('hilite') === false) {
@@ -432,9 +419,24 @@ function moveDown (e) {
 
   history.update()
 
-  let rows = $('row.hilite')
+  let sel = $('.sel')
+  sel.each(function(i, el) {
+    let prop = $(el)
+    let row = prop.parent('row')
+    let target = row.nextUntil('[type="tag"]')
+    if (target.length) {
+      target = target.last().next()
+    } else {
+      target = row.next('[type="tag"]')
+    }
+    if (target.length && row.hasClass('hilite') === false) {
+      target.append(prop)
+    }
+  })
+
+  let selrows = $('row.hilite')
   let ops = [] // array of move operations
-  rows.each(function(i, el) {
+  selrows.each(function(i, el) {
     let selrow = $(el)
     let source = selrow.next()
     if (source.hasClass('hilite') === false) {
