@@ -166,7 +166,6 @@ txt ~ * {
 .clone {
   /*TODO Editable styling needs work, you need to be able to see what type of prop you're editing, can't be just plain black on white. But still needs to be obvious that now you're editing text. Editing cursor appearance would be ace, but sometimes chrome just doesn't even render the cursor in styled contenteditables. */
   background: transparent;
-  //box-shadow: inset 0 0 0 2px hsla(200, 100%, 50%, 1);
 }
 
 .dragsource,
@@ -180,13 +179,15 @@ txt ~ * {
 
 .dragghost {
   position: absolute;
+  z-index: 200;
   display: none;
-  opacity: .7;
+  //opacity: .7;
   pointer-events: none;
   border-radius: .2rem;
-  box-shadow:
+  /* box-shadow:
     .0rem .0rem .0rem .1rem #828380,
-    .0rem .3rem .8rem .0rem rgba(0,0,0,.5);
+    .0rem .3rem .8rem .0rem rgba(0,0,0,.5); */
+  box-shadow: 0 2px 8px -2px rgba(0,0,0,.5);
 }
 
 /*TODO: drop point indicator should be a div that travels the page and gets rendered according to droptarget clientrect */
