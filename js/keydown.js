@@ -134,11 +134,6 @@ function keydown(e) {
       moveRight(e)
       return
     }
-    //TODO: move stuff around via keyboard
-    // HI.on('ctrl+up', e=>{HI.log.info('move up')})
-    // HI.on('ctrl+down', e=>{HI.log.info('move up')})
-    // HI.on('ctrl+left', e=>{HI.log.info('move left')})
-    // HI.on('ctrl+right', e=>{HI.log.info('move right')})
   }
 
   //Edit actions while editing an item
@@ -157,12 +152,10 @@ function keydown(e) {
     else if (mod.none && e.key === 'Tab') {
       commitEdit()
       //Pressing tab to indent while editing felt way too fiddly, fought with muscle memory, so pressing tab is like autocompletion in the terminal or text editor, it just accepts whatever's in the input box.
-      //tab(e, 1)
       return
     }
     else if (mod.shift && e.key === 'Tab') {
       commitEdit()
-      //tab(e, -1)
       return
     }
     //Make new props when pressing keys that make sense. Like, you'd expect that if you type `div `, that stuff after that would be an attribute name, so that's what happens. This becomes troublesome when the visualised syntax clashes with html validity. HTML allows : * and stuff in attribute names. Pressing : inside an attribute name must allow you to keep typing, because svg is a common case where you use some namespacing.

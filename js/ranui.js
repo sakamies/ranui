@@ -31,7 +31,7 @@ window.addEventListener('blur', e=>{
 })
 
 //Copy & paste
-//TODO: copypaste events work great, just implement functions for setting/getting data and data parsing via http://electron.atom.io/docs/api/clipboard
+//TODO: copypaste events seem to work great. Implement functions for setting/getting data and data parsing via http://electron.atom.io/docs/api/clipboard
 window.addEventListener('beforecut', ()=>console.log('beforecut'))
 window.addEventListener('beforecopy', ()=>console.log('beforecopy'))
 window.addEventListener('cut', ()=>console.log('cut'))
@@ -40,7 +40,6 @@ window.addEventListener('paste', paste)
 
 
 //Mouse
-//TODO: these need to be cancelled if scope is 'editing'. Move these to mouse.js and handle there
 window.addEventListener('dblclick', e=>{history.update();startEdit(e)})
 window.addEventListener('mousedown', e=>mouseDown(e))
 window.addEventListener('mousemove', throttle(mouseMove, 16)) //Only running mousemove at max 60fps
