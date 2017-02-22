@@ -66,7 +66,7 @@ tag, prop, val, txt {
 
 doc {
   padding: 0 0;
-  background-image: linear-gradient(to left, #34332a .1rem, transparent .1rem);
+  background-image: linear-gradient(to left, #34332a 1px, transparent 1px);
   background-position: .8ch top;
   background-repeat: repeat-x;
   background-size: 2ch 100%;
@@ -88,11 +88,11 @@ prop + val::before {
   content: ':';
   font: inherit;
   position: absolute;
-  margin-left: calc(-1ch + .1rem);
+  margin-left: calc(-1ch);
   color: #a6e22d;
 }
 txt ~ * {
-  outline: .1rem dotted red;
+  outline: 1px dotted red;
 }
 
 
@@ -120,7 +120,7 @@ txt ~ * {
 [tabs="6"] + :-webkit-any([tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [tabs="7"] + :-webkit-any([tabs="9"],[tabs="10"]) > :first-child,
 [tabs="8"] + :-webkit-any([tabs="10"]) > :first-child {
-  outline: .1rem dotted red;
+  outline: 1px dotted red;
 }
 [type="txt"][tabs="0"] + :-webkit-any([tabs="2"],[tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [type="txt"][tabs="1"] + :-webkit-any([tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
@@ -131,7 +131,7 @@ txt ~ * {
 [type="txt"][tabs="6"] + :-webkit-any([tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [type="txt"][tabs="7"] + :-webkit-any([tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [type="txt"][tabs="8"] + :-webkit-any([tabs="9"],[tabs="10"]) > :first-child {
-  outline: .1rem dotted red;
+  outline: 1px dotted red;
 }
 
 .com {
@@ -148,7 +148,7 @@ txt ~ * {
 }
 .cur {
   position: relative;
-  box-shadow: inset 0 -.2rem 0 0 hsla(200, 100%, 50%, 1);
+  box-shadow: inset 0 -2px 0 0 hsla(200, 100%, 50%, 1);
 }
 .hilite {
   background: #49483E;
@@ -181,12 +181,7 @@ txt ~ * {
   position: absolute;
   z-index: 200;
   display: none;
-  //opacity: .7;
   pointer-events: none;
-  border-radius: .2rem;
-  /* box-shadow:
-    .0rem .0rem .0rem .1rem #828380,
-    .0rem .3rem .8rem .0rem rgba(0,0,0,.5); */
   box-shadow: 0 2px 8px -2px rgba(0,0,0,.5);
 }
 
@@ -216,13 +211,13 @@ txt ~ * {
 }
 row.dropbefore::after,
 row.dropafter::after {
-  top: -.2rem;
+  top: -2px;
   left: auto;
   right: auto;
   width: 100%;
-  height: .4rem;
+  height: 4px;
 }
 row.dropafter::after {
   top: auto;
-  bottom: -.2rem;
+  bottom: -2px;
 }
