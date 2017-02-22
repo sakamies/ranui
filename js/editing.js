@@ -378,37 +378,31 @@ function moveUp (e) {
 
   history.update()
 
+  //Move logic is almost the same between moveUp/moveDown/moveLeft/moveRight, maybe it should be abstracted out?
+
+  //Move props
   let sel = $('.sel')
   sel.each(function(i, el) {
-    let prop = $(el)
-    let row = prop.parent('row')
+    let source = $(el)
+    let row = source.parent('row:not(.hilite)')
     let target = row.prevUntil('[type="tag"]')
     if (target.length) {
       target = target.last().prev()
     } else {
       target = row.prev('[type="tag"]')
     }
-    if (target.length && row.hasClass('hilite') === false) {
-      target.append(prop)
-    }
+    target.append(source)
   })
 
-  //This move logic is almost the same between moveUp/moveDown/moveLeft/moveRight, maybe it should be abstracted out?
+  //Move rows
   let selrows = $('row.hilite')
-  let ops = [] // array of move operations
   selrows.each(function(i, el) {
     let selrow = $(el)
-    let source = selrow.prev()
-    if (source.hasClass('hilite') === false) {
-      let target = source.nextUntil(':not(.hilite)').first()
-      console.log('source',source[0],'target',target[0])
-      ops.push({source, target})
-    }
-    for (let op of ops) {
-      op.target.after(source)
-      //TODO: this needs automatic smarts, the same as in drag & drop & cut & paste
-    }
+    let source = selrow.prev(':not(.hilite)')
+    let target = source.nextUntil(':not(.hilite)').last()
+    target.after(source)
   })
+  //TODO: moving needs automatic tab smarts, the same as in drag & drop & cut & paste
 
   history.add()
 }
@@ -419,45 +413,52 @@ function moveDown (e) {
 
   history.update()
 
+  //Move props
   let sel = $('.sel')
   sel.each(function(i, el) {
-    let prop = $(el)
-    let row = prop.parent('row')
+    let source = $(el)
+    let row = source.parent('row:not(.hilite)')
     let target = row.nextUntil('[type="tag"]')
     if (target.length) {
       target = target.last().next()
     } else {
       target = row.next('[type="tag"]')
     }
-    if (target.length && row.hasClass('hilite') === false) {
-      target.append(prop)
-    }
+    target.append(source)
   })
 
+  //Move rows
   let selrows = $('row.hilite')
-  let ops = [] // array of move operations
   selrows.each(function(i, el) {
     let selrow = $(el)
-    let source = selrow.next()
-    if (source.hasClass('hilite') === false) {
-      let target = source.prevUntil(':not(.hilite)').last()
-      console.log('source',source[0],'target',target[0])
-      ops.push({source, target})
-    }
-    for (let op of ops) {
-      op.target.before(source)
-    }
+    let source = selrow.next(':not(.hilite)')
+    let target = source.prevUntil(':not(.hilite)').last()
+    target.before(source)
   })
 
   history.add()
 }
 
 function moveLeft (e) {
-  // body...
+  let sel = $('.sel')
+  sel.each(function(i, el) {
+    if (el.tagName == 'TXT') {return}
+    let prop = $(el)
+    let source = prop.prev(':not(tag):not(.sel)')
+    let target = source.nextUntil(':not(.sel)').last()
+    target.after(source)
+  })
 }
 
 function moveRight (e) {
-  // body...
+  let sel = $('.sel')
+  sel.each(function(i, el) {
+    if (el.tagName == 'TXT') {return}
+    let prop = $(el)
+    let source = prop.next(':not(tag):not(.sel)')
+    let target = source.prevUntil(':not(.sel)').last()
+    target.before(source)
+  })
 }
 
 
