@@ -8,6 +8,8 @@ function startEdit (e, opts) {
 
   //startEdit could be called from many contexts, so it doen't itself have history.update, history.update needs to be called before invoking startEdit if needed
 
+  //TODO: startEdit should probably collapse selection to cursors
+
   scope = 'editing'
   opts = opts || ''
 
@@ -26,7 +28,7 @@ function startEdit (e, opts) {
   }
 }
 
-function commitEdit(e) {
+function commitEdit (e) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   let target = $('[contenteditable="true"]')
@@ -139,35 +141,37 @@ function createRow (e, opts, str) {
 }
 
 
-function createProp(e, type, str) {
+function createProp (e, type, str) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
 
-  type = type || ''
   let sel = $('.sel')
   let cursors = $('.cur')
+  let action = false;
 
   if (cursors.length === 0) {return} //Can't add props to nonexistent selections
 
   //Treat each cursor individually
   cursors.each((i, el)=>{
-    if (el.tagName === 'TXT') {return false} //Text rows can't have props
+    if (el.tagName === 'TXT') {
+      //Text rows can't have props
+      return
+    }
 
+    type = type || ''
     let cur = $(el)
+    action = true;
 
     //Without options, try to automatically add the right thing
-    if (type === '' && el.tagName === 'PROP') {
-      type = ':val'
+    if (type.includes(':val') || (type === '' && el.tagName === 'PROP')) {
       str = str || 'value'
-    } else if (type === '' && ['TAG','VAL'].includes(el.tagName)) {
-      type = ':prop'
-      str = str || 'attr'
+      cur.after(`<val class="new">${str}</val>`)
     }
-    str = str || ''
-
-    if (type.includes(':val')) {cur.after(`<val class="new">${str}</val>`)}
-    if (type.includes(':prop')) {cur.after(`<prop class="new">${str}</prop>`)}
+    else if (type.includes(':prop') || (type === '' && ['TAG','VAL'].includes(el.tagName))) {
+      str = str || 'attr'
+      cur.after(`<prop class="new">${str}</prop>`)
+    }
 
     //id & class check if the element already has an id/class and act according to that. If there's an id, just edit the id val, if there's a class, add a class after that
     //TODO: add id & add class should act on hilited rows, not cursors, so you never get a double class added to a row if there's two or more cursors on a row
@@ -197,12 +201,13 @@ function createProp(e, type, str) {
     }
   })
 
-  let newCurs = $('.new').removeClass('new')
-  cursors.removeClass('cur')
-  newCurs.addClass('cur')
-  select(newCurs)
-
-  startEdit(e)
+  if (action) {
+    let newCurs = $('.new').removeClass('new')
+    cursors.removeClass('cur')
+    newCurs.addClass('cur')
+    select(newCurs)
+    startEdit(e)
+  }
 }
 
 
@@ -271,7 +276,7 @@ function tab (e, amount) {
 }
 
 
-function comment(e) {
+function comment (e) {
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
@@ -371,14 +376,13 @@ function paste (e) {
 }
 
 
-
+//TODO: do these move functions like selection movement is done, with options instead of separate functions
 function moveUp (e) {
 
   if (e && e.preventDefault) {e.preventDefault()}
 
   history.update()
 
-  //Move logic is almost the same between moveUp/moveDown/moveLeft/moveRight, maybe it should be abstracted out?
 
   //Move props
   let sel = $('.sel')
