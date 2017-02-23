@@ -9,7 +9,6 @@ function getRowChildren(node) {
   row.nextAll().each((i, el)=>{
     let childTabs = parseInt($(el).attr('tabs'))
     if (childTabs > tabs) {
-      //TODO: drag-drop flattens tabs. so after a drag operation, this will no longer find .hidden elements that are after a .folded element. Need to do some sort of smart tab handling there
       children = children.add(el)
     } else {
       return false
@@ -26,20 +25,24 @@ function getRowChildren(node) {
 
 jQuery.fn.selectText = function(){
   const element = this[0]
-  const selection = window.getSelection()
-  const range = document.createRange()
-  range.selectNodeContents(element)
-  selection.removeAllRanges()
-  selection.addRange(range)
+  if (element) {
+    const selection = window.getSelection()
+    const range = document.createRange()
+    range.selectNodeContents(element)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
 }
 jQuery.fn.selectEnd = function(){
   const element = this[0]
-  const range = document.createRange()
-  const selection = window.getSelection()
-  range.selectNodeContents(element)
-  range.collapse(false)
-  selection.removeAllRanges()
-  selection.addRange(range)
+  if (element) {
+    const range = document.createRange()
+    const selection = window.getSelection()
+    range.selectNodeContents(element)
+    range.collapse(false)
+    selection.removeAllRanges()
+    selection.addRange(range)
+  }
 }
 
 
