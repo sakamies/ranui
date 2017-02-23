@@ -5,8 +5,9 @@ let col = 0
 //TODO: alt should globally be an "add cursor" modifier and shift should be "add to selection" modifier, do this at selection functions instead of in key handling so it'll apply to mouse & keyboard
 
 function select(to, opts) {
+
   opts = opts || ''
-  //If not additive, remove sel class from everything that's not cursor
+  //If selection is not additive, remove sel class from everything that's not cursor
   if (opts.includes(':add')) {
   } else {
     $('.sel:not(.cur)').removeClass('sel')
@@ -15,12 +16,27 @@ function select(to, opts) {
     to = to.add(getRowChildren(to.parent('row')).children(':first-child'))
   }
   to.addClass('sel')
+
+  //Tag & txt props are proxies for their row, so when they are selected, highlight entire row
   $('.hilite').removeClass('hilite')
   $('tag.sel, txt.sel').parent().addClass('hilite')
+
+  //When you select a folded row, all its children need to be selected too, so tabbing, moving, dragging etc work like they're supposed to. Chould use `select(to, ':children:add')` here, but if the indentation is not pristine, that could produce the wrong result.
+  $('.hilite.folded')
+    .nextUntil(':not(.hidden)').addClass('hilite')
+    .children('tag, txt').addClass('sel')
+
+  //TODO: check that any functions that modify or select stuff use this function to set selection (instead of modifying `.sel` classes directly), so I can be sure that hidden rows are always selected if the folded row is selected
+  //TODO: all edit operations need to be aware of hidden rows for folding to work, maybe I should disable folding for a while until I get a handle on how it should work
+  //TODO: createRow either unfold a row just before adding a row, or only create siblings for folded rows.
+  //TODO: I could handle all these cases if I had a generic function to get an element reference, so when doing move operations etc, I'd get the folded row and its children and move the whole bunch
+
 }
 
 
 function selTarget (e, opts) {
+  //This is only invovek from mouse events for now, so this can assume e is a real mouse event
+
   opts = opts || ''
   if (e && e.preventDefault) {e.preventDefault()}
 
@@ -31,14 +47,18 @@ function selTarget (e, opts) {
   if (target.parent('row').length) {
     newCur = target
   } else if (e.target.tagName === 'ROW') {
-    //Select row and its children when clicking row. Not sure this is the right thing to do, but at least there's some way to select all children.
-    opts += ':children'
     newCur = target.children().first()
+    if (e.layerX < newCur.position().left) {
+      //TODO: clicking near a vertical line that shows indentation depth should select the row where that vertical line originates from, and that rows children. Select children of row if you click on the left side of the tag. This should extend all the way down for the whole element, but row level is fine for now.
+      console.log(e)
+      opts += ':children'
+    }
   } else {
     newCur = $('doc').children().last().children().last()
   }
 
-  if (e.shiftKey) {opts += ':add'} //TODO: Shift should select a range, cmd should drop multiple cursors?
+  if (e.shiftKey) {opts += ':add'} //TODO: Shift should select a range and Cmd should toggle selection on individual rows?
+  //TODO: move modkey checking and option adding from here to event listeners, so shift+click runs selTarget(e, ':add')
   if (!e.altKey) {cursors.removeClass('cur')} //You can drop multiple cursors by pressing alt
   newCur.addClass('cur')
   select(newCur, opts)
@@ -48,7 +68,6 @@ function selTarget (e, opts) {
 //Select up/down, additive selects up/down by nearest col it finds
 function selRow (e, act) {
   if (e && e.preventDefault) {e.preventDefault()}
-  if (e.shiftKey) {act += ':add'}
   if (e.metaKey) {act += ':end'}
   let cursors = $('.cur')
   let cursor = cursors.first()
@@ -76,18 +95,21 @@ function selRow (e, act) {
     if (down) {newRow = row.nextAll(':not(.hidden)').first()}
     let newProps = props
     if (newRow.length) {newProps = newRow.children()}
-    if (newProps.length - 1 >= cursorCol) { //Because col is zero based, ugh
+    if (act.includes(':add')) {
+      //Additive up & down selection selects only rows, so clear selection on row and select first prop
+      row.find('.sel').removeClass('sel')
+      row.find('tag, txt').addClass('sel')
+      newCur = newProps.first()
+    } else if (newProps.length - 1 >= cursorCol) { //Because col is zero based, ugh
       newCur = newProps.eq(cursorCol)
-      newCurs = newCurs.add(newCur)
     } else if (newProps.length > 0) {
       newCur = newProps.first()
-      newCurs = newCurs.add(newCur)
     }
+    newCurs = newCurs.add(newCur)
   })
-
   cursors.removeClass('cur')
   newCurs.addClass('cur')
-  select(newCurs, act)
+  select(newCurs, act) //Pass options to select functions, actual additive selection happens there
 }
 
 
@@ -112,10 +134,14 @@ function selCol (e, act) {
     let newCur
     if (left) {newCur = cursor.prev()}
     if (right) {newCur = cursor.next()}
+
+    //Move selection from row to row when reaching the end or start of the row
+    //Commented out because keeping sideways selection on the same row is simpler to understand and less finicky for the user
     // if (!newCur.length) {
     //   if (left) {newCur = cursor.parent().prev().children().last()}
     //   if (right) {newCur = cursor.parent().next().children().first()}
-    // } //Commented out because keeping sideways selection on the same row is simpler to understand and less finicky for the user
+    // }
+
     if (!newCur.length) {
       newCur = cursor
     }

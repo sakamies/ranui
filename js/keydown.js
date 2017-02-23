@@ -28,22 +28,22 @@ function keydown(e) {
     /*TODO: additive selection via shift+arrow keys
       - shift+up/down should select just rows, props don't line up, so selecting up/down as props only wouldn't make much sense
     */
-    // else if (mod.shift && e.key === 'ArrowUp') {
-    //   selRow(e, 'up')
-    //   return
-    // }
-    // else if (mod.shift && e.key === 'ArrowDown') {
-    //   selRow(e, 'down')
-    //   return
-    // }
-    // else if (mod.shift && e.key === 'ArrowLeft') {
-    //   selCol(e, 'left')
-    //   return
-    // }
-    // else if (mod.shift && e.key === 'ArrowRight') {
-    //   selCol(e,'right')
-    //   return
-    // }
+    else if (mod.shift && e.key === 'ArrowUp') {
+      selRow(e, 'up:add')
+      return
+    }
+    else if (mod.shift && e.key === 'ArrowDown') {
+      selRow(e, 'down:add')
+      return
+    }
+    else if (mod.shift && e.key === 'ArrowLeft') {
+      selCol(e, 'left:add')
+      return
+    }
+    else if (mod.shift && e.key === 'ArrowRight') {
+      selCol(e,'right:add')
+      return
+    }
     else if (mod.cmd && e.key === 'a') {
       selAll(e)
       return
@@ -88,7 +88,7 @@ function keydown(e) {
       createProp(e)
       return
     }
-    else if (mod.none && e.key === ',') {
+    else if (e.key === ',') {
       createProp(e, ':prop')
       return
     }
@@ -96,11 +96,11 @@ function keydown(e) {
       createProp(e, ':val')
       return
     }
-    else if (mod.none && e.key === '#') {
+    else if (e.key === '#') {
       createProp(e, ':id')
       return
     }
-    else if (mod.none && e.key === '.') {
+    else if (e.key === '.') {
       createProp(e, ':class')
       return
     }
