@@ -47,7 +47,7 @@ body {
 }
 
 ::selection {
-  background: hsla(40, 3.5%, 62%, 1);
+  background-color: hsla(40, 3.5%, 62%, 1);
 }
 :focus {
   outline: none;
@@ -65,14 +65,20 @@ tag, prop, val, txt {
 }
 
 doc {
+  position: relative;
   padding: 0 0;
-  background-image: linear-gradient(to left, #34332a 1px, transparent 1px);
-  background-position: .8ch top;
+  background-image: linear-gradient(to left, #49483E 1px, transparent 1px);
+  background-position: left -.5ch top;
   background-repeat: repeat-x;
   background-size: 2ch 100%;
 }
 row {
-  background: #272822;
+  background-color: #272822;
+  background-origin: content-box;
+  background-clip: content-box;
+  background-position: left top;
+  background-repeat: no-repeat;
+  background-size: 1px 100%;
 }
 
 tag {
@@ -92,7 +98,7 @@ prop + val::before {
   color: #a6e22d;
 }
 txt ~ * {
-  outline: 1px dotted red;
+  border-left: 3px solid red;
 }
 
 
@@ -120,7 +126,7 @@ txt ~ * {
 [tabs="6"] + :-webkit-any([tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [tabs="7"] + :-webkit-any([tabs="9"],[tabs="10"]) > :first-child,
 [tabs="8"] + :-webkit-any([tabs="10"]) > :first-child {
-  outline: 1px dotted red;
+  border-left: 3px dotted red;
 }
 [type="txt"][tabs="0"] + :-webkit-any([tabs="2"],[tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
 [type="txt"][tabs="1"] + :-webkit-any([tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
@@ -144,14 +150,14 @@ txt ~ * {
 }
 
 .sel {
-  background: #49483E;
+  background-color: #49483E;
 }
 .cur {
   position: relative;
   box-shadow: inset 0 -2px 0 0 hsla(200, 100%, 50%, 1);
 }
 .hilite {
-  background: #49483E;
+  background-color: #49483E;
 }
 .folded::after {
   content: '…';
@@ -165,7 +171,7 @@ txt ~ * {
 [contenteditable="true"],
 .clone {
   /*TODO Editable styling needs work, you need to be able to see what type of prop you're editing, can't be just plain black on white. But still needs to be obvious that now you're editing text. Editing cursor appearance would be ace, but sometimes chrome just doesn't even render the cursor in styled contenteditables. */
-  background: transparent;
+  background-color: transparent;
 }
 
 .dragsource,
@@ -189,7 +195,7 @@ txt ~ * {
 .dropbefore,
 .dropafter {
   position: relative;
-  //background: hsla(200, 100%, 50%, .33);
+  //background-color: hsla(200, 100%, 50%, .33);
 }
 .dropbefore::after,
 .dropafter::after {
@@ -202,8 +208,7 @@ txt ~ * {
   width: 1ch;
   height: 1.0rem;
   border-radius: 1ch;
-  background: #66d9ef;
-  background: hsla(200, 100%, 50%, 1);
+  background-color: hsla(200, 100%, 50%, 1);
 }
 .dropafter::after {
   left: auto;
