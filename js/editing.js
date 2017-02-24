@@ -320,62 +320,6 @@ function fold (e, opts) {
 
 
 
-function cut (e) {
-
-  //TODO: cut needs to copy plain text in editing mode, no frigging rich text
-
-  if (scope !== 'editing') {
-    if (e && e.preventDefault) {e.preventDefault()}
-
-  }
-}
-
-function copy (e) {
-
-  //TODO: copy needs to copy plain text in editing mode, no frigging rich text
-
-  if (scope !== 'editing') {
-    if (e && e.preventDefault) {e.preventDefault()}
-
-  }
-}
-
-function paste (e) {
-
-  //TODO: regular paste needs to prevent contenteditable from pasting styles, or clean up html after paste
-
-  if (scope !== 'editing') {
-    history.update()
-
-    if (e && e.preventDefault) {e.preventDefault()}
-
-    //TODO: this needs the exact same smarts for tab handling as drag & drop
-
-    const cur = $('.cur')
-    //TODO: check for text/html data, if there's none, get text/plain and parse that as html
-    const clip = event.clipboardData.getData('text/plain')
-    const data = parseHTML(clip)
-
-    if (data.type === 'props') {
-      //Paste in like <attr1="jotai" attr2="dingus">
-      let dom = render.props(data.props)
-      cur.after(dom)
-    } else if (data.type === 'rows') {
-      //Paste in like <div class="dsa">dsa</div>
-      let dom = render.rows(data.rows)
-      cur.parent().after(dom)
-    }
-
-    cur.removeClass('cur')
-    let newSel = $('.new').removeClass('new')
-    newSel.last().addClass('cur')
-    select(newSel)
-
-    history.add()
-  }
-}
-
-
 //TODO: do these move functions like selection movement is done, with options instead of separate functions
 function moveUp (e) {
 
@@ -383,6 +327,7 @@ function moveUp (e) {
 
   history.update()
 
+  //TODO: not sure if I want to move props up & down, maybe the interaction would be clearer if up & down was always just for rows. You could still move props via drad drop & copy paste.
 
   //Move props
   let sel = $('.sel')

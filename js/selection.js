@@ -2,7 +2,6 @@
 
 let col = 0
 
-//TODO: alt should globally be an "add cursor" modifier and shift should be "add to selection" modifier, do this at selection functions instead of in key handling so it'll apply to mouse & keyboard
 
 function select(to, opts) {
 
@@ -35,7 +34,7 @@ function select(to, opts) {
 
 
 function selTarget (e, opts) {
-  //This is only invovek from mouse events for now, so this can assume e is a real mouse event
+  //This is only invoved from mouse events for now, so this can assume e is a real mouse event
 
   opts = opts || ''
   if (e && e.preventDefault) {e.preventDefault()}
@@ -59,7 +58,7 @@ function selTarget (e, opts) {
 
   if (e.shiftKey) {opts += ':add'} //TODO: Shift should select a range and Cmd should toggle selection on individual rows?
   //TODO: move modkey checking and option adding from here to event listeners, so shift+click runs selTarget(e, ':add')
-  if (!e.altKey) {cursors.removeClass('cur')} //You can drop multiple cursors by pressing alt
+  if (!e.altKey) {cursors.removeClass('cur')} //You can drop multiple cursors by pressing alt TODO: move this to opts via mouse.js
   newCur.addClass('cur')
   select(newCur, opts)
 }
@@ -115,7 +114,6 @@ function selRow (e, act) {
 
 function selCol (e, act) {
   if (e && e.preventDefault) {e.preventDefault()}
-  if (e.shiftKey) {act += ':add'}
   if (e.metaKey) {act += ':end'} //TODO: implement end, move cursor to end/start of row and select everything from old cursor to new cursor pos
   let cursors = $('.cur')
   let cursor = $('cur').first()
@@ -135,12 +133,26 @@ function selCol (e, act) {
     if (left) {newCur = cursor.prev()}
     if (right) {newCur = cursor.next()}
 
-    //Move selection from row to row when reaching the end or start of the row
-    //Commented out because keeping sideways selection on the same row is simpler to understand and less finicky for the user
-    // if (!newCur.length) {
-    //   if (left) {newCur = cursor.parent().prev().children().last()}
-    //   if (right) {newCur = cursor.parent().next().children().first()}
-    // }
+    //These following options just didn't feel right, so going left & going right stays on the same row
+    //if (!newCur.length) {
+      //Going left could select the last item of the previous row, like in text editor
+      //if (left) {newCur = cursor.parent().prev().children().first()}
+      //Going left could select the closest parent of the row
+      // if (left) {
+      //   let cursorRow = cursor.parent()
+      //   let cursorTabs = cursorRow.attr('tabs')
+      //   cursorRow.prevAll().each(function(i) {
+      //     let prevRow = $(this)
+      //     let prevTabs = parseInt(prevRow.attr('tabs'))
+      //     if (prevTabs < cursorTabs) {
+      //       newCur = prevRow.children().first()
+      //       return false
+      //     }
+      //   })
+      // }
+      //Going right could select the first item of the next row, or select the first child of the row
+      //if (right) {newCur = cursor.parent().next().children().first()}
+    //}
 
     if (!newCur.length) {
       newCur = cursor

@@ -1,8 +1,4 @@
-module.exports = {
-  doc: renderDoc,
-  rows: renderRows,
-  props: renderProps
-}
+module.exports = {renderDoc, renderRows, renderProps}
 
 function renderDoc (doc) {
   return rows(doc.rows)
@@ -12,7 +8,7 @@ function renderRows (rows) {
   let out = ''
   for (var i = 0; i < rows.length; i++) {
     let row = rows[i]
-    let props = render.props(row.props)
+    let props = importer.renderProps(row.props)
     out += `<row tabs="${row.tabs}" type="${row.type}">${props}</row>`
   }
   return out

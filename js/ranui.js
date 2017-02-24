@@ -6,11 +6,15 @@ devtron.install()
 
 const autofill = require.main.require('./js/autofill.js')
 const tags = require.main.require('./js/tags.js') //list of html tags
-const parseHTML = require.main.require('./js/parseHTML.js')
-const render = require.main.require('./js/render.js')
-const exportHTML = require.main.require('./js/exportHTML.js')
+const importer = require.main.require('./js/importer.js')
+importer.parseHTML = require.main.require('./js/parseHTML.js')
+const exporter = require.main.require('./js/exporter.js')
 const history = new History()
 var scope = ''
+
+//DEBUG
+// console.log(exporter.domToPug($('doc')))
+// console.log(exporter.pugToHTML(exporter.domToPug($('doc'))))
 
 //ranui.js is in global scope, so anything required here will be available through all main scripts. Yeah, should be encapsulated and all that.
 
@@ -32,10 +36,10 @@ window.addEventListener('blur', e=>{
 
 //Copy & paste
 //TODO: copypaste events seem to work great. Implement functions for setting/getting data and data parsing via http://electron.atom.io/docs/api/clipboard
-window.addEventListener('beforecut', ()=>console.log('beforecut'))
-window.addEventListener('beforecopy', ()=>console.log('beforecopy'))
-window.addEventListener('cut', ()=>console.log('cut'))
-window.addEventListener('copy', ()=>console.log('copy'))
+window.addEventListener('beforecut', beforeCut)
+window.addEventListener('beforecopy', beforeCopy)
+window.addEventListener('cut', cut)
+window.addEventListener('copy', copy)
 window.addEventListener('paste', paste)
 
 

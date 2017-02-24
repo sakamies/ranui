@@ -71,7 +71,9 @@ function dragStart(e) {
 
 function mouseMove(e) {
   clearTimeout(dragTimer)
-  if (scope == 'paintselection') {
+  if (scope === '') {
+    //TODO: render that left side element+children selection highlight here. There should also be a generic 'render' function or something like that, that renders all the necessary effects, like a highlight for the selected element to the vertical lines that show indentation and stuff.
+  } else if (scope === 'paintselection') {
     //Paint selection if mouse was moved before drag was initiated
     selTarget(e, ':add')
   } else if (scope === 'dragging') {
