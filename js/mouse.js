@@ -42,7 +42,7 @@ function dragStart(e) {
   dragSourceRows.addClass('dragsource')
   dragSourceProps.addClass('dragsource')
 
-  //This allows nonsensical prop/row combinations, combining props with a txt row, but css will mark it as an error and the user needs to correct it. Should make this foolproof somehow.
+  //TODO: This allows nonsensical prop/row combinations, combining props with a txt row, but css will mark it as an error and the user needs to correct it. Should make this foolproof somehow.
   if (dragPayloadRows.length) {
     dragMode += ':rows'
 

@@ -30,7 +30,8 @@ window.addEventListener('input', e=>{
 })
 window.addEventListener('blur', e=>{
   if (scope === 'editing') {
-    commitEdit(e)
+    //Not sure if window blur should escape editing mode, but that's what happens in devtools too. It kinda feels more solid and predictable if you always have a 'solid' selection when returning to the app
+    commitEdit()
   }
 })
 

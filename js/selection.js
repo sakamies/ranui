@@ -65,9 +65,7 @@ function selTarget (e, opts) {
 
 
 //Select up/down, additive selects up/down by nearest col it finds
-function selRow (e, act) {
-  if (e && e.preventDefault) {e.preventDefault()}
-  if (e.metaKey) {act += ':end'}
+function selRow (act) {
   let cursors = $('.cur')
   let cursor = cursors.first()
   let newCurs = $()
@@ -94,7 +92,7 @@ function selRow (e, act) {
     if (down) {newRow = row.nextAll(':not(.hidden)').first()}
     let newProps = props
     if (newRow.length) {newProps = newRow.children()}
-    if (act.includes(':add')) {
+    if (act.includes('add')) {
       //Additive up & down selection selects only rows, so clear selection on row and select first prop
       row.find('.sel').removeClass('sel')
       row.find('tag, txt').addClass('sel')
@@ -112,9 +110,7 @@ function selRow (e, act) {
 }
 
 
-function selCol (e, act) {
-  if (e && e.preventDefault) {e.preventDefault()}
-  if (e.metaKey) {act += ':end'} //TODO: implement end, move cursor to end/start of row and select everything from old cursor to new cursor pos
+function selCol (act) {
   let cursors = $('.cur')
   let cursor = $('cur').first()
   let newCurs = $()
@@ -124,6 +120,7 @@ function selCol (e, act) {
 
   let left = act.includes('left')
   let right = act.includes('right')
+  let end = act.includes('end') //TODO: implement end
 
   //TODO: add simple cases for left & right if there's no selection. The app actions should really always result in a selection, and the first tag should be selected on document open, but it might be good to have just in case
 
@@ -166,8 +163,7 @@ function selCol (e, act) {
 }
 
 
-function selEscape (e) {
-  if (e && e.preventDefault) {e.preventDefault()}
+function selEscape () {
   let cursors = $('.cur')
   let cursor = cursors.first()
   let newCur

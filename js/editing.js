@@ -1,5 +1,8 @@
 'use strict'
 
+//All these functions work for any combination of selections that have rows or props. Editing is not limited to any kind of props/rows modes, but should be able handle anything. If we want to limit editing to rows at a time or props at a time, selections should be limited to props or rows at a time.
+
+
 let editmodeStartValue = null //The value of a tag/prop/val/txt needs to be shared so i can check if the value has changed between entering edit mode and committing the edit.
 
 
@@ -28,8 +31,7 @@ function startEdit (e, opts) {
   }
 }
 
-function commitEdit (e) {
-  if (e && e.preventDefault) {e.preventDefault()}
+function commitEdit () {
 
   let target = $('[contenteditable="true"]')
   let text = target.text()
@@ -40,7 +42,7 @@ function commitEdit (e) {
   scope = ''
 
   if (text === '') {
-    del(null, ':backward')
+    del(':backward')
   }
 
   if (editmodeStartValue !== text) {
@@ -211,8 +213,7 @@ function createProp (e, type, str) {
 }
 
 
-function del (e, opts) {
-  if (e && e.preventDefault) {e.preventDefault()}
+function del (opts) {
 
   history.update()
 
@@ -254,9 +255,12 @@ function del (e, opts) {
 }
 
 
+function duplicate() {
+  //TODO: implement duplicate
+}
 
-function tab (e, amount) {
-  if (e && e.preventDefault) {e.preventDefault()}
+
+function tab (amount) {
 
   history.update()
 
@@ -276,12 +280,9 @@ function tab (e, amount) {
 }
 
 
-function comment (e) {
-  if (e && e.preventDefault) {e.preventDefault()}
+function comment () {
 
   history.update()
-
-  //TODO: this should toggle comments on children of the row too, maybe?
 
   let sel = $('.sel')
   sel.parent().toggleClass('com')
@@ -291,8 +292,8 @@ function comment (e) {
 
 
 
-function fold (e, opts) {
-  if (e && e.preventDefault) {e.preventDefault()}
+function fold (opts) {
+  //TODO: folding behaviour needs quite a bit of work all over the app, it's buggy and inconsistent with regards to other editing functions
 
   opts = opts || ''
   let sel = $('.sel')
@@ -313,33 +314,45 @@ function fold (e, opts) {
     }
   })
 
-  //Reset hidden rows state to normal
+  //Anything that's a hidden row as a child of a folded row will have its childrens foldings reset
   $('.hidden').removeClass('hilite folded').children().removeClass('cur sel')
 
 }
 
 
 
-//TODO: do these move functions like selection movement is done, with options instead of separate functions
-function moveUp (e) {
-
-  if (e && e.preventDefault) {e.preventDefault()}
+function moveRow (act) {
 
   history.update()
 
-  //TODO: not sure if I want to move props up & down, maybe the interaction would be clearer if up & down was always just for rows. You could still move props via drad drop & copy paste.
+  let up = act.includes(':up')
+  let down = act.includes(':down')
+  let end = act.includes(':end') //TODO: implement end
 
   //Move props
   let sel = $('.sel')
   sel.each(function(i, el) {
     let source = $(el)
     let row = source.parent('row:not(.hilite)')
-    let target = row.prevUntil('[type="tag"]')
-    if (target.length) {
-      target = target.last().prev()
-    } else {
-      target = row.prev('[type="tag"]')
+    let target
+
+    if (up) {
+      target = row.prevUntil('[type="tag"]')
+      if (target.length) {
+        target = target.last().prev()
+      } else {
+        target = row.prev('[type="tag"]')
+      }
     }
+    else if (down) {
+      target = row.nextUntil('[type="tag"]')
+      if (target.length) {
+        target = target.last().next()
+      } else {
+        target = row.next('[type="tag"]')
+      }
+    }
+
     target.append(source)
   })
 
@@ -347,67 +360,53 @@ function moveUp (e) {
   let selrows = $('row.hilite')
   selrows.each(function(i, el) {
     let selrow = $(el)
-    let source = selrow.prev(':not(.hilite)')
-    let target = source.nextUntil(':not(.hilite)').last()
-    target.after(source)
+    let source
+    let target
+    if (up) {
+      source = selrow.prev(':not(.hilite)')
+      target = source.nextUntil(':not(.hilite)').last()
+      target.after(source)
+    }
+    else if (down) {
+      source = selrow.next(':not(.hilite)')
+      target = source.prevUntil(':not(.hilite)').last()
+      target.before(source)
+    }
   })
   //TODO: moving needs automatic tab smarts, the same as in drag & drop & cut & paste
 
   history.add()
+
 }
 
-function moveDown (e) {
-
-  if (e && e.preventDefault) {e.preventDefault()}
+function moveCol (act) {
 
   history.update()
 
-  //Move props
+  let left = act.includes(':left')
+  let right = act.includes(':right')
+  let end = act.includes(':end') //TODO: implement end
+
   let sel = $('.sel')
   sel.each(function(i, el) {
-    let source = $(el)
-    let row = source.parent('row:not(.hilite)')
-    let target = row.nextUntil('[type="tag"]')
-    if (target.length) {
-      target = target.last().next()
-    } else {
-      target = row.next('[type="tag"]')
+    if (el.tagName == 'TXT') {return}
+    let prop = $(el)
+    let source
+    let target
+    if (left) {
+      source = prop.prev(':not(tag):not(.sel)')
+      target = source.nextUntil(':not(.sel)').last()
+      target.after(source)
     }
-    target.append(source)
+    else if (right) {
+      source = prop.next(':not(tag):not(.sel)')
+      target = source.prevUntil(':not(.sel)').last()
+      target.before(source)
+    }
   })
 
-  //Move rows
-  let selrows = $('row.hilite')
-  selrows.each(function(i, el) {
-    let selrow = $(el)
-    let source = selrow.next(':not(.hilite)')
-    let target = source.prevUntil(':not(.hilite)').last()
-    target.before(source)
-  })
 
   history.add()
-}
-
-function moveLeft (e) {
-  let sel = $('.sel')
-  sel.each(function(i, el) {
-    if (el.tagName == 'TXT') {return}
-    let prop = $(el)
-    let source = prop.prev(':not(tag):not(.sel)')
-    let target = source.nextUntil(':not(.sel)').last()
-    target.after(source)
-  })
-}
-
-function moveRight (e) {
-  let sel = $('.sel')
-  sel.each(function(i, el) {
-    if (el.tagName == 'TXT') {return}
-    let prop = $(el)
-    let source = prop.next(':not(tag):not(.sel)')
-    let target = source.prevUntil(':not(.sel)').last()
-    target.before(source)
-  })
 }
 
 

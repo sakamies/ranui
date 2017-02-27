@@ -10,58 +10,68 @@ function keydown(e) {
   //Selection
   if (scope === '') {
     if (mod.none && e.key === 'ArrowUp') {
-      selRow(e, 'up')
+      e.preventDefault()
+      selRow('up')
       return
     }
     else if (mod.none && e.key === 'ArrowDown') {
-      selRow(e, 'down')
+      e.preventDefault()
+      selRow('down')
       return
     }
     else if (mod.none && e.key === 'ArrowLeft') {
-      selCol(e, 'left')
+      e.preventDefault()
+      selCol('left')
       return
     }
     else if (mod.none && e.key === 'ArrowRight') {
-      selCol(e,'right')
+      e.preventDefault()
+      selCol('right')
       return
     }
-    /*TODO: additive selection via shift+arrow keys
-      - shift+up/down should select just rows, props don't line up, so selecting up/down as props only wouldn't make much sense
-    */
     else if (mod.shift && e.key === 'ArrowUp') {
-      selRow(e, 'up:add')
+      e.preventDefault()
+      selRow('up:add')
       return
     }
     else if (mod.shift && e.key === 'ArrowDown') {
-      selRow(e, 'down:add')
+      e.preventDefault()
+      selRow('down:add')
       return
     }
     else if (mod.shift && e.key === 'ArrowLeft') {
-      selCol(e, 'left:add')
+      e.preventDefault()
+      selCol('left:add')
       return
     }
     else if (mod.shift && e.key === 'ArrowRight') {
-      selCol(e,'right:add')
+      e.preventDefault()
+      selCol('right:add')
       return
     }
     else if (mod.cmd && e.key === 'a') {
+      e.preventDefault()
       selAll(e)
       return
     }
     else if (mod.cmd && e.key === 'd') {
+      e.preventDefault()
       selSimilar(e)
       return
     }
     else if (mod.none && e.key === 'Escape') {
-      selEscape(e)
+      e.preventDefault()
+      selEscape()
       return
     }
     else if (mod.none && e.key === '-') {
-      fold(e, ':fold')
+      e.preventDefault()
+      fold(':fold')
       return
     }
     else if (mod.none && e.key === '+') {
-      fold(e, ':unfold')
+      e.preventDefault()
+      fold(':unfold')
       return
     }
   }
@@ -69,38 +79,50 @@ function keydown(e) {
   //Creating stuff
   if (scope === '') {
     if (mod.none && e.key.match(/^[a-z]$/)) {
+      e.preventDefault()
+      //TODO: should parse the letter here and send just that to createRow, not the whole event in these create functions
       createRow(e, ':tag')
       return
     }
     else if ((mod.none || mod.shift) && e.key.match(/^[A-Z]$/)) {
+      e.preventDefault()
       createRow(e, ':txt')
       return
     }
     else if (mod.shift && e.key === 'Enter') {
+      e.preventDefault()
+      //TODO: shift+enter should add a line break when editing a txt
       createRow(e, ':txt')
       return
     }
     else if (mod.cmd && e.key === 'Enter') {
+      e.preventDefault()
+      //TODO: cmd+enter should work in any scope
       createRow(e, ':tag', 'div')
       return
     }
     else if (mod.none && e.key === ' ') {
+      e.preventDefault()
       createProp(e)
       return
     }
     else if (e.key === ',') {
+      e.preventDefault()
       createProp(e, ':prop')
       return
     }
     else if (e.key === ':' || e.key === '=') {
+      e.preventDefault()
       createProp(e, ':val')
       return
     }
     else if (e.key === '#') {
+      e.preventDefault()
       createProp(e, ':id')
       return
     }
     else if (e.key === '.') {
+      e.preventDefault()
       createProp(e, ':class')
       return
     }
@@ -110,47 +132,59 @@ function keydown(e) {
   if (scope === '') {
     if (mod.none && e.key === 'Enter') {
       history.update()
-      startEdit(e)
+      e.preventDefault()
+      startEdit()
       return
     }
     else if (mod.none && e.key === 'Backspace') {
-      del(e, ':backward')
+      e.preventDefault()
+      del(':backward')
       return
     }
     else if (mod.none && e.key === 'Delete') {
-      del(e, ':forward')
+      e.preventDefault()
+      del(':forward')
       return
     }
     else if (mod.cmdShift && e.code === 'KeyD') { //Use KeyD so there's no confusion because of shift modifying the letter that's output
-      duplicate(e)
+      //TODO: implement duplicate
+      e.preventDefault()
+      duplicate()
       return
     }
     else if (mod.none && e.key === 'Tab') {
-      tab(e, 1)
+      e.preventDefault()
+      tab(1)
       return
     }
     else if (mod.shift && e.key === 'Tab') {
-      tab(e, -1)
+      e.preventDefault()
+      tab(-1)
       return
     }
     else if (e.metaKey && e.key === '/') { //Check for emetakey instead of mod function because / could come through modifiers on some key layouts, like Scandinavian ones for example.
-      comment(e)
+      e.preventDefault()
+      comment()
       return
     }
     else if (mod.ctrl && e.key === 'ArrowUp') {
-      moveUp(e)
+      e.preventDefault()
+      moveRow(':up')
       return
     }
     else if (mod.ctrl && e.key === 'ArrowDown') {
-      moveDown(e)
+      e.preventDefault()
+      moveRow(':down')
       return
     }
     else if (mod.ctrl && e.key === 'ArrowLeft') {
-      moveLeft(e)
+      e.preventDefault()
+      moveCol(':left')
       return
     }
     else if (mod.ctrl && e.key === 'ArrowRight') {
-      moveRight(e)
+      e.preventDefault()
+      moveCol(':right')
       return
     }
   }
@@ -160,8 +194,8 @@ function keydown(e) {
     let target = $('[contenteditable="true"]')
 
     if (mod.none && e.key === 'Enter' || e.key === 'Escape') {
-      console.log('commit edit')
-      commitEdit(e)
+      e.preventDefault()
+      commitEdit()
       return
     }
     else if (mod.none && e.key === 'Backspace' || e.key === 'Delete') {
@@ -169,19 +203,23 @@ function keydown(e) {
       return
     }
     else if (mod.none && e.key === 'Tab') {
+      e.preventDefault()
       commitEdit()
       //Pressing tab to indent while editing felt way too fiddly, fought with muscle memory, so pressing tab is like autocompletion in the terminal or text editor, it just accepts whatever's in the input box.
       return
     }
     else if (mod.shift && e.key === 'Tab') {
+      e.preventDefault()
       commitEdit()
       return
     }
     //Make new props when pressing keys that make sense. Like, you'd expect that if you type `div `, that stuff after that would be an attribute name, so that's what happens. This becomes troublesome when the visualised syntax clashes with html validity. HTML allows : * and stuff in attribute names. Pressing : inside an attribute name must allow you to keep typing, because svg is a common case where you use some namespacing.
     else if (target[0].tagName === 'TAG' && e.code === 'Space') {
+      e.preventDefault()
       commitEdit()
       createProp(e)
     } else if (target[0].tagName === 'PROP' && e.code === 'Space') {
+      e.preventDefault()
       commitEdit()
       createProp(e)
     }
@@ -190,6 +228,7 @@ function keydown(e) {
   //Drag & drop
   if (scope === 'dragging') {
     if (e.key === 'Escape') {
+      e.preventDefault()
       cancelDrag(e)
       return
     }

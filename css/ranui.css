@@ -98,7 +98,7 @@ prop + val::before {
   color: #a6e22d;
 }
 txt ~ * {
-  border-left: 3px solid red;
+  border-left: 3px solid #f92772;
 }
 
 
