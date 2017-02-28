@@ -6,7 +6,7 @@ I wrote a little article on the rationale here <https://pumpula.net/foolproof-ht
 
 ## Contributing
 
-My prototype code is a mess, so we're trying to get some proper app arcitecture done. I set up a Gitter chat for planning and sharing stuff. The chat best way to contribute right now. https://gitter.im/flprf/Lobby
+My prototype code is a mess, so we're trying to get some proper app arcitecture done. I set up a Gitter chat for planning and sharing stuff. The chat is the best way to contribute right now. https://gitter.im/flprf/Lobby
 
 The prototype is good enough for demos, but not really usable yet. It's Mac only for now, mainly because doing good multi platform keyboard support would take time off from making it actually work. Contributions welcome!
 
