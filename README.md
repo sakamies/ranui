@@ -1,4 +1,4 @@
-# Foolproof HTML prototype editor
+# Foolproof HTML editor prototype
 
 The grand idea is to build a native html (so not a general text editor that's customized for html, but purpose built for only html) editor that can handle any html, even with random template code in the middle. Then hopefully expand the editing model to support css, then json and others.
 
