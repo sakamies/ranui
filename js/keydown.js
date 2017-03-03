@@ -213,12 +213,13 @@ function keydown(e) {
       commitEdit()
       return
     }
-    //Make new props when pressing keys that make sense. Like, you'd expect that if you type `div `, that stuff after that would be an attribute name, so that's what happens. This becomes troublesome when the visualised syntax clashes with html validity. HTML allows : * and stuff in attribute names. Pressing : inside an attribute name must allow you to keep typing, because svg is a common case where you use some namespacing.
+    //Make new props when pressing keys that make sense. Like, you'd expect that if you type `div` + space, that stuff after that would be an attribute name, so we make add an attribute when you press space when editing a tag. This becomes troublesome when the visualised syntax clashes with html validity. HTML allows : * and stuff in attribute names. Pressing : inside an attribute name must allow you to keep typing, because svg is a common case where you use some namespacing.
+    //TODO: That `:` is dependant on how the editor visualizes attrs, it should be `=` if the editor shows attr=val and `:` if its' attr:val and so on. So there should be some viz/style config that determines how the editor looks and how some shortcuts behave. Maybe : should be = instead, because that would make more sense for html.
     else if (target[0].tagName === 'TAG' && e.code === 'Space') {
       e.preventDefault()
       commitEdit()
       createProp(e)
-    } else if (target[0].tagName === 'PROP' && e.code === 'Space') {
+    } else if (target[0].tagName === 'PROP' && (e.code === 'Space' || e.key === ':' || e.key === '=')) {
       e.preventDefault()
       commitEdit()
       createProp(e)
