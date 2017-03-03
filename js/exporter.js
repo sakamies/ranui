@@ -27,7 +27,7 @@ function domToPug (rows) {
     if (rowType === 'tag') {
       row.children().each(function(i, el) {
         let token = $(el)
-        let tokenType = token[0].tagName;
+        let tokenType = token[0].tagName
         if (tokenType === 'TAG') {
           out += token.text() + '('
         } else if (tokenType === 'PROP') {

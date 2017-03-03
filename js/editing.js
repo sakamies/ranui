@@ -45,11 +45,9 @@ function commitEdit () {
   scope = ''
 
   if (text === '') {
-    console.log('del empty')
     del(':emptydelete:backward')
   }
   else if (editmodeStartValue !== text) {
-    console.log('history add')
     history.add()
   }
 
@@ -155,7 +153,7 @@ function createProp (e, type, str) {
 
   let sel = $('.sel')
   let cursors = $('.cur')
-  let action = false;
+  let action = false
 
   if (cursors.length === 0) {return} //Can't add props to nonexistent selections
 
@@ -168,7 +166,7 @@ function createProp (e, type, str) {
 
     type = type || ''
     let cur = $(el)
-    action = true;
+    action = true
 
     //Without options, try to automatically add the right thing
     if (type.includes(':val') || (type === '' && el.tagName === 'PROP')) {
@@ -251,7 +249,7 @@ function del (opts) {
 
   //If you delete a prop, its attr will get deleted too. Not strictly necessary because you can have lonely values like <div "something"> in html, but at least chrome will parse that as an attribute that has a name of "something", so it's kinda nonsensical.
   //This is commented out because the way this should work is that you cannot have a prop selected without its value being also selected. Selecting a prop should always select its val too. The cursor will behave normally, but the selection will extend to the value(s) when the cursor hits the prop.
-  //sel.filter('prop').next('val').remove();
+  //sel.filter('prop').next('val').remove()
 
   //Delete the rest of selected stuff
   sel.remove()

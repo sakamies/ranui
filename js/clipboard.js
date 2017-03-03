@@ -28,7 +28,7 @@ function copy (e) {
       return
     }
 
-    let sel = $('.sel');
+    let sel = $('.sel')
     if (sel.length) {
       console.log(sel)
       //TODO: combine props to a single row and parse them to html
