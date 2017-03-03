@@ -219,7 +219,7 @@ function del (opts) {
 
   //TODO: if you delete an attribute name, it should (maybe?) delete related values too
 
-  opts = opts || ''
+  opts = opts || ':backward'
   let sel = $('.sel')
   let cursors = $('.cur')
 
