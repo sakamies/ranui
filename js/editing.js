@@ -45,13 +45,15 @@ function commitEdit () {
   scope = ''
 
   if (text === '') {
-    del(':backward')
+    console.log('del empty')
+    del(':emptydelete:backward')
+  }
+  else if (editmodeStartValue !== text) {
+    console.log('history add')
+    history.add()
   }
 
-  if (editmodeStartValue !== text) {
-    history.add()
-    editmodeStartValue = null
-  }
+  editmodeStartValue = null
 }
 
 
@@ -218,11 +220,14 @@ function createProp (e, type, str) {
 
 function del (opts) {
 
-  history.update()
-
   opts = opts || ':backward'
   let sel = $('.sel')
   let cursors = $('.cur')
+
+  if (opts.includes(':emptydelete') === false) {
+    history.update()
+  }
+
 
   let newCurs = $()
   sel.each(function(i, el) {
