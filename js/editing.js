@@ -16,10 +16,12 @@ function startEdit (e, opts) {
   scope = 'editing'
   opts = opts || ''
 
-  $('.sel:not(.cur)').removeClass('sel')
-  let target = $('.cur').first()
+  let cur = $('.cur')
+  let target = cur.first()
+  let clones = cur.not(target)
   editmodeStartValue = target.text()
-  let clones = $('.cur').not(target)
+  select(cur)
+  $('.hilite').removeClass('hilite') //Remove row hilite so editing a tag & txt looks more explicit
   clones.addClass('clone')
   target.attr('contenteditable', 'true').focus()
 
@@ -38,6 +40,7 @@ function commitEdit () {
   let clones = $('.clone')
   clones.removeClass('clone')
   target.attr('contenteditable', 'false')
+  select($(target, clones)) //Re-select what was being edited to restore proper selection state, because row hilites have been removed during editing.
 
   scope = ''
 
