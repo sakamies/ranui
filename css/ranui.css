@@ -96,6 +96,7 @@ prop + val::before {
   position: absolute;
   margin-left: calc(-1ch);
   color: #a6e22d;
+  color:  white;
 }
 txt ~ * {
   border-left: 3px solid #f92772;
