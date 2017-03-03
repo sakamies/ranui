@@ -18,4 +18,13 @@ The prototype is good enough for demos, but not really usable yet. It's Mac only
 2. Run `npm install`
 3. Run `npm start`
 
+- Type lowercase to create elements
+- Type uppercase to create text
+- Press space to add attributes
+- Press enter to edit what you have selected.
+
+You can find most actions in js/keydown.js. Some actions come through the app shell from menu items, the ones you'd expect like undo/redo, saving (TODO), copy & paste etc. The interactions are modelled pretty closely after Sublime Text. I'm hoping to make the UI feel instantly familiar and productive to anyone who's ever written HTML in a text editor.
+
+Probably needless to say, but expect buggy behaviour. Most stuff seems to be working fine, but that's just me using it.
+
 Built with [Electron](http://electron.atom.io).
