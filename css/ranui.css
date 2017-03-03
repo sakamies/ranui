@@ -102,19 +102,19 @@ txt ~ * {
 }
 
 
-/*TODO: Lol crazy indentation with css, need to make this with js or somehow smarter*/
-[tabs] {padding-left: 22ch;}
-[tabs="0"] {padding-left: 0ch}
-[tabs="1"] {padding-left: 2ch}
-[tabs="2"] {padding-left: 4ch}
-[tabs="3"] {padding-left: 6ch}
-[tabs="4"] {padding-left: 8ch}
-[tabs="5"] {padding-left: 10ch}
-[tabs="6"] {padding-left: 12ch}
-[tabs="7"] {padding-left: 14ch}
-[tabs="8"] {padding-left: 16ch}
-[tabs="9"] {padding-left: 18ch}
-[tabs="10"] {padding-left: 20ch}
+/* TODO: Lol crazy indentation with css, need to make this with js or somehow smarter */
+[tabs] {margin-left: 22ch;}
+[tabs="0"] {margin-left: 0ch}
+[tabs="1"] {margin-left: 2ch}
+[tabs="2"] {margin-left: 4ch}
+[tabs="3"] {margin-left: 6ch}
+[tabs="4"] {margin-left: 8ch}
+[tabs="5"] {margin-left: 10ch}
+[tabs="6"] {margin-left: 12ch}
+[tabs="7"] {margin-left: 14ch}
+[tabs="8"] {margin-left: 16ch}
+[tabs="9"] {margin-left: 18ch}
+[tabs="10"] {margin-left: 20ch}
 
 /* TODO: could use requestIdleCallback for checking and marking errors, kinda like os level spell check does */
 [tabs="0"] + :-webkit-any([tabs="2"],[tabs="3"],[tabs="4"],[tabs="5"],[tabs="6"],[tabs="7"],[tabs="8"],[tabs="9"],[tabs="10"]) > :first-child,
@@ -151,6 +151,7 @@ txt ~ * {
 
 .sel {
   background-color: #49483E;
+  //box-shadow: inset 0 -2px 0 0 hsla(200, 0%, 50%, .5);
 }
 .cur {
   position: relative;
@@ -158,6 +159,7 @@ txt ~ * {
 }
 .hilite {
   background-color: #49483E;
+  //box-shadow: inset 0 -2px 0 0 hsla(200, 0%, 50%, .5);
 }
 .folded::after {
   content: '…';

@@ -220,37 +220,39 @@ function del (opts) {
 
   history.update()
 
-  //TODO: if you delete an attribute name, it should (maybe?) delete related values too
-
   opts = opts || ':backward'
   let sel = $('.sel')
   let cursors = $('.cur')
 
   let newCurs = $()
-  let deletable = $()
   sel.each(function(i, el) {
-    el = $(el)
-    if (['TAG', 'TXT'].includes(el[0].tagName)) {
-      if (opts.includes(':backward')) {newCurs = newCurs.add(el.parent().prev().children().first())}
-      if (opts.includes(':forward')) {newCurs = newCurs.add(el.parent().next().children().first())}
+    let $el = $(el)
+    if (el.tagName === 'TAG' || el.tagName === 'TXT') {
+      if (opts.includes(':backward')) {newCurs = newCurs.add($el.parent().prev().children().first())}
+      if (opts.includes(':forward')) {newCurs = newCurs.add($el.parent().next().children().first())}
     } else {
-      let lastchild = el.is(':last-child')
-      if (opts.includes(':backward') || lastchild) {newCurs = newCurs.add(el.prev())}
+      let lastchild = $el.is(':last-child')
+      if (opts.includes(':backward') || lastchild) {newCurs = newCurs.add($el.prev())}
       //Forward delete moves only on the selected row, selection does not jump to next row even if the :last prop is forward deleted, that's why there's the last-child check
-      else if (opts.includes(':forward')) {newCurs = newCurs.add(el.next())}
+      else if (opts.includes(':forward')) {newCurs = newCurs.add($el.next())}
     }
-    if (el.prev().length) {
-      newCurs = newCurs.add(el)
+    if ($el.prev().length) {
+      newCurs = newCurs.add($el)
     }
   })
 
   //Find tags & txt in selection and delete their parents. Those are proxies for the whole row, so rows should get deleted with them.
   sel.filter('tag, txt').parent().remove()
 
+  //If you delete a prop, its attr will get deleted too. Not strictly necessary because you can have lonely values like <div "something"> in html, but at least chrome will parse that as an attribute that has a name of "something", so it's kinda nonsensical.
+  //This is commented out because the way this should work is that you cannot have a prop selected without its value being also selected. Selecting a prop should always select its val too. The cursor will behave normally, but the selection will extend to the value(s) when the cursor hits the prop.
+  //sel.filter('prop').next('val').remove();
+
+  //Delete the rest of selected stuff
   sel.remove()
 
-  //no need to remove cur class from anything since cursors will have been removed from dom
-  //no need to filter out selected items from newCurs because they too will have been deleted, so selection will automatically collapse to the previous available props from the deleted ones
+  //No need to remove cur class from anything since cursors will have been removed from dom
+  //No need to filter out selected items from newCurs because they too will have been deleted, so selection will automatically collapse to the previous available props from the deleted ones
   newCurs.addClass('cur')
   select(newCurs)
 

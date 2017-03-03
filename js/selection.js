@@ -16,11 +16,15 @@ function select(to, opts) {
   }
   to.addClass('sel')
 
+
   //Tag & txt props are proxies for their row, so when they are selected, highlight entire row
   $('.hilite').removeClass('hilite')
   $('tag.sel, txt.sel').parent().addClass('hilite')
 
-  //When you select a folded row, all its children need to be selected too, so tabbing, moving, dragging etc work like they're supposed to. Chould use `select(to, ':children:add')` here, but if the indentation is not pristine, that could produce the wrong result.
+  //When you select a prop, select its val too, so you can't make operations for prop alone, because if the value doesn't have a prop before it, it makes no sense as html.
+  $('prop.sel').nextUntil(':not(val)').addClass('sel')
+
+  //When you select a folded row, all its children need to be selected too, so let's get any folded stuff from the new selection and select them too. This is so tabbing, moving, dragging etc work like they're supposed to. Chould use `select(to, ':children:add')` here, but if the indentation is not pristine, that could produce the wrong result.
   $('.hilite.folded')
     .nextUntil(':not(.hidden)').addClass('hilite')
     .children('tag, txt').addClass('sel')
