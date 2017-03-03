@@ -14,9 +14,11 @@ The prototype is good enough for demos, but not really usable yet. It's Mac only
 
 ## Running
 
+
 1. Clone the repo
 2. Run `npm install`
 3. Run `npm start`
+
 
 - Type lowercase to create elements
 - Type uppercase to create text
