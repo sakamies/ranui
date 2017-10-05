@@ -47,14 +47,16 @@ function newFile (menuItem, browserWindow, event) {
 //TODO: put window management and file open/save stuff in its own module
 function open (menuItem, browserWindow, event) {
   dialog.showOpenDialog({properties: ['openFile','multiSelections']}, paths=>{
-    console.log(paths)
+    for (let path in paths) {
+      console.log(path)
+    }
   })
   //TODO: open file? spawn new window, give that new window the path for opening or maybe text of the file, parse text inside the new window. Do it this way so any problem in parsing will only ever affect the one window.
   //newWindow() needs to take path as a parameter?
 }
 function close (menuItem, browserWindow, event) {
   browserWindow.close()
-  //TODO: call saveFile for each browserwindow
+  //TODO: if file contents dirty, call saveFile for browserwindow
 }
 
 function save (menuItem, browserWindow, event) {

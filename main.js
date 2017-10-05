@@ -193,7 +193,7 @@ function createMenu() {
       role: 'help',
       submenu: [
         {
-          label: 'As @sakamies on Twitter',
+          label: 'Ask @sakamies on Twitter',
           click: ()=>{
             shell.openExternal('https://twitter.com/sakamies')
           }

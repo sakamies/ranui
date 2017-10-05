@@ -9,8 +9,13 @@
   },
   "devDependencies": {
     "devtron": "^1.4.0",
-    "electron": "^1.4.15",
-    "jquery": "^3.1.1",
-    "pug": "^2.0.0-beta11"
+    "electron": "^1.7.8",
+    "electron-document-manager": "^0.1.0",
+    "gumbo-parser": "^0.3.0",
+    "jquery": "^3.2.1",
+    "pug": "^2.0.0-rc.4"
+  },
+  "dependencies": {
+    "electron-window-manager": "^1.0.4"
   }
 }
